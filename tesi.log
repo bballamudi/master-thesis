@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.3)  11 JUN 2017 16:40
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.5.3)  11 JUN 2017 17:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -376,65 +376,65 @@ Underfull \vbox (badness 1661) has occurred while \output is active []
 
 
 
-]
-[2] [3] [4]) [5]
+])
+[2]
 \openout2 = `capitolo2.aux'.
 
- (./capitolo2.tex [6
+ (./capitolo2.tex
+Capitolo 2.
+
+LaTeX Warning: Citation `marco02bud' on page 3 undefined on input line 18.
+
+) [3
 
 
 
 ]
-Capitolo 2.
-
-LaTeX Warning: Citation `marco02bud' on page 7 undefined on input line 18.
-
-) [7]
 \openout2 = `capitolo3.aux'.
 
- (./capitolo3.tex [8
+ (./capitolo3.tex [4
 
 
 
 ]
 Capitolo 3.
-) [9]
+) [5]
 \openout2 = `capitolo4.aux'.
 
- (./capitolo4.tex [10
+ (./capitolo4.tex [6
 
 
 
 ]
 Capitolo 4.
-) [11]
+) [7]
 \openout2 = `capitolo5.aux'.
 
- (./capitolo5.tex [12
+ (./capitolo5.tex [8
 
 
 
 ]
 Capitolo 5.
-) [13]
+) [9]
 \openout2 = `capitolo6.aux'.
 
- (./capitolo6.tex [14
+ (./capitolo6.tex [10
 
 
 
 ]
 Capitolo 6.
-) [15]
+) [11]
 \openout2 = `capitolo7.aux'.
 
- (./capitolo7.tex [16
+ (./capitolo7.tex [12
 
 
 
 ]
 Capitolo 7.
-) [17] [18
+) [13] [14
 
 
 ]
@@ -442,7 +442,7 @@ Capitolo 7.
 
  (./appendiceA.tex
 Appendice A.
-) [19
+) [15
 
 
 ]
@@ -455,58 +455,55 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[20
+[16
 
 
 
 ]
 Appendice B.
-) [21]
+) [17]
 \openout2 = `appendiceC.aux'.
 
- (./appendiceC.tex [22
+ (./appendiceC.tex [18
 
 
 
 ]
 Appendice C.
-) [23]
+) [19]
 \openout2 = `appendiceD.aux'.
 
- (./appendiceD.tex [24
+ (./appendiceD.tex [20
 
 
 
 ]
 Appendice D.
-) [25]
+) [21]
 \openout2 = `appendiceE.aux'.
 
- (./appendiceE.tex [26
+ (./appendiceE.tex [22
 
 
 
 ]
 Appendice E.
-) [27]
+) [23]
 \openout2 = `appendiceF.aux'.
 
- (./appendiceF.tex [28
+ (./appendiceF.tex [24
 
 
 
 ]
 Appendice F.
-) [29] (./tesi.aux (./frontespizio.aux) (./dedica.aux) (./sommario.aux)
+) [25] (./tesi.aux (./frontespizio.aux) (./dedica.aux) (./sommario.aux)
 (./ringraziamenti.aux) (./capitolo1.aux) (./capitolo2.aux) (./capitolo3.aux)
 (./capitolo4.aux) (./capitolo5.aux) (./capitolo6.aux) (./capitolo7.aux)
 (./appendiceA.aux) (./appendiceB.aux) (./appendiceC.aux) (./appendiceD.aux)
 (./appendiceE.aux) (./appendiceF.aux))
 
 LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
@@ -524,10 +521,10 @@ ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf
 -dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fo
 nts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/public/amsfonts/cm/cmti9.pfb>
-Output written on tesi.pdf (39 pages, 125386 bytes).
+Output written on tesi.pdf (35 pages, 121954 bytes).
 PDF statistics:
- 160 PDF objects out of 1000 (max. 8388607)
- 110 compressed objects within 2 object streams
+ 144 PDF objects out of 1000 (max. 8388607)
+ 99 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

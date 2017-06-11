@@ -25,19 +25,28 @@
 \pagestyle{empty}
 
 \begin{document}
+% ---- Frontispiece ----
 \include{frontespizio}
 \thispagestyle{empty} \normalfont \cleardoublepage
+
+% ---- Dedication ----
 \include{dedica}
 \thispagestyle{empty}  \cleardoublepage
 
+% ---- TOC ----
 \tableofcontents
 
 \pagenumbering{Roman}
 
+% ---- Summary ----
 \include{sommario}
 \thispagestyle{empty} \vspace*{.75truecm} \cleardoublepage
+
+% ---- Acknowledgments ----
 \include{ringraziamenti}
 \thispagestyle{empty} \vspace*{.75truecm} \normalfont \cleardoublepage
+
+% Style setup for main body
 \pagestyle{plain}\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}} 
 \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}         
 \fancyhead[LE,RO]{\bfseries\thepage}    
@@ -48,6 +57,7 @@
 
 \pagenumbering{arabic}
 
+% ---- Main body ----
 \include{capitolo1}
 \include{capitolo2}
 \include{capitolo3}
@@ -55,14 +65,15 @@
 \include{capitolo5}
 \include{capitolo6}
 \include{capitolo7}
-
 \cleardoublepage
+
 % ---- Bibliography ----
 \addcontentsline{toc}{chapter}{Bibliografia}
 \bibliographystyle{plain}
 %\bibliography{bibl_tesi}
 %\nocite{*}
 
+% ---- Appendices ----
 \appendix
 
 \pagestyle{fancy} 
