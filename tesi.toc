@@ -1,0 +1,38 @@
+\select@language {italian}
+\select@language {italian}
+\contentsline {chapter}{Summary}{III}
+\contentsline {chapter}{Aknowledgments}{V}
+\contentsline {chapter}{\numberline {1}Introduction}{1}
+\contentsline {section}{\numberline {1.1}Inquadramento generale}{1}
+\contentsline {section}{\numberline {1.2}Breve descrizione del lavoro}{1}
+\contentsline {section}{\numberline {1.3}Struttura della tesi}{2}
+\contentsline {chapter}{\numberline {2}State Of The Art}{3}
+\contentsline {section}{\numberline {2.1}Deep Learning}{3}
+\contentsline {subsection}{\numberline {2.1.1}Artificial Neural Networks}{3}
+\contentsline {subsection}{\numberline {2.1.2}Convolutional Neural Networks}{3}
+\contentsline {subsubsection}{Autoencoders}{4}
+\contentsline {section}{\numberline {2.2}Reinforcement Learning}{4}
+\contentsline {subsection}{\numberline {2.2.1}Markov Decision Processes}{4}
+\contentsline {subsection}{\numberline {2.2.2}Sequential Decision Making}{4}
+\contentsline {subsection}{\numberline {2.2.3}Value-based optimization}{4}
+\contentsline {subsubsection}{Q-learning}{4}
+\contentsline {subsubsection}{Fitted Q-Iteration}{4}
+\contentsline {subsection}{\numberline {2.2.4}Policy-based optimization}{4}
+\contentsline {subsubsection}{Actor-Critic}{4}
+\contentsline {section}{\numberline {2.3}Deep Reinforcement Learning}{4}
+\contentsline {subsection}{\numberline {2.3.1}Deep Q-Learning}{5}
+\contentsline {subsection}{\numberline {2.3.2}Asynchronous Advantage Actor Critic}{5}
+\contentsline {chapter}{\numberline {3}Effects of Feature Selection on Agent Performance}{7}
+\contentsline {section}{\numberline {3.1}Preliminary Definitions}{7}
+\contentsline {section}{\numberline {3.2}Tree-based Recursive Feature Selection}{7}
+\contentsline {section}{\numberline {3.3}Impact of RFS on Agent Performance}{7}
+\contentsline {section}{\numberline {3.4}RFS on Deep Features}{7}
+\contentsline {chapter}{\numberline {4}Technical Details and Implementation}{9}
+\contentsline {section}{\numberline {4.1}Atari Games}{9}
+\contentsline {section}{\numberline {4.2}Deep Neural Network for Feature Extraction}{9}
+\contentsline {section}{\numberline {4.3}Recursive Feature Selection}{9}
+\contentsline {section}{\numberline {4.4}Code Implementation}{9}
+\contentsline {chapter}{\numberline {5}Experimental Results}{11}
+\contentsline {chapter}{\numberline {6}Conclusions and Future Developments}{13}
+\contentsline {section}{\numberline {6.1}Future Developments}{13}
+\contentsline {chapter}{References}{15}

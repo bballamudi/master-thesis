@@ -44,16 +44,6 @@ minimizing the $L1$ norm of the activations in the innermost hidden layers).
 \section{Reinforcement Learning}
 
 \subsection{Markov Decision Processes}
-Markov Decision Processes are discrete-time, stochastic control processes 
-defined as 5-tuples $(S, A, P, R, \gamma)$, where:
-\begin{itemize}
- \item $S$
- \item $A$
- \item $P$
- \item $R$
- \item $\gamma$
-\end{itemize}
-
 
 \subsection{Sequential Decision Making}
 
@@ -62,7 +52,6 @@ defined as 5-tuples $(S, A, P, R, \gamma)$, where:
 \subsubsection{Fitted Q-Iteration}
 
 \subsection{Policy-based optimization}
-\subsubsection{Actor-Critic}
 
 \section{Deep Reinforcement Learning}
 Deep Reinforcement Learning is the application of RL's sequential decision 
@@ -70,7 +59,6 @@ making techniques and DL's abstract representation capabilities to control
 problems, usually on MDPs where the state representation is too complex to be 
 tractable with classic dynamic programming techniques. 
 \subsection{Deep Q-Learning}
-\subsection{Asynchronous Advantage Actor Critic}
 
 
 
