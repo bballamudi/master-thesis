@@ -1,0 +1,205 @@
+\chapter{Background}
+\label{ch1_intro}
+\thispagestyle{empty}
+
+\vspace{0.5cm}
+
+\noindent Introduce the section
+
+\section{Deep Learning}
+Deep Learning is a branch of machine learning which exploits \textit{Artificial 
+Neural Networks} (ANN) with more than one hidden layer to learn an abstract 
+representation of the input space \cite{lecun2015deep}. 
+
+Deep learning techniques can be applied to the three main classes of problems 
+of machine learning (supervised, semi-supervised, and unsupervised), and have 
+been used to achieve state-of-the-art results in a variety of learning tasks.
+
+\subsection{Artificial Neural Networks}
+Feed-forward Artificial Neural Networks (ANN) are function approximators 
+inspired by the connected structure of neurons and synapses in the animal brain.
+
+\subsection{Convolutional Neural Networks}
+Convolutional Neural Networks (CNN) are a type of ANN inspired by the visual 
+cortex in animal brains.
+CNNs exploit spatially-local correlations in the neurons of adjacent 
+layers through the use of a \textit{receptive field}, a set of weights which is 
+used to transform a local subset of the input neurons of a layer.
+
+% shared weights
+% put some images here
+
+\subsection{Autoencoders}
+Autoencoders are a type of ANN which are used to learn a sparse and compressed 
+representation of the input space, by sequentially compressing and 
+reconstructing the inputs under some sparsity constraint (typically by 
+minimizing the $L1$ norm of the activations in the innermost hidden layers).
+
+
+\section{Reinforcement Learning}
+
+\subsection{Markov Decision Processes}
+Markov Decision Processes (MDP) are discrete-time, stochastic control 
+processes, that can be used to describe the interaction of an \textit{agent} 
+with an \textit{environment}. \\
+
+Formally, MDPs are defined as 7-tuples $(S, S^{t}, A, P, R, \gamma, \mu)$, 
+where:
+\begin{itemize}
+    %
+    \item $S$ is the set of observable states of the environment. \\
+    When the set observable states coincides with the true set of states of the 
+    environment, the MDP is said to be \textit{fully observable}. We will only deal 
+    with fully observable MDPs without considering the case of \textit{partially 
+    observable} MDPs.
+
+    \item $S^{T} \subseteq S$ is the set of \textit{terminal states} of the 
+    environment, meaning those states in which the interaction between the agent and 
+    the environment ends. A sequence of states observed by an agent during an 
+    interaction with the environment and ending in a terminal state is usually 
+    called an \textit{episode}.
+ 
+    \item $A$ is the set of actions that the agent can execute in the environment.
+ 
+    \item $P: S \times A \times S \rightarrow [0,1]$ is a \textit{state transition 
+    function} which, given two states $s, s' \in S$ and an action $a \in A$, 
+    represents the probability of the agent going to state $s'$ by executing $a$ in 
+    $s$. \\
+ 
+    \item $R: S \times A \rightarrow \mathbb{R}$ is a \textit{reward function} 
+    which represents the reward that the agent collects by executing an action in 
+    a state. 
+    
+    \item $\gamma \in (0,1)$ is a \textit{discount factor} with which the rewards 
+    collected by the agent are diminished at each step, and can be interpreted as 
+    the agent's interest for rewards further in time rather than immediate.
+    
+    \item $\mu: S \rightarrow [0, 1]$ is a probability distribution over $S$ which 
+    models the probability of starting the exploration of the environment in a 
+    given state.
+    %
+\end{itemize}
+
+Episodes are usually represented as sequences of tuples \[[(s_0, a_0, r_0, s_1), ..., (s_{n-1}, a_{n-1}, r_{n-1}, s_n)]\]
+called \textit{trajectories}, where $(s_i, a_i, r_i, s_{i-1})$ represent a
+transition of the agent to state $s_{i+1}$ by taking action $a_i$ in $s_i$ and 
+collecting a reward $r_i$, and $s_n \in S^T$. \\
+In Markov Decision Processes, the modeled environment must satisfy the 
+\textit{Markov property}, meaning that the reward and transition functions of 
+the environment must only depend on the current state and action, rather than 
+the past state-action trajectory of the agent. \\
+In other words, an environment is said to satisfy the Markov property when its 
+one-step dynamics allow to predict the next state and reward given only the 
+current state and action.
+
+\subsubsection{Policy}
+The behavior of the agent in an MDP can be defined as a probability 
+distribution $\pi: S \times A \rightarrow [0,1]$ called a \textit{policy}, 
+which given $s \in S, a \in A$, represents the probability of selecting $a$ as 
+next action from $s$.
+An agent which uses this probability distribution to select its next action 
+when in a given state is said to be \textit{following} the policy.
+
+
+\subsubsection{Value Functions}
+Starting from the concept of policy, we can now introduce a function that 
+evaluates how good it is for an agent following a policy $\pi$ to be in a given 
+state. This evaluation is expressed in terms of the expected return, i.e.
+the expected discounted sum of future rewards collected by an agent starting 
+from a state while following $\pi$, and the function that computes it is 
+called the \textit{state-value function for policy $\pi$}.\\
+
+Formally, the state-value function associated to a policy $\pi$ is a function 
+$V^{\pi}: S \rightarrow \mathbb{R}$ defined as:
+
+\begin{IEEEeqnarray}{rCl}
+    %
+    V^{\pi}(s) & = & E_\pi[R_t | s_t = s] \\
+    & = & E_\pi[\sum\limits_{k = 0}^{\infty} \gamma^k r_{t+k+1} | s_t = s]
+    %
+\end{IEEEeqnarray}
+
+where $E_\pi[\cdot]$ is the expected value given that the agent follows 
+policy $\pi$, and $t$ is any time step of an episode of $n$ steps $[s_1, 
+..., s_t, ..., s_n]$ where $s_t \in S, \forall t = 1, ..., n$. \\
+
+Similarly, we can also introduce a function that evaluates the goodness of 
+taking a specific action in a given state, namely the expected reward obtained 
+by taking an action $a \in A$ in a state $s \in S$ and then following policy $\pi$. 
+We call this function the \textit{action-value function for policy $\pi$} 
+denoted $Q^{\pi}: S \times A \rightarrow \mathbb{R}$, and defined as: 
+
+\begin{IEEEeqnarray}{rCl}
+    %
+    Q^{\pi}(s, a) & = & E_\pi[R_t | s_t = s, a_t = a] \\
+    & = & E_\pi[\sum\limits_{k = 0}^{\infty} \gamma^k r_{t+k+1} | s_t = s, a_t = a]
+    %
+\end{IEEEeqnarray}
+
+The majority of reinforcement learning algorithms is based on computing (or 
+estimating) value functions to then control the behavior of the agent in order 
+to maximize the expected reward collected during episodes. \\
+
+We also note a fundamental property of value functions, which satisfy particular 
+recursive relationships like the following \textit{Bellman equation for $V^{\pi}$}:
+
+\begin{IEEEeqnarray}{rCl}
+    %
+    V^{\pi}(s) & = & E_\pi[R_t | s_t = s] \nonumber\\
+    & = & E_\pi[\sum\limits_{k = 0}^{\infty} \gamma^k r_{t+k+1} | s_t = s] \nonumber\\
+    & = & E_\pi[r_{t+1} + \gamma \sum\limits_{k=0}^{\infty} \gamma^k r_{t+k+2} | s_t = s] \\
+    & = & \sum\limits_{a \in A} \pi(s, a) \sum\limits_{s' \in S} P(s, a, s')[R(s, a) \>+ \nonumber\\
+    && +\> \gamma E_\pi[\sum\limits_{k=0}^{\infty} \gamma^k r_{t+k+2} | s_{t+1} = s]] \\
+    & = & \sum\limits_{a \in A} \pi(s, a) \sum\limits_{s' \in S} P(s, a, s')[R(s, a) + \gamma V^{\pi}(s')]
+    %
+\end{IEEEeqnarray}
+
+Intuitively, this relation decomposes the state-value function as the sum of the
+immediate reward collected from a state $s$ to a successor state $s'$, and the 
+value of $s'$ itself; by considering the transition model of the MDP and the 
+policy being followed, we see that Bellman equation simply averages the expected
+return over all the possible $(s, a, r, s')$ transitions, by taking into account 
+the probability that these transitions occur. 
+
+\subsection{Optimal Value Functions}
+In general terms, \textit{to solve} a reinforcement learning task is to identify
+a policy that yields a sufficiently high expected return. In the case of MDPs 
+with finite state and actions sets 
+\footnote{This specification is only required for formality, but is not 
+investigated further in this work. Refer to SUTTON, BARTO for more details on 
+the subjet of non-finite MDPs.}, it is possible to define the concept of 
+\textit{optimal policy} as the policy which maximizes the expected return 
+collected by the agent in an episode. \\
+We start by noticing that state-value functions define a partial ordering over 
+policies as follows: 
+
+\[
+    \pi \ge \pi' \iff V^{\pi}(s) \ge V^{\pi'}(s), \forall s \in S
+\]
+
+From this, the \textit{optimal policy $\pi^*$} of an MDP is a policy which is
+better or equal than all other policies in the policy space. \\
+The state-value function associated to $\pi^*$ is called the 
+\textit{optimal state-value function}, denoted $V^*$ and defined as:
+
+\[
+    V^*(s) = \max_{\pi} V^\pi(s), \forall s \in S
+\]
+
+
+
+\subsection{Value-based optimization}
+
+\subsubsection{SARSA}
+
+\subsubsection{Q-learning}
+
+\subsubsection{Fitted Q-Iteration}
+
+
+\section{Deep Reinforcement Learning}
+
+\subsection{Deep Q-Learning}
+\subsection{Asynchronous Advantage Actor Critic}
+
+
