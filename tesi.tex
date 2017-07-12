@@ -12,6 +12,8 @@
 \usepackage{IEEEtrantools}
 \hyphenation{ev-ery-where}
 
+\newtheorem{theorem}{Theorem}
+
 \setlength{\paperwidth}{16cm}
 \setlength{\paperheight}{24cm}
 \setlength{\oddsidemargin} {2. cm}
@@ -32,8 +34,8 @@
 \thispagestyle{empty} \normalfont \cleardoublepage
 
 % ---- Dedication ----
-\include{dedica}
-\thispagestyle{empty}  \cleardoublepage
+% \include{dedica}
+% \thispagestyle{empty}  \cleardoublepage
 
 % ---- TOC ----
 \tableofcontents
@@ -41,12 +43,12 @@
 \pagenumbering{Roman}
 
 % ---- Summary ----
-\include{sommario}
-\thispagestyle{empty} \vspace*{.75truecm} \cleardoublepage
+% \include{sommario}
+% \thispagestyle{empty} \vspace*{.75truecm} \cleardoublepage
 
 % ---- Acknowledgments ----
-\include{acknowledgments}
-\thispagestyle{empty} \vspace*{.75truecm} \normalfont \cleardoublepage
+% \include{acknowledgments}
+% \thispagestyle{empty} \vspace*{.75truecm} \normalfont \cleardoublepage
 
 % Style setup for main body
 \pagestyle{plain}\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}} 
@@ -60,14 +62,14 @@
 \pagenumbering{arabic}
 
 % ---- Main body ----
-\include{intro}
+% \include{intro}
 \include{preliminaries}
-\include{SOA}
-\include{setup}
-%\include{ch4_implem}
-\include{arch}
-\include{exp}
-\include{concl}
+% \include{SOA}
+% \include{setup}
+% \include{ch4_implem}
+% \include{arch}
+% \include{exp}
+% \include{concl}
 \cleardoublepage
 
 % ---- Bibliography ----

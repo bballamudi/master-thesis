@@ -41,7 +41,7 @@ minimizing the $L1$ norm of the activations in the innermost hidden layers).
 \subsection{Markov Decision Processes}
 Markov Decision Processes (MDP) are discrete-time, stochastic control 
 processes, that can be used to describe the interaction of an \textit{agent} 
-with an \textit{environment}. \\
+with an \textit{environment}.
 
 Formally, MDPs are defined as 7-tuples $(S, S^{t}, A, P, R, \gamma, \mu)$, 
 where:
@@ -64,7 +64,7 @@ where:
     \item $P: S \times A \times S \rightarrow [0,1]$ is a \textit{state transition 
     function} which, given two states $s, s' \in S$ and an action $a \in A$, 
     represents the probability of the agent going to state $s'$ by executing $a$ in 
-    $s$. \\
+    $s$.
  
     \item $R: S \times A \rightarrow \mathbb{R}$ is a \textit{reward function} 
     which represents the reward that the agent collects by executing an action in 
@@ -80,14 +80,19 @@ where:
     %
 \end{itemize}
 
-Episodes are usually represented as sequences of tuples \[[(s_0, a_0, r_0, s_1), ..., (s_{n-1}, a_{n-1}, r_{n-1}, s_n)]\]
+Episodes are usually represented as sequences of tuples 
+\[
+    [(s_0, a_0, r_0, s_1), ..., (s_{n-1}, a_{n-1}, r_{n-1}, s_n)]
+\]
 called \textit{trajectories}, where $(s_i, a_i, r_i, s_{i-1})$ represent a
 transition of the agent to state $s_{i+1}$ by taking action $a_i$ in $s_i$ and 
-collecting a reward $r_i$, and $s_n \in S^T$. \\
+collecting a reward $r_i$, and $s_n \in S^T$.
+
 In Markov Decision Processes, the modeled environment must satisfy the 
 \textit{Markov property}, meaning that the reward and transition functions of 
 the environment must only depend on the current state and action, rather than 
-the past state-action trajectory of the agent. \\
+the past state-action trajectory of the agent.
+
 In other words, an environment is said to satisfy the Markov property when its 
 one-step dynamics allow to predict the next state and reward given only the 
 current state and action.
@@ -97,9 +102,9 @@ The behavior of the agent in an MDP can be defined as a probability
 distribution $\pi: S \times A \rightarrow [0,1]$ called a \textit{policy}, 
 which given $s \in S, a \in A$, represents the probability of selecting $a$ as 
 next action from $s$.
+
 An agent which uses this probability distribution to select its next action 
 when in a given state is said to be \textit{following} the policy.
-
 
 \subsubsection{Value Functions}
 Starting from the concept of policy, we can now introduce a function that 
@@ -107,99 +112,264 @@ evaluates how good it is for an agent following a policy $\pi$ to be in a given
 state. This evaluation is expressed in terms of the expected return, i.e.
 the expected discounted sum of future rewards collected by an agent starting 
 from a state while following $\pi$, and the function that computes it is 
-called the \textit{state-value function for policy $\pi$}.\\
+called the \textit{state-value function for policy $\pi$} (or, more commonly, 
+simply \textit{value function}).
 
 Formally, the state-value function associated to a policy $\pi$ is a function 
 $V^{\pi}: S \rightarrow \mathbb{R}$ defined as:
-
+%
 \begin{IEEEeqnarray}{rCl}
-    %
+    % Sutton, Barto
     V^{\pi}(s) & = & E_\pi[R_t | s_t = s] \\
     & = & E_\pi[\sum\limits_{k = 0}^{\infty} \gamma^k r_{t+k+1} | s_t = s]
     %
 \end{IEEEeqnarray}
-
+%
 where $E_\pi[\cdot]$ is the expected value given that the agent follows 
-policy $\pi$, and $t$ is any time step of an episode of $n$ steps $[s_1, 
-..., s_t, ..., s_n]$ where $s_t \in S, \forall t = 1, ..., n$. \\
+policy $\pi$, and $t$ is any time step of an episode $[s_1, ..., s_t, ..., s_n]$
+where $s_t \in S, \forall t = 1, ..., n$.
 
 Similarly, we can also introduce a function that evaluates the goodness of 
 taking a specific action in a given state, namely the expected reward obtained 
 by taking an action $a \in A$ in a state $s \in S$ and then following policy $\pi$. 
 We call this function the \textit{action-value function for policy $\pi$} 
 denoted $Q^{\pi}: S \times A \rightarrow \mathbb{R}$, and defined as: 
-
+%
 \begin{IEEEeqnarray}{rCl}
-    %
+    % Sutton, Barto
     Q^{\pi}(s, a) & = & E_\pi[R_t | s_t = s, a_t = a] \\
     & = & E_\pi[\sum\limits_{k = 0}^{\infty} \gamma^k r_{t+k+1} | s_t = s, a_t = a]
     %
 \end{IEEEeqnarray}
-
+%
 The majority of reinforcement learning algorithms is based on computing (or 
 estimating) value functions to then control the behavior of the agent in order 
-to maximize the expected reward collected during episodes. \\
+to maximize the expected reward collected during episodes.
 
 We also note a fundamental property of value functions, which satisfy particular 
 recursive relationships like the following \textit{Bellman equation for $V^{\pi}$}:
-
+%
 \begin{IEEEeqnarray}{rCl}
-    %
+    % Sutton, Barto
     V^{\pi}(s) & = & E_\pi[R_t | s_t = s] \nonumber\\
     & = & E_\pi[\sum\limits_{k = 0}^{\infty} \gamma^k r_{t+k+1} | s_t = s] \nonumber\\
     & = & E_\pi[r_{t+1} + \gamma \sum\limits_{k=0}^{\infty} \gamma^k r_{t+k+2} | s_t = s] \\
     & = & \sum\limits_{a \in A} \pi(s, a) \sum\limits_{s' \in S} P(s, a, s')[R(s, a) \>+ \nonumber\\
-    && +\> \gamma E_\pi[\sum\limits_{k=0}^{\infty} \gamma^k r_{t+k+2} | s_{t+1} = s]] \\
-    & = & \sum\limits_{a \in A} \pi(s, a) \sum\limits_{s' \in S} P(s, a, s')[R(s, a) + \gamma V^{\pi}(s')]
+    && +\> \gamma E_\pi[\sum\limits_{k=0}^{\infty} \gamma^k r_{t+k+2} | s_{t+1} = s']] \\
+    & = & \sum\limits_{a \in A} \pi(s, a) \sum\limits_{s' \in S} P(s, a, s')[R(s, a) + \gamma V^{\pi}(s')] \label{eq:BEV}
     %
 \end{IEEEeqnarray}
-
-Intuitively, this relation decomposes the state-value function as the sum of the
+%
+Intuitively, relation \eqref{eq:BEV} decomposes the state-value function as the sum of the
 immediate reward collected from a state $s$ to a successor state $s'$, and the 
 value of $s'$ itself; by considering the transition model of the MDP and the 
-policy being followed, we see that Bellman equation simply averages the expected
-return over all the possible $(s, a, r, s')$ transitions, by taking into account 
-the probability that these transitions occur. 
+policy being followed, we see that the Bellman equation simply averages the 
+expected return over all the possible $(s, a, r, s')$ transitions, by taking 
+into account the probability that these transitions occur. 
 
 \subsection{Optimal Value Functions}
 In general terms, \textit{to solve} a reinforcement learning task is to identify
 a policy that yields a sufficiently high expected return. In the case of MDPs 
-with finite state and actions sets 
-\footnote{This specification is only required for formality, but is not 
-investigated further in this work. Refer to SUTTON, BARTO for more details on 
-the subjet of non-finite MDPs.}, it is possible to define the concept of 
-\textit{optimal policy} as the policy which maximizes the expected return 
-collected by the agent in an episode. \\
+with finite state and actions sets\footnote{This specification is only required 
+for formality, but is not expanded further in this work. Refer to SUTTON, BARTO 
+for more details on the subjet of non-finite MDPs.}, it is possible to define 
+the concept of \textit{optimal policy} as the policy which maximizes the 
+expected return collected by the agent in an episode.
+
 We start by noticing that state-value functions define a partial ordering over 
 policies as follows: 
-
 \[
     \pi \ge \pi' \iff V^{\pi}(s) \ge V^{\pi'}(s), \forall s \in S
 \]
-
 From this, the \textit{optimal policy $\pi^*$} of an MDP is a policy which is
-better or equal than all other policies in the policy space. \\
+better or equal than all other policies in the policy space.
+
 The state-value function associated to $\pi^*$ is called the 
 \textit{optimal state-value function}, denoted $V^*$ and defined as:
-
 \[
+    % Sutton, Barto
     V^*(s) = \max_{\pi} V^\pi(s), \forall s \in S
 \]
+As we did when introducing the value functions, given an optimal policy for the 
+MDP it is also possible to define the \textit{optimal action-value function} 
+denoted $Q^*$ (equivalence \eqref{eq:Qstar_V} in this definition highlights the
+relation between $Q^*$ and $V^*$):
+%
+\begin{IEEEeqnarray}{rCl}
+    % Sutton, Barto
+    Q^*(s, a) & = & \max_{\pi} Q^\pi(s, a) \\
+    & = & E[r_{t+1} + \gamma V^*(s_{t+1} | s_t = s, a_t = a] \label{eq:Qstar_V}
+    %
+\end{IEEEeqnarray}
+%
+.
 
+%% SEE PAGE 224 of Sutton, Barto and ask Restelli WTF is going on with the definition of V*
+Since $V^*$ and $Q^*$ are value functions of an MDP, they must satisfy the same
+type of recursive relations that we described in \eqref{eq:BEV}, in this case
+called the \textit{Bellman optimality equations}.
 
+The Bellman optimality equation for $V^*$ expresses the fact that the value of
+a state associated to an optimal policy must be the expected return of the best
+action that the agent can take in that state:
+%
+\begin{IEEEeqnarray}{rCl}
+    % Sutton, Barto
+    V^*(s) & = & \max_a Q^*(s, a) \label{eq:BOEV}\\
+    & = & \max_a E_{\pi^*}[R_t | s_t = s, a_t = a] \\
+    & = & \max_a E_{\pi^*}[\sum\limits_{k=0}^{\infty} \gamma^k r_{t+k+1}| s_t = s, a_t = a] \\
+    & = & \max_a E_{\pi^*}[r_{t+1} + \gamma \sum\limits_{k=0}^{\infty} \gamma^k r_t+k+2 | s_t = s, a_t = a] \\
+    & = & \max_a E_{\pi^*}[r_{t+1} + \gamma V^*(s_{t+1}) | s_t = s, a_t = a] \\
+    & = & \max_a \sum\limits_{s' \in S} P(s, a, s') [ R(s, a) + \gamma V^*(s') ]
+    %
+\end{IEEEeqnarray}
+%
+The Bellman optimality equation for $Q^*$ is again obtained from the definition
+as:
+%
+\begin{IEEEeqnarray}{rCl}
+    % Sutton, Barto
+    Q^*(s, a) & = & E[ r_{t+1} + \gamma \max_{a'} Q^*(s_{t+1}, a') | |s_t = s, a_t = a] \\
+    & = & \sum\limits_{s'} P(s, a, s') [ R(s, a) + \gamma \max_{a'}Q^*(s', a') ]
+    %
+\end{IEEEeqnarray}
+%
+It is possible to notice that both Bellman optimality equations have a unique
+solution independent of the policy. 
+If the dynamics of the environment ($R$ and $P$) are fully known, it is possible
+to solve the system of equations associated to the value functions (i.e. one
+equation for each state in $S$) and get an exact value for $V^*$ and $Q^*$ in 
+each state. 
 
 \subsection{Value-based optimization}
+One of main algorithm classes for solving reinforcement learning problems
+is based on searching an optimal policy for the MDP by trying to compute either 
+of the optimal value functions, and then deriving a policy based on them.
+
+From $V^*$ or $Q^*$, it is easy to determine an optimal policy:
+\begin{itemize}
+    %
+    \item Given $V^*$, for each state $s \in S$ there will be an action which 
+    maximizes the Bellman optimality equation \eqref{eq:BOEV}. Any policy that 
+    assigns positive probability to only this action (or actions) is an optimal 
+    policy. \\
+    This approach therefore consists in performing a one-step forward search on 
+    the state space to determine the best action from the current state.
+    \item Given $Q^*$, the optimal policy is that which assigns positive 
+    probability to the action which maximizes $Q^*(s, a)$; this approach 
+    exploits the intrinsic property of the action-value function of representing 
+    the \textit{goodness} of actions, without performing the one-step search 
+    on the successor states. 
+    %
+\end{itemize}
+
+In this section we will describe some of the most important value-based 
+approaches to reinforcement learning, which will be useful in the following 
+sections of this work. 
+
+We will not deal with equally popular methods like \textit{policy gradient} or 
+\textit{actor-critic} approaches, even though they have been successfully applied
+in conjunction with deep learning to solve complex environments (see \ref{s:DRL}
+and \ref{ch2_SOA}).
+
+\subsection{Dynamic Programming}
+The use of dynamic programming techniques to solve a reinforcement learning 
+problem is based on recursively applying some form of the Bellman equation, 
+starting from any initial policy $\pi$ until convergence to $\pi^*$.
+
+In this class of algorithms, we identify two main approaches: \textit{policy 
+iteration} and \textit{value iteration}.
+
+\textit{Policy iteration} is based of the following theorem:
+\begin{theorem}[Policy improvement theorem] \label{th:pol_imp}
+    % Lecture 11, slide 18
+    Let $\pi$ and $\pi'$ be a pair of deterministic policies such that
+    \[
+        Q^\pi(s, \pi'(s)) \ge V^\pi(s), \forall s \in S 
+    \]
+    Then, $\pi' \ge \pi$, i.e. 
+    \[
+        V^{\pi'}(s) \ge V^{\pi}(s), \forall s \in S
+    \]
+\end{theorem}
+
+This approach works by iteratively computing the value functions associated to 
+the current policy, and then improving that policy by making it act greedily 
+with respect to the value functions, such that:
+\[
+    % Lecture 11, slide 17
+    \pi'(s) = \underset{a \in A}{\arg\max} Q^{\pi}(s, a)
+\]
+which, for Theorem \ref{th:pol_imp}, improves the expected return of the policy
+since:
+\[	
+    % Lecture 11, slide 17
+    Q^\pi(s, \pi'(s)) = \max_{a \in A} Q^\pi(s, a) \ge Q^\pi(s, \pi(s)) = V^\pi(s)
+\]
+. 
+
+This continuous improvement is applied until the inequality in the previous 
+equation becomes an equality, i.e. when the improved policy satisfies the 
+Bellman optimality equation \eqref{eq:BOEV}. Since the algorithm gives no 
+assurances on the number of updates required for convergence, some stopping
+conditions are usually introduced to end the process when the new value function 
+did not change substantially after the update (\textit{$\epsilon$-convergence}) 
+or a certain threshold number of iterations has been reached.
+
+Starting from a similar basis, the \textit{value iteration} approach computes 
+the value function associated to an initial policy, but then applies a contraction
+operator which iterates over sequentially better value functions without actually
+computing the associated greedy policy.
+
+The contraction operator which ensures convergence is the \textit{Bellman 
+optimality backup}:
+%
+\begin{IEEEeqnarray}{rCl}
+    % Sutton, Barto (p.266)
+    V_{k+1}(s) \leftarrow \max_a \sum\limits_{s'}P(s, a, s')[R(s, a) + \gamma V(s')]
+    %
+\end{IEEEeqnarray}
+%
+Similarly to policy iteration, convergence is ensured but without guarantees on 
+the number of steps, and therefore it usual to terminate the iteration according
+to some stopping condition.
+
+\subsection{Monte Carlo Methods}
+Dynamic programming approaches exploit the exact solution of a value function 
+which can be computed starting from a policy, but in general this requires to have
+a perfect knowledge of the environment's dynamics an may also not be tractable on
+sufficiently complex MDPs. 
+
+Monte Carlo methods are a way of solving reinforcement learning problems by 
+only using \textit{experience}, i.e. a collection of \textit{sample trajectories}
+from an actual interaction of an agent in an environment.
+
+This is often referred to as a \textit{model-free} approach because, while the
+environment (or a simulation thereof) is still required to observe the sample
+trajectories, it is not necessary to have an exact knowledge of the transition 
+model and reward function of the MDP. 
+
+Despite the differences with dynamic programming, this approach is still 
+centered on the same two-step process of policy evaluation and improvement.
+
+To estimate the value of a state $V^\pi(s)$ under a policy $\pi$ with Monte 
+Carlo methods, it is sufficient to consider the cumulative returns following a
+\textit{visit} of the agent to state S, and then take the average of this values
+over the entire collection
+
+\subsection{Temporal Difference Learning}
+
 
 \subsubsection{SARSA}
 
 \subsubsection{Q-learning}
 
-\subsubsection{Fitted Q-Iteration}
+\subsection{Fitted Q-Iteration}
 
 
-\section{Deep Reinforcement Learning}
+\section{Deep Reinforcement Learning} \label{s:DRL}
 
 \subsection{Deep Q-Learning}
-\subsection{Asynchronous Advantage Actor Critic}
+
 
 
