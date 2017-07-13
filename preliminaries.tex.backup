@@ -6,8 +6,8 @@
 
 \noindent Introduce the section
 
-\section{Deep Learning}
-Deep Learning is a branch of machine learning which exploits \textit{Artificial 
+\section{Deep Learning} \label{s:DL}
+Deep Learning (DL) is a branch of machine learning which exploits \textit{Artificial 
 Neural Networks} (ANN) with more than one hidden layer to learn an abstract 
 representation of the input space \cite{lecun2015deep}. 
 
@@ -36,7 +36,9 @@ reconstructing the inputs under some sparsity constraint (typically by
 minimizing the $L1$ norm of the activations in the innermost hidden layers).
 
 
-\section{Reinforcement Learning}
+\section{Reinforcement Learning} \label{s:DRL}
+
+Introduction to reinforcement learning...
 
 \subsection{Markov Decision Processes}
 Markov Decision Processes (MDP) are discrete-time, stochastic control 
@@ -72,7 +74,7 @@ where:
     
     \item $\gamma \in (0,1)$ is a \textit{discount factor} with which the rewards 
     collected by the agent are diminished at each step, and can be interpreted as 
-    the agent's interest for rewards further in time rather than immediate.
+    the agent's interest for rewards further in time rather than immediately.
     
     \item $\mu: S \rightarrow [0, 1]$ is a probability distribution over $S$ which 
     models the probability of starting the exploration of the environment in a 
@@ -82,13 +84,13 @@ where:
 
 Episodes are usually represented as sequences of tuples 
 \[
-    [(s_0, a_0, r_0, s_1), ..., (s_{n-1}, a_{n-1}, r_{n-1}, s_n)]
+    [(s_0, a_0, r_1, s_1), ..., (s_{n-1}, a_{n-1}, r_n, s_n)]
 \]
-called \textit{trajectories}, where $(s_i, a_i, r_i, s_{i-1})$ represent a
+called \textit{trajectories}, where $(s_i, a_i, r_{i+1}, s_{i+1})$ represent a
 transition of the agent to state $s_{i+1}$ by taking action $a_i$ in $s_i$ and 
-collecting a reward $r_i$, and $s_n \in S^T$.
+collecting a reward $r_{i+1}$, and $s_n \in S^T$.
 
-In Markov Decision Processes, the modeled environment must satisfy the 
+In Markov Decision Processes the modeled environment must satisfy the 
 \textit{Markov property}, meaning that the reward and transition functions of 
 the environment must only depend on the current state and action, rather than 
 the past state-action trajectory of the agent.
@@ -176,7 +178,7 @@ for more details on the subjet of non-finite MDPs.}, it is possible to define
 the concept of \textit{optimal policy} as the policy which maximizes the 
 expected return collected by the agent in an episode.
 
-We start by noticing that state-value functions define a partial ordering over 
+We start by noticing that state-value function defines a partial ordering over 
 policies as follows: 
 \[
     \pi \ge \pi' \iff V^{\pi}(s) \ge V^{\pi'}(s), \forall s \in S
@@ -249,10 +251,10 @@ of the optimal value functions, and then deriving a policy based on them.
 From $V^*$ or $Q^*$, it is easy to determine an optimal policy:
 \begin{itemize}
     %
-    \item Given $V^*$, for each state $s \in S$ there will be an action which 
-    maximizes the Bellman optimality equation \eqref{eq:BOEV}. Any policy that 
-    assigns positive probability to only this action (or actions) is an optimal 
-    policy. \\
+    \item Given $V^*$, for each state $s \in S$ there will be an action (or 
+    actions) which maximizes the Bellman optimality equation \eqref{eq:BOEV}. 
+    Any policy that assigns positive probability to only this action is an 
+    optimal policy. \\
     This approach therefore consists in performing a one-step forward search on 
     the state space to determine the best action from the current state.
     \item Given $Q^*$, the optimal policy is that which assigns positive 
@@ -273,13 +275,14 @@ in conjunction with deep learning to solve complex environments (see \ref{s:DRL}
 and \ref{ch2_SOA}).
 
 \subsection{Dynamic Programming}
-The use of dynamic programming techniques to solve a reinforcement learning 
+The use of dynamic programming (DP) techniques to solve a reinforcement learning 
 problem is based on recursively applying some form of the Bellman equation, 
 starting from any initial policy $\pi$ until convergence to $\pi^*$.
 
 In this class of algorithms, we identify two main approaches: \textit{policy 
 iteration} and \textit{value iteration}.
 
+\subsubsection{Policy iteration}
 \textit{Policy iteration} is based of the following theorem:
 \begin{theorem}[Policy improvement theorem] \label{th:pol_imp}
     % Lecture 11, slide 18
@@ -296,12 +299,15 @@ iteration} and \textit{value iteration}.
 This approach works by iteratively computing the value functions associated to 
 the current policy, and then improving that policy by making it act greedily 
 with respect to the value functions, such that:
-\[
+%
+\begin{IEEEeqnarray}{rCl}
     % Lecture 11, slide 17
-    \pi'(s) = \underset{a \in A}{\arg\max} Q^{\pi}(s, a)
-\]
+    \pi'(s) = \underset{a \in A}{\arg\max} Q^{\pi}(s, a) \label{eq:greedy_imp}
+    %
+\end{IEEEeqnarray}
+%
 which, for Theorem \ref{th:pol_imp}, improves the expected return of the policy
-since:
+because:
 \[	
     % Lecture 11, slide 17
     Q^\pi(s, \pi'(s)) = \max_{a \in A} Q^\pi(s, a) \ge Q^\pi(s, \pi(s)) = V^\pi(s)
@@ -316,6 +322,7 @@ conditions are usually introduced to end the process when the new value function
 did not change substantially after the update (\textit{$\epsilon$-convergence}) 
 or a certain threshold number of iterations has been reached.
 
+\subsubsection{Value iteration} \label{s:value_iteration}
 Starting from a similar basis, the \textit{value iteration} approach computes 
 the value function associated to an initial policy, but then applies a contraction
 operator which iterates over sequentially better value functions without actually
@@ -340,9 +347,9 @@ which can be computed starting from a policy, but in general this requires to ha
 a perfect knowledge of the environment's dynamics an may also not be tractable on
 sufficiently complex MDPs. 
 
-Monte Carlo methods are a way of solving reinforcement learning problems by 
+\textit{Monte Carlo} (MC) methods are a way of solving reinforcement learning problems by 
 only using \textit{experience}, i.e. a collection of \textit{sample trajectories}
-from an actual interaction of an agent in an environment.
+from an actual interaction of an agent in the environment.
 
 This is often referred to as a \textit{model-free} approach because, while the
 environment (or a simulation thereof) is still required to observe the sample
@@ -353,23 +360,206 @@ Despite the differences with dynamic programming, this approach is still
 centered on the same two-step process of policy evaluation and improvement.
 
 To estimate the value of a state $V^\pi(s)$ under a policy $\pi$ with Monte 
-Carlo methods, it is sufficient to consider the cumulative returns following a
-\textit{visit} of the agent to state S, and then take the average of this values
-over the entire collection
+Carlo methods, it is sufficient to consider a set of episodes collected under 
+$\pi$.
+
+The value of the state $s$ will be computed as the average of the returns 
+collected following a \textit{visit} of the agent to $s$, for all occurrences of
+$s$ in the collection\footnote{This is not always true: a variation of this 
+algorithm exists, which only considers the average returns following the 
+\textit{first} visit to a state in each episode.}.
+
+This same approach can be also used to estimate the action-value function, simply
+by considering the occurrence of state-action pairs in the collected experience
+rather than states only. 
+
+Finally, the policy is improved by computing its greedy variation \eqref{eq:greedy_imp}
+with respect to the estimated value functions and the process is iteratively
+repeated until convergence, with a new set of trajectories collected under each 
+new policy.
 
 \subsection{Temporal Difference Learning}
+\textit{Temporal Difference} (TD) learning is an approach to RL which in some 
+way exploits concepts of both dynamic programming and Monte Carlo techniques. 
 
+TD is a model-free approach which uses experience (like in MC)
+to update an estimate of the value functions by using a previous estimate 
+(like in DP).
+
+Like MC, TD estimation uses the rewards following a visit to a state to compute
+the value functions, but with two core differences:
+\begin{enumerate}
+    %
+    \item Instead of the average of all rewards following the visit, a single 
+    time step is considered (this is true for the simplest TD approach, but note 
+    that in general an arbitrary number of steps can be used; the more steps are
+    considered, the more the estimate is similar to the MC estimate).
+    \item Estimates of the value functions are updated by using in part an 
+    already computed estimate. For this reason, this approach is called a
+    \textit{bootstrapping} method (like DP).
+    Specifically, the iterative update step for the value function is:
+    %
+    \begin{IEEEeqnarray}{rCl}
+	%
+	V(s_t) \leftarrow V(s_t) + \alpha[r_{t+1} + \gamma V(s_{t+1}) - V(s_t)]
+	%
+    \end{IEEEeqnarray}
+    %
+    %
+\end{enumerate}
+
+In general, TD methods have several advantages over MC as they allow for an 
+\textit{on-line} (i.e. they don't require full episode trajectories to work), 
+bootstrapped, model-free estimate, which is more suitable for problems with
+long or even infinite horizons. Moreover, TD is less susceptible to errors or
+exploratory actions and in general provides a more stable learning.
+
+It must be noted, however, that both TD and MC are guaranteed to converge given a 
+sufficiently large amount of experience, and that there are problem for which 
+either of the two can converge faster to the solution.\\
+
+We will now present the two principal control algorithms in the TD family, one said to 
+be \textit{on-policy} (i.e. methods that attempt to evaluate and improve the
+same policy that they use to make decisions) and the other \textit{off-policy} 
+(i.e. methods with no relations between the estimated policy and the policy used
+to collect experience).
 
 \subsubsection{SARSA}
+As usual in on-policy approaches, \textit{SARSA}\footnote{Originally called 
+\textit{on-line Q-learning} by the creators; this alternative acronym was 
+proposed by Richard Sutton and reported in a footnote of the original paper in 
+reference to the \textit{State, Action, Reward, next State, next Action} tuples 
+which are used for prediction.} works by estimating the value $Q^\pi(s, a)$ for 
+a current behavior policy $\pi$ and for all state-action pairs, and at the same 
+time changing $\pi$ towards greediness before collecting other samples.
+
+The action-value is therefore updated after each transition $(s, a, r, s', a')$
+collected with a continuously changing policy based on $Q$, which in turn is
+updated step-wise with the following rule: 
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha [r_{t+1} + \gamma Q(s_{t+1}, a_{t+1}) - Q(s_t,  a_t)] \label{eq:SARSA_update}
+    %
+\end{IEEEeqnarray}
+%
+The training procedure of SARSA can be summarized with the following algorithm:
+%
+\begin{algorithm}[H]
+    \caption{SARSA}
+    \begin{algorithmic}
+        \STATE Initialize $Q(s,a)$ arbitrarily
+        \STATE Initialize $\pi$ as some function of $Q$ (e.g. greedy)
+        \REPEAT
+	    \STATE Initialize $s$
+	    \STATE Choose $a$ from $s$ using $\pi$
+	    \REPEAT	
+		\STATE Take action $a$, observe $r$, $s'$
+		\STATE Choose $a'$ from $s'$ using $\pi$
+		\STATE Update $Q(s, a)$ using rule \eqref{eq:SARSA_update}
+		\STATE $s \leftarrow s'$; $a \leftarrow a'$
+	    \UNTIL{$s$ is terminal or Q did not change}
+	\UNTIL{training ended or Q did not change}
+    \end{algorithmic}
+\end{algorithm}
+%
+Convergence of the SARSA method is guaranteed by the dependence of $\pi$ on the
+action-value function, as long as all state-action pairs are visited an infinite
+number of times and the policy converges in the limit to the greedy policy (e.g. 
+a time-dependent $\epsilon$-greedy policy with $\epsilon = 1/t$).
 
 \subsubsection{Q-learning}
+Defined by [Sutton, Barto] as one of the most important breakthroughs in
+reinforcement learning, \textit{Q-learning} is an \textit{off-policy} temporal 
+difference method that approximates the optimal action-value function 
+independently of the policy being used to collect experiences. 
+
+This simple, yet important assumption guarantees convergence to the optimal 
+value function as long as all state-action pairs are continuously visited (i.e. 
+updated) during training.
+
+The update rule for the TD step in Q-learning is the following: 
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha [r_{t+1} + \gamma \max_a Q(s_{t+1}, a) - Q(s_t,  a_t)] \label{eq:QL_update}
+    %
+\end{IEEEeqnarray}
+%
+As we did for SARSA, an algorithmic description of the Q-learning algorithm is:
+%
+\begin{algorithm}[H]
+    \caption{Q-Learning}
+    \begin{algorithmic}
+        \STATE Initialize $Q(s,a)$ and $\pi$ arbitrarily
+        \REPEAT
+	    \STATE Initialize $s$
+	    \REPEAT	
+		\STATE Choose $a$ from $s'$ using $\pi$
+		\STATE Take action $a$, observe $r$, $s'$
+		\STATE Update $Q(s, a)$ using rule \eqref{eq:QL_update}
+		\STATE $s \leftarrow s'$
+	    \UNTIL{$s$ is terminal or Q did not change}
+	\UNTIL{training ended or Q did not change}
+    \end{algorithmic}
+\end{algorithm}
+%
 
 \subsection{Fitted Q-Iteration}
+Having introduced a more classic set of traditional RL algorithms in the previous
+sections, we now present a more modern approach to solve MDPs with the use of
+supervised learning algorithms to estimate the value functions.
+
+As we will see later in this work, the general idea of performing the estimation 
+of the value functions with a supervised model is not an uncommon approach and 
+it has been widely used in the literature to solve a wide range of environments 
+with high-dimensional state and action spaces, for which the closed form solutions
+of DP and the guarantees of visiting all state-action pairs required for MC and
+TD are not feasible.
+
+Here, we choose the \textit{Fitted Q-Iteration} (FQI) approach as representative
+for this whole class (admittedly simplifying the differences that are obviously 
+present between the various methods), because it will be used in the following 
+sections of this thesis as key component of the method being proposed.
+
+FQI is an \textit{off-line}, \textit{off-policy}, \textit{model-free}, 
+\textit{value-based} reinforcement learning algorithm which computes an 
+approximation of the optimal policy from a set of four-tuples $(s, a, r, s')$
+collected by an agent under a policy $\pi$.
+
+Given that the collection of four-tuples does not vary between iterations of the
+algorithm, and that each step requires solving a supervised learning problem, this
+approach is usually referred to as \textit{batch mode} reinforcement learning.
+
+The core idea behind the algorithm is to produce a sequence of approximations of
+$Q^\pi$, where each approximation is associated to one step of the \textit{value-iteration}
+algorithm seen in \ref{s:value_iteration}, and computed using the previous 
+approximation as part of the target for the supervised learning problem. The 
+algorithm is described in details as follows:
+%
+\begin{algorithm}[H]
+    \caption{Fitted Q-Iteration}
+    \begin{algorithmic}
+        \STATE \textbf{Given}: a set $F$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ collected with some policy $\pi$; a regression algorithm;
+        \STATE $N \leftarrow 0$
+        \STATE Let $\hat{Q}_N$ be a function equal to $0$ everywhere on $S \times A$
+        \REPEAT
+	    \STATE $N \leftarrow N+1$
+	    \STATE $TS \leftarrow ((x_i, y_i), i = 0, \dots, |F|)$ such that $\forall (s_i, a_i, r_i, s'_i) \in F$:
+		\begin{ALC@g}
+		\STATE $x_i = (s_i, a_i)$
+		\STATE $y_i = r_i + \gamma \max_{a \in A} \hat{Q}_{N-1} (s'_i, a)$
+		\end{ALC@g}
+	    \STATE Use the regression algorithm to induce $\hat{Q}_N(s, a)$ from $TS$
+	\UNTIL{stopping condition is met}
+    \end{algorithmic}
+\end{algorithm}
+%
 
 
 \section{Deep Reinforcement Learning} \label{s:DRL}
 
-\subsection{Deep Q-Learning}
+% \subsection{Deep Q-Learning}
 
 
 
