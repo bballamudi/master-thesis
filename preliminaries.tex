@@ -4,7 +4,7 @@
 
 \vspace{0.5cm}
 
-\noindent Introduce the section
+\noindent Introduction to the section...
 
 \section{Deep Learning} \label{s:DL}
 Deep Learning (DL) is a branch of machine learning which exploits \textit{Artificial 
@@ -15,30 +15,264 @@ Deep learning techniques can be applied to the three main classes of problems
 of machine learning (supervised, semi-supervised, and unsupervised), and have 
 been used to achieve state-of-the-art results in a variety of learning tasks.
 
-\subsection{Artificial Neural Networks}
-Feed-forward Artificial Neural Networks (ANN) are function approximators 
-inspired by the connected structure of neurons and synapses in the animal brain.
+Deep learning is closely inspired by the general structure of the animal brain, 
+made up by neurons and synapses; for this, it is often referred to as a 
+\textit{connectionist} approach. 
 
-\subsection{Convolutional Neural Networks}
+The field of DL sees its origins in the early 1940s, with algorithms which 
+mimicked the neural process being proposed by [Pitts and McCulloch]. 
+Progress in the field was characterized by slow progress due to the great
+computational complexity of backpropagation, and the history of deep learning 
+is marked by two period of complete lack of research called the \textit{AI
+winters}, one in the 1970s and one in the late 1980s. 
+
+Eventually, with the advent of the information era and the large scale 
+distribution of computing power, deep learning algorithms started to become 
+more and more tractable, with the definitive explosion in DL research arriving
+in the early 2010s and fueled by the power of \textit{Graphical Processing 
+Units} (GPU).
+
+In this section we give a brief overview of the basic concept behind DL and
+introduce the principal ideas that will be used in later sections of this thesis.
+
+\subsection{Artificial Neural Networks}
+Feed-forward Artificial Neural Networks (ANN) are universal function approximators 
+inspired by the connected structure of neurons and synapses in biological brains.
+
+ANNs are based on a fairly simple computational model called \textit{perceptron}, 
+which is a transformation of an n-space into a scalar value 
+\[
+    z = \sum\limits_{i = 1}^{n} (w_i \cdot x_i) + b
+\]
+where $x = (x_1, ..., x_n)$ is the $n$-dimensional input to the model, 
+$w  = (w_1, ..., w_n)$ is a set of weights associated to each component of the 
+input and $b$ is a bias term (in some notations the bias is embedded in the 
+input transformation by setting $x_0 = 1$ and $w_0 = b$).
+
+In ANNs, the simple model of the perceptron is used to create a layered 
+structure, in which each \textit{hidden} layer is composed by a given number 
+of perceptrons (called \textit{neurons}) which:
+%
+\begin{enumerate}
+    %
+    \item Take as input the output of the previous layer.
+    \item Are followed by a nonlinearity $\sigma$ called the \textit{activation
+    function}.
+    \item Output their value as a component of some $m$-dimensional space 
+    which is the input space of the following layer.
+    %
+\end{enumerate}
+%
+
+In simpler terms, each hidden layer computes an affine transformation of its 
+input space:
+\[
+    z^{(i)} = W^{(i)} \cdot \sigma(z^{(i-1)})
+\]
+where $W^{(i)}$ is the composition of the weights associated to each neuron in 
+the layer. 
+
+The processing of the input space performed by the succession of layers which 
+compose an ANN is equivalent to the composition of multiple non-linear 
+transformations, which results in the production of an output vector on the 
+co-domain of the target function.
+
+\subsection{Backpropagation}
+Having defined the most basic architecture used in DL, we now present the 
+methodology to use it in a learning setting. This is not meant to be an 
+exhaustive description of the learning process in neural networks, so we
+invite the reader to see [Bishop] for more details on the subject.
+
+Deep learning is a parametric learning problem, where a \textit{loss} function 
+is minimized starting from a collection of \textit{training samples} collected 
+by the real process which is being approximated.
+In parametric learning the goal is to find the optimal parameters of a 
+mathematical model, such that the expected error made by the model
+on the training samples is minimized.\\
+
+In ANNs, the parameters which are optimized are the set of weight matrices 
+$W^{(i)}$ associated to each hidden layer of the network. 
+
+In the simple perceptron model, which basically computes a linear transformation
+of the input, the optimal parameters are learned from a training set according
+to the following \textit{update rule}:
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    w_i^{new} = w_i^{old} - \eta(\hat y -y) x_i, \forall i=(1, ..., n)
+    %
+\end{IEEEeqnarray}
+%
+where $\hat y$ is the output of the perceptron, $y$ is the real target from the
+training set, $x_i$ is the $i$-th component of the input, and $\eta$ is a 
+scaling factor called the \textit{learning rate} which regulates how much the 
+weights are allowed to change in a single update. 
+Successive applications of the update rule for the perceptron guarantee 
+convergence to an optimum if and only if the approximated function is linear 
+(in the case of regression) or the problem is linearly separable (in the case 
+of classification).
+
+The simple update rule of the perceptron cannot be used to train an ANN 
+with multiple layers because the true outputs of the hidden layers are not
+known a priori. 
+
+To solve this issue, it is sufficient to notice that the function computed by 
+each layer of a network is nonlinear, but differentiable with respect to the 
+input (i.e. it is linear in the weights).
+
+This simple fact allows to compute the partial derivative of the loss function
+for each weight matrix in the network to, in a sense, impute the error committed
+on a training sample proportionally across neurons. The error is therefore 
+propagated backwards (hence the name \textit{backpropagation}) to update all 
+weights in a similar fashion to the perceptron update. 
+
+The update rule for the weights of a layer is:
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    W_i^{new} = W_i^{old} - \eta \frac{\partial E}{\partial W_i^{old}}
+    %
+\end{IEEEeqnarray}
+%
+where $E$ is a differentiable function of the target and predicted values 
+that quantifies the error made by the model on the training samples. 
+
+Notice that the loss can be computed over any number of training samples, to 
+perform what is called a \textit{batch update}.
+
+\subsection{Convolutional Neural Networks} \label{s:CNN}
 Convolutional Neural Networks (CNN) are a type of ANN inspired by the visual 
-cortex in animal brains.
+cortex in animal brains, and have been widely used in recent literature to 
+reach state-of-the-art results in fields like computer vision, machine 
+translation, and, as we will see in later sections, reinforcement learning.
+
 CNNs exploit spatially-local correlations in the neurons of adjacent 
 layers through the use of a \textit{receptive field}, a set of weights which is 
 used to transform a local subset of the input neurons of a layer.
 
-% shared weights
-% put some images here
+The receptive field is applied as a \textit{filter} over different locations of 
+the input, in a fashion that resembles the way in which a signal is 
+\textit{strided} across the other during the convolution operation.
+
+The result of this operation is to obtain a nonlinear transformation of 
+the input space of a layer into a new space (of compatible dimensions) which
+preserves the spatial correlation of the information coming from the input.
+This transformation therefore acts as an abstraction of the spatial information 
+encoded in the original input, while maintaining the underlying structure which
+is proper of the data (e.g. form the $3 \times n \times m$ pixels of an RGB image to
+a $j \times k$ matrix that represents those groups of pixels in which there is
+an edge).
+
+Differently from ANNs (which are sometimes referred to as \textit{fully connected}
+or \textit{dense} networks, with each neuron of a layer connected to each neuron 
+of the previous and following layer), in CNNs the weights are associated to a 
+filter and \textit{shared} across all neurons of a layer. This sharing has the 
+double advantage of greatly reducing the number of parameters that must be
+updated during training, and of forcing the network to learn general abstractions
+that can be applied to any subset of neurons covered by the filter.
+
+In general, the application of a filter is not limited to one per layer and it 
+is customary to have more than one filter applied to the same input in parallel,
+to create a set of independent abstractions called \textit{feature maps} (also
+referred to as \textit{channels}, to recall the case of 2D images for which 
+a 3-channel representation is used for red, green, and blue). In 
+this case, there will exist a set of shared weights for each filter.
+
+When a set of feature maps is given as input to a convolutional layer then it is
+usually treated as a single input, with multidimensional filters strided 
+simultaneously across all channels to produce the following set of feature maps. \\
+
+At the same time, while it may be useful to have different abstractions of the
+same input (which effectively enlarges the output space of the layers), it is
+also necessary to force a reduction of the input representation in order to 
+learn useful transformations that encode the spatial information in an abstract 
+way. 
+
+For this reason, convolutional layers in CNN are often paired with 
+\textit{pooling layers} which reduce the dimensionality of their input according
+to some criteria applied to subregions of the input neurons (e.g. for each two by
+two square of input neurons, keep only the maximum activation value). 
+
+Finally, mixed architectures which make use of both convolutional and fully
+connected layers are often found in the literature. This applies, for instance, 
+to tasks like image classification, for which convolutional layers are used to 
+extract significant features directly from the images, and dense layers are used
+as a final classification model; the training in this case is done in an 
+end-to-end fashion, with the classification error being propagated across all 
+layers to \textit{fine-tune} the weights and the filters to the specific problem.
 
 \subsection{Autoencoders}
-Autoencoders are a type of ANN which are used to learn a sparse and compressed 
+Autoencoders (AE) are a type of ANN which is used to learn a sparse and compressed 
 representation of the input space, by sequentially compressing and 
-reconstructing the inputs under some sparsity constraint (typically by 
-minimizing the $L1$ norm of the activations in the innermost hidden layers).
+reconstructing the inputs under some sparsity constraint.
 
+The typical structure of an AE is split into two sections: an 
+\textit{encoder} and a \textit{decoder}. In the classic architecture of 
+autoencoders, these two components are exact mirrors of one another, but in 
+general the only constraint that is needed to define an AE is that
+the dimensionality of the input be the same as the dimensionality of the output.
+However, the encoder's usual function is to reduce the dimensionality of the 
+input, whereas the decoder performs the inverse transformation, using the 
+encoded representation to rebuild the image which generated it. \\
+
+Autoencoders are typically designed as sequences of hidden layers for which 
+the output's dimensionality is lower that the input's in the first half of the 
+network, with the innermost hidden layer producing the smallest representation 
+of the input before inverting the process and going back to the original 
+representation. 
+The training of an AE is done in an unsupervised fashion, with no
+explicit target required as the network is simply trained to predict its input.
+
+Moreover, a strong regularization constraint is often imposed on the innermost 
+layer to ensure that the learned representation is as abstract as possible 
+(typically the $L1$ norm of the activations is added to the loss associated to 
+the layer). 
+
+Autoencoders can be especially effective when one desires to extract meaningful
+features from the input space, without tailoring the features to a specific 
+problem (like for the end-to-end image classification example in \ref{s:CNN}). 
+
+AEs have proven particularly effective in the extraction of features 
+from images, where convolutional layers are used in the encoder to obtain a 
+natural reduction of the inputs. In this case the decoder would still use 
+convolutional layers to apply a non linear transformation, but the expansion
+of the compressed feature space would be delegated to \textit{upscaling layers}
+(the opposite of pooling layers). 
+
+This approach in building the decoder, however, can sometimes cause blurry
+or inaccurate reconstructions, due to the upscaling operation which simply 
+replicates information rather than transforming it (like pooling layers do).
+Because of this, a more sophisticated technique has been developed recently 
+which allows to build purely convolutional autoencoders, without the need of 
+upscaling layers in the decoder.
+The layers used in this approach case are called \textit{deconvolutional}\footnote{Or
+\textit{transposed convolutions}.} and are thoroughly presented in [??]. 
+For the purpose of this thesis it suffices to notice that image reconstruction 
+with this type of layer is incredibly more accurate in reconstructing even the 
+smallest details of the input (down to a single pixel).
 
 \section{Reinforcement Learning} \label{s:DRL}
 
-Introduction to reinforcement learning...
+Reinforcement learning (RL) is an area of machine learning which is centered on 
+optimizing the behavior of an agent in an environment to maximize the 
+cumulative sum of a scalar signal called \textit{reward}, in a setting
+of \textit{sequential decision making}.
+
+RL has its roots in optimization and control theory, but due to the generality 
+of its characteristic techniques it has been applied to a variety of scientific 
+fields where the concept of \textit{optimal behavior in an environment} can be 
+applied (examples include game theory, multi-agent systems and economy).
+
+The core aspect of reinforcement learning problems is to represent the setting
+of an agent performing decisions in an environment which in turn is affected by
+the decisions, with a scalar reward signal representing a time-discrete 
+indicator of the agent's performance. This kind of setting is inspired to the
+natural behavior of animals in their habitat, and the techniques used in 
+reinforcement learning are perfectly suitable to describe, at least partly, 
+the complex life of living creatures. 
+
+In this section we introduce the basic setting of RL and go over a brief 
+selection of the main techniques used to solve RL problems. 
 
 \subsection{Markov Decision Processes}
 Markov Decision Processes (MDP) are discrete-time, stochastic control 
@@ -115,7 +349,7 @@ state. This evaluation is expressed in terms of the expected return, i.e.
 the expected discounted sum of future rewards collected by an agent starting 
 from a state while following $\pi$, and the function that computes it is 
 called the \textit{state-value function for policy $\pi$} (or, more commonly, 
-simply \textit{value function}).
+just \textit{value function}).
 
 Formally, the state-value function associated to a policy $\pi$ is a function 
 $V^{\pi}: S \rightarrow \mathbb{R}$ defined as:
@@ -128,12 +362,13 @@ $V^{\pi}: S \rightarrow \mathbb{R}$ defined as:
 \end{IEEEeqnarray}
 %
 where $E_\pi[\cdot]$ is the expected value given that the agent follows 
-policy $\pi$, and $t$ is any time step of an episode $[s_1, ..., s_t, ..., s_n]$
-where $s_t \in S, \forall t = 1, ..., n$.
+policy $\pi$, and $t$ is any time step of an episode $[s_0, ..., s_t, ..., s_n]$
+where $s_t \in S, \forall t = 0, ..., n$.
 
 Similarly, we can also introduce a function that evaluates the goodness of 
 taking a specific action in a given state, namely the expected reward obtained 
-by taking an action $a \in A$ in a state $s \in S$ and then following policy $\pi$. 
+by taking an action $a \in A$ in a state $s \in S$ and then following policy 
+$\pi$. 
 We call this function the \textit{action-value function for policy $\pi$} 
 denoted $Q^{\pi}: S \times A \rightarrow \mathbb{R}$, and defined as: 
 %
@@ -145,11 +380,12 @@ denoted $Q^{\pi}: S \times A \rightarrow \mathbb{R}$, and defined as:
 \end{IEEEeqnarray}
 %
 The majority of reinforcement learning algorithms is based on computing (or 
-estimating) value functions to then control the behavior of the agent in order 
-to maximize the expected reward collected during episodes.
+estimating) value functions, which can then be used to control the behavior 
+of the agent.
 
 We also note a fundamental property of value functions, which satisfy particular 
-recursive relationships like the following \textit{Bellman equation for $V^{\pi}$}:
+recursive relationships like the following \textit{Bellman equation for 
+$V^{\pi}$}:
 %
 \begin{IEEEeqnarray}{rCl}
     % Sutton, Barto
@@ -172,8 +408,8 @@ into account the probability that these transitions occur.
 \subsection{Optimal Value Functions}
 In general terms, \textit{to solve} a reinforcement learning task is to identify
 a policy that yields a sufficiently high expected return. In the case of MDPs 
-with finite state and actions sets\footnote{This specification is only required 
-for formality, but is not expanded further in this work. Refer to SUTTON, BARTO 
+with finite state and actions sets\footnote{We make this clarification for 
+formality, but we do not expand the details further in this work. Refer to SUTTON, BARTO 
 for more details on the subjet of non-finite MDPs.}, it is possible to define 
 the concept of \textit{optimal policy} as the policy which maximizes the 
 expected return collected by the agent in an episode.
@@ -194,8 +430,7 @@ The state-value function associated to $\pi^*$ is called the
 \]
 As we did when introducing the value functions, given an optimal policy for the 
 MDP it is also possible to define the \textit{optimal action-value function} 
-denoted $Q^*$ (equivalence \eqref{eq:Qstar_V} in this definition highlights the
-relation between $Q^*$ and $V^*$):
+denoted $Q^*$:
 %
 \begin{IEEEeqnarray}{rCl}
     % Sutton, Barto
@@ -204,7 +439,8 @@ relation between $Q^*$ and $V^*$):
     %
 \end{IEEEeqnarray}
 %
-.
+Notice that equivalence \eqref{eq:Qstar_V} in this definition highlights the 
+relation between $Q^*$ and $V^*$.\\
 
 %% SEE PAGE 224 of Sutton, Barto and ask Restelli WTF is going on with the definition of V*
 Since $V^*$ and $Q^*$ are value functions of an MDP, they must satisfy the same
@@ -236,8 +472,8 @@ as:
     %
 \end{IEEEeqnarray}
 %
-It is possible to notice that both Bellman optimality equations have a unique
-solution independent of the policy. 
+Notice that both Bellman optimality equations have a unique solution independent 
+of the policy. 
 If the dynamics of the environment ($R$ and $P$) are fully known, it is possible
 to solve the system of equations associated to the value functions (i.e. one
 equation for each state in $S$) and get an exact value for $V^*$ and $Q^*$ in 
@@ -275,8 +511,8 @@ in conjunction with deep learning to solve complex environments (see \ref{s:DRL}
 and \ref{ch2_SOA}).
 
 \subsection{Dynamic Programming}
-The use of dynamic programming (DP) techniques to solve a reinforcement learning 
-problem is based on recursively applying some form of the Bellman equation, 
+The use of dynamic programming (DP) techniques to solve reinforcement learning 
+problems is based on recursively applying some form of the Bellman equation, 
 starting from any initial policy $\pi$ until convergence to $\pi^*$.
 
 In this class of algorithms, we identify two main approaches: \textit{policy 
@@ -315,15 +551,15 @@ because:
 . 
 
 This continuous improvement is applied until the inequality in the previous 
-equation becomes an equality, i.e. when the improved policy satisfies the 
+equation becomes an equality, i.e. until the improved policy satisfies the 
 Bellman optimality equation \eqref{eq:BOEV}. Since the algorithm gives no 
 assurances on the number of updates required for convergence, some stopping
 conditions are usually introduced to end the process when the new value function 
-did not change substantially after the update (\textit{$\epsilon$-convergence}) 
+does not change substantially after the update (\textit{$\epsilon$-convergence}) 
 or a certain threshold number of iterations has been reached.
 
 \subsubsection{Value iteration} \label{s:value_iteration}
-Starting from a similar basis, the \textit{value iteration} approach computes 
+Starting from a similar idea, the \textit{value iteration} approach computes 
 the value function associated to an initial policy, but then applies a contraction
 operator which iterates over sequentially better value functions without actually
 computing the associated greedy policy.
@@ -357,7 +593,8 @@ trajectories, it is not necessary to have an exact knowledge of the transition
 model and reward function of the MDP. 
 
 Despite the differences with dynamic programming, this approach is still 
-centered on the same two-step process of policy evaluation and improvement.
+centered on the same two-step process of policy iteration (evaluation and 
+improvement).
 
 To estimate the value of a state $V^\pi(s)$ under a policy $\pi$ with Monte 
 Carlo methods, it is sufficient to consider a set of episodes collected under 
@@ -379,10 +616,10 @@ repeated until convergence, with a new set of trajectories collected under each
 new policy.
 
 \subsection{Temporal Difference Learning}
-\textit{Temporal Difference} (TD) learning is an approach to RL which in some 
-way exploits concepts of both dynamic programming and Monte Carlo techniques. 
+\textit{Temporal Difference} (TD) learning is an approach to RL which uses 
+concepts from both dynamic programming and Monte Carlo techniques. 
 
-TD is a model-free approach which uses experience (like in MC)
+TD is a \textit{model-free } approach which uses experience (like in MC)
 to update an estimate of the value functions by using a previous estimate 
 (like in DP).
 
@@ -411,8 +648,8 @@ the value functions, but with two core differences:
 In general, TD methods have several advantages over MC as they allow for an 
 \textit{on-line} (i.e. they don't require full episode trajectories to work), 
 bootstrapped, model-free estimate, which is more suitable for problems with
-long or even infinite horizons. Moreover, TD is less susceptible to errors or
-exploratory actions and in general provides a more stable learning.
+long or even infinite time horizons. Moreover, TD is less susceptible to errors 
+or exploratory actions and in general provides a more stable learning.
 
 It must be noted, however, that both TD and MC are guaranteed to converge given a 
 sufficiently large amount of experience, and that there are problem for which 
@@ -425,17 +662,17 @@ same policy that they use to make decisions) and the other \textit{off-policy}
 to collect experience).
 
 \subsubsection{SARSA}
-As usual in on-policy approaches, \textit{SARSA}\footnote{Originally called 
-\textit{on-line Q-learning} by the creators; this alternative acronym was 
+As usual in \textit{on-policy} approaches, \textit{SARSA}\footnote{Originally 
+called \textit{on-line Q-learning} by the creators; this alternative acronym was 
 proposed by Richard Sutton and reported in a footnote of the original paper in 
 reference to the \textit{State, Action, Reward, next State, next Action} tuples 
 which are used for prediction.} works by estimating the value $Q^\pi(s, a)$ for 
-a current behavior policy $\pi$ and for all state-action pairs, and at the same 
-time changing $\pi$ towards greediness before collecting other samples.
+a current behavior policy $\pi$ which is used to collect sample transitions from
+the environment.
 
-The action-value is therefore updated after each transition $(s, a, r, s', a')$
-collected with a continuously changing policy based on $Q$, which in turn is
-updated step-wise with the following rule: 
+The policy is updated towards greediness with respect to the estimated 
+action-value after each transition $(s, a, r, s', a')$, and the action-value
+is in turn updated step-wise with the following rule: 
 %
 \begin{IEEEeqnarray}{rCl}
     %
@@ -457,6 +694,9 @@ The training procedure of SARSA can be summarized with the following algorithm:
 		\STATE Take action $a$, observe $r$, $s'$
 		\STATE Choose $a'$ from $s'$ using $\pi$
 		\STATE Update $Q(s, a)$ using rule \eqref{eq:SARSA_update}
+		\IF{$\pi$ is time-variant}
+		    \STATE Update $\pi$ towards greediness
+		\ENDIF
 		\STATE $s \leftarrow s'$; $a \leftarrow a'$
 	    \UNTIL{$s$ is terminal or Q did not change}
 	\UNTIL{training ended or Q did not change}
@@ -474,7 +714,7 @@ reinforcement learning, \textit{Q-learning} is an \textit{off-policy} temporal
 difference method that approximates the optimal action-value function 
 independently of the policy being used to collect experiences. 
 
-This simple, yet important assumption guarantees convergence to the optimal 
+This simple, yet powerful idea guarantees convergence to the optimal 
 value function as long as all state-action pairs are continuously visited (i.e. 
 updated) during training.
 
@@ -527,15 +767,15 @@ FQI is an \textit{off-line}, \textit{off-policy}, \textit{model-free},
 approximation of the optimal policy from a set of four-tuples $(s, a, r, s')$
 collected by an agent under a policy $\pi$.
 
-Given that the collection of four-tuples does not vary between iterations of the
-algorithm, and that each step requires solving a supervised learning problem, this
-approach is usually referred to as \textit{batch mode} reinforcement learning.
+This approach is usually referred to as \textit{batch mode} reinforcement 
+learning, because the complete amount of learning experience is fixed and given
+a priori.
 
 The core idea behind the algorithm is to produce a sequence of approximations of
 $Q^\pi$, where each approximation is associated to one step of the \textit{value-iteration}
 algorithm seen in \ref{s:value_iteration}, and computed using the previous 
 approximation as part of the target for the supervised learning problem. The 
-algorithm is described in details as follows:
+algorithm is described in detail	 as follows:
 %
 \begin{algorithm}[H]
     \caption{Fitted Q-Iteration}
