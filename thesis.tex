@@ -35,11 +35,11 @@
 
 \begin{document}
 % ---- Frontispiece ----
-\include{frontespizio}
+\include{chapter0_0_frontispiece}
 \thispagestyle{empty} \normalfont \cleardoublepage
 
 % ---- Dedication ----
-% \include{dedica}
+% \include{chapter0_1_dedication}
 % \thispagestyle{empty}  \cleardoublepage
 
 % ---- TOC ----
@@ -48,11 +48,11 @@
 \pagenumbering{Roman}
 
 % ---- Summary ----
-% \include{sommario}
+% \include{chapter0_2_summary}
 % \thispagestyle{empty} \vspace*{.75truecm} \cleardoublepage
 
 % ---- Acknowledgments ----
-% \include{acknowledgments}
+% \include{chapter0_3_acknowledgments}
 % \thispagestyle{empty} \vspace*{.75truecm} \normalfont \cleardoublepage
 
 % Style setup for main body
@@ -67,10 +67,10 @@
 \pagenumbering{arabic}
 
 % ---- Main body ----
-% \include{intro}
-\include{preliminaries}
-% \include{SOA}
-% \include{setup}
+% \include{chapter1_introduction}
+\include{chapter2_background}
+% \include{chapter3_state_of_the_art}
+% \include{chapter4_problem_setup}
 % \include{ch4_implem}
 % \include{arch}
 % \include{exp}
@@ -80,7 +80,7 @@
 % ---- Bibliography ----
 \addcontentsline{toc}{chapter}{References}
 \bibliographystyle{plain}
-\bibliography{bibl_tesi}
+\bibliography{bibliography}
 %\nocite{*}
 
 % ---- Appendices ----
@@ -96,12 +96,12 @@
 \fancyhead[LO]{\bfseries\rightmark}     
 \renewcommand{\headrulewidth}{0.3pt} 
 
-%\include{appendiceA}
-%\include{appendiceB}
-%\include{appendiceC}
-%\include{appendiceD}
-%\include{appendiceE}
-%\include{appendiceF}
+%\include{appendixA}
+%\include{appendixB}
+%\include{appendixC}
+%\include{appendixD}
+%\include{appendixE}
+%\include{appendixF}
 
 \end{document}
 
