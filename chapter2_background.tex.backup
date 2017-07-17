@@ -1,5 +1,5 @@
 \chapter{Background}
-\label{ch:2_background}
+\label{ch1_intro}
 \thispagestyle{empty}
 
 \vspace{0.5cm}
@@ -233,7 +233,7 @@ layer to ensure that the learned representation is as abstract as possible
 
 Autoencoders can be especially effective in extracting meaningful
 features from the input space, without tailoring the features to a specific 
-problem like in the end-to-end image classification example of Section 
+problem like in the end-to-end image classification example of section 
 \ref{s:CNN}. 
 
 An example of this is the extraction of features from images, 
@@ -784,11 +784,10 @@ The core idea behind the algorithm is to produce a sequence of approximations of
 $Q^\pi$, where each approximation is associated to one step of the 
 \textit{value-iteration} algorithm seen in \ref{s:value_iteration}, and computed
 using the previous approximation as part of the target for the supervised 
-learning problem. The process is described in Algorithm \ref{alg:FQI}.
+learning problem. The algorithm is described in detail as follows:
 %
 \begin{algorithm}[H]
     \caption{Fitted Q-Iteration}
-    \label{alg:FQI}
     \begin{algorithmic}
         \STATE \textbf{Given}: a set $F$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ collected with some policy $\pi$; a regression algorithm;
         \STATE $N \leftarrow 0$
@@ -823,35 +822,38 @@ further on the implementation details.
 
 \textit{Deep Reinforcement Learning} (DRL) is the study of reinforcement 
 learning using deep neural networks as function approximators. 
-The idea of combining these two areas of machine learning goes back to 
-the early RL literature [SARSA, TD-Gammon], but the most
-groundbreaking results were only achieved in the early 2010s, with the booming
-growth in DL research that we cited in Section \ref{s:DL}.
+The idea of combining neural networks and reinforcement learning goes back to 
+the early reinforcement learning literature [SARSA, TD-Gammon], but the most
+groundbreaking results were only achieved in the early 2010s with the booming
+growth in DL research that we cited in section \ref{s:DL}.
 
-With the advances in computing technology which enabled ANNs to be trained on 
-GPUs, those RL problems which had always been characterized by an intractable 
-complexity of the state space became suddenly in reach of traditional algorithms
-thanks to deep learning.
+With convolutional neural network quickly rising to the state of the art in 
+most computer vision problems, reinforcement learning settings which had always 
+been characterized by an intractable complexity of the state space became 
+suddenly in reach of traditional RL algorithms through the use of neural 
+networks.
 
 Most notably, the first superhuman performance in a problem which had never 
 been tackled by reinforcement learning was reached by Google DeepMind's 
 \textit{Deep Q-Network} (DQN), on the \textit{Atari games} suite of environments. 
 This introduced a new paradigm in RL, which is typical of DL 
 approaches, of not performing feature engineering before feeding data to an 
-approximator, and letting the ANNs extract the best set of features to solve the 
+approximator and letting the ANNs extract the best set of features to solve the 
 problem from the raw data (in this case a sequence of frames from the 
-games), mimicking the human approach to problem-solving.
+games), mimicking the human approach to problem-solving. 
 
-Other important results in DRL have been presented in recent literature, 
-where convolutional neural networks were applied as approximators in classic
+Other important results in DRL have been presented in recent literature, in 
+which convolutional neural networks were applied as approximators in classic
 RL algorithms, allowing for complex state spaces (typically images of the 
 environment, but also complex settings like the board in the game of \textit{Go}
-) to be reduced and processed by a trainable model.
+). Going into the details of all the possible approaches to DRL would require a 
+more complete picture of RL than the one given in section \ref{s:RL}, which is
+beyond the scope of this thesis. 
 
-In the following section we describe the details of the above cited Deep 
-Q-Network, as the most well-established DRL algorithm. We will give a wider 
-overview of the state-of-the-art DRL techniques in Chapter 
-\ref{ch:3_state_of_the_art}.
+While inviting the reader to follow up from chapter \ref{ch2_SOA} to have a more
+complete view of the cutting edge DRL research, in this thesis we will limit
+ourselves to the description of the above cited DQN approach: \textit{deep
+Q-learning}.
 
 \subsection{Deep Q-Learning}
 \textit{Deep Q-learning} is an \textit{on-line}, \textit{off-policy}, 
@@ -862,7 +864,7 @@ following gradient update:
 %
 \begin{IEEEeqnarray}{rCl}
     %
-    \frac{\partial L}{\partial W_i^{old}} = E[(r + \gamma \max_{a'} Q(s', a') - Q(s, a)) \frac{\partial Q(s, a)}{\partial W_i^{old}}]
+    \nabla_{W_i} L( W_i ) = E[(r + \gamma \max_{a'} Q(s', a') - Q(s, a)) \nabla_{W_i} Q(s, a)]
     %
 \end{IEEEeqnarray}
 %
@@ -871,19 +873,18 @@ convolutional neural network with multidimensional output (one output neuron for
 each action) as $Q$, and a set of samples collected with an exploratory policy 
 from which the transitions for the update steps were sampled (a technique 
 called \textit{experience replay}).
-The CNN was structured to take as input a sequence of four frames (the states) 
-from the games in the Atari suite of environments, and output an estimate of 
-the action-value function which was then used to control the agent.
-    
+
+The CNN was structured to take as input a sequence of four frames from any game 
+in the Atari suite of environments, and output an estimate of the action-value
+function which was then used to control the agent.
+
 The samples used to update the estimates were collected with an $\epsilon$-greedy
 policy with a decaying $\epsilon$ (hence the algorithm is \textit{off-policy}).
 
-The algorithm proposed in the original paper is reported in algorithm 
-\ref{alg:DQL}.
+The algorithm proposed in the original paper is as follows:
 %
-\begin{algorithm}
-\caption{Deep Q-Learning with Experience Replay}
-\label{alg:DQL}
+\begin{algorithm}[H]
+\caption{Deep Q-Learning}
     \begin{algorithmic}
 	\STATE Initialize replay memory $\mathcal{D}$ to capacity $N$
 	\STATE Initialize action-value function $Q$ with random weights
