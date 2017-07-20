@@ -33,22 +33,21 @@ architecture was reused to solve many different games without performing
 From this work (which we could call \textit{introductory}), many improvements
 have been proposed in the literature.
 
-In 2016, Van Hasselt et al.\ proposed \textit{Double DQN} (DDQN) \cite{van2016deep} 
-to solve an over-estimation issue in DQN due to the $\max$ operator used in the 
+In 2016, Van Hasselt et al.\ proposed \textit{Double DQN} (DDQN) [??] to solve
+an over-estimation issue in DQN due to the $\max$ operator used in the 
 parameters update (see Algorithm \ref{alg:DQL}). This approach used two separate
 CNNs: an \textit{online network} to select the action for the collection of 
 samples, and a \textit{target network} to produce the update targets. DDQN 
 performed better than DQN on the \textit{Atari} games. 
 
-Also in 2016, Schaul et al.\ \cite{schaul2016prioritized} introduced the concept
-of \textit{prioritized experience replay}, which replaced the uniform sampling 
-from the replay memory of DQN with a sampling strategy weighted by the 
-\textit{TD errors} committed by the network. This improved the performance of 
-both DQN and DDQN.
+Also in 2016, Schaul et al.\ [??] introduced the concept of \textit{prioritized 
+experience replay}, which replaced the uniform sampling from the replay 
+memory of DQN with a sampling strategy weighted by the \textit{TD errors} 
+committed by the network. This improved the performance of both DQN and DDQN.
 
 Wang et al.\ introduced a slightly different end-to-end \textit{dueling 
-architecture} \cite{wang2016dueling}, composed of two different deep estimators:
-one for the state-value function $V$ and one for the \textit{advantage function} 
+architecture} [??], composed of two different deep estimators: one for the 
+state-value function $V$ and one for the \textit{advantage function} 
 $A: S \times A \rightarrow \mathbb{R}$ defined as:
 %
 \begin{IEEEeqnarray}{rCl}
@@ -79,13 +78,20 @@ Several other improvements have been proposed to the DQN and DDQN algorithms
 Munos, Rémi, et al. "Safe and efficient off-policy reinforcement learning.
 Harutyunyan, Anna, et al. "Q(λ) with Off-Policy Corrections."
 
+% Papers
+DQN: \cite{mnih2015human}
+DDQN: Van Hasselt, Hado, Arthur Guez, and David Silver. "Deep Reinforcement Learning with Double Q-Learning."
+Schaul, Tom, et al. "Prioritized experience replay."
+Dueling architecture
+
+
 \section{Other approaches}
 \subsection{Neural Episodic Control}
 Differentiable neural computer (DNC)
 Pritzel, Alexander, et al. "Neural Episodic Control."
 
 \subsection{AlphaGo}
-Silver, D., Huang, A., Maddison, C. J., Guez, A., Sifre, L., Van Den Driessche, G., Schrittwieser, J.,Antonoglou, I., Panneershelvam, V., Lanctot, M., et al. (2016a). Mastering the game of go with deep neural networks and tree search. Nature, 529(7587):484--489.
+Silver, D., Huang, A., Maddison, C. J., Guez, A., Sifre, L., Van Den Driessche, G., Schrittwieser, J.,Antonoglou, I., Panneershelvam, V., Lanctot, M., et al. (2016a). Mastering the game of go with deep neural networks and tree search. Nature, 529(7587):484–489.
 
 \subsection{A3C}
 Mnih, Volodymyr, et al. "Asynchronous methods for deep reinforcement learning."

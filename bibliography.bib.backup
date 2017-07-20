@@ -88,7 +88,8 @@
 	 }
 
 @article{simonyan2014vggnet,
-	 author    = {Karen Simonyan and Andrew Zisserman},
+	 author    = {Karen Simonyan and
+	       Andrew Zisserman},
 	 title     = {Very Deep Convolutional Networks for Large-Scale Image Recognition},
 	 journal   = {CoRR},
 	 volume    = {abs/1409.1556},
@@ -115,7 +116,7 @@
 	 journal={Nature},
 	 volume={518},
 	 number={7540},
-	 pages={529-33},
+	 pages={529--533},
 	 year={2015},
 	 publisher={Nature Research}
 	 }
@@ -163,7 +164,7 @@
 @inproceedings{krizhevsky2012imagenet,
 	       title={Imagenet classification with deep convolutional neural networks},
 	       author={Krizhevsky, Alex and Sutskever, Ilya and Hinton, Geoffrey E},
-	       booktitle={Advances in Neural Information Processing Systems},
+	       booktitle={Advances in neural information processing systems},
 	       pages={1097--1105},
 	       year={2012}
 	       }
@@ -199,20 +200,5 @@
 	       author={Van Hasselt, Hado and Guez, Arthur and Silver, David},
 	       booktitle={AAAI},
 	       pages={2094--2100},
-	       year={2016}
-	       }
-
-@inproceedings{schaul2016prioritized,
-	       title={Prioritized experience replay.},
-	       author={Schaul, T and Quan, J and Antonoglou, I and Silver, D},
-	       booktitle={Proceedings of the International Conference on Learning Representations (ICLR)},
-	       year={2016}
-	       }
-
-@inproceedings{wang2016dueling,
-	       title={Duel-
-	       ing network architectures for deep reinforcement learning.},
-	       author={Wang, Z and Schaul, T and Hessel, M and van Hasselt, H and Lanctot, M and de Freitas, N.},
-	       booktitle={Proceedings of the International Conference on Machine Learning (ICML).},
 	       year={2016}
 	       }
