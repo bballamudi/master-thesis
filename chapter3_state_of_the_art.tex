@@ -7,12 +7,12 @@
 \noindent The integration of RL and neural networks has a long history. Early 
 RL literature \cite{rummery1994line, tesauro1995temporal, bertsekas1995neuro}
 presents \textit{connectionist} approaches in conjunction with a variety
-of RL algorithms, mostly using dense ANNs as approximators for the value functions
-from low-dimensional (or engineered) state spaces.
+of RL algorithms, mostly using dense ANNs as approximators for the value 
+functions from low-dimensional (or engineered) state spaces.
 The recent and exciting achievements of DL, however, have caused a sort of 
 RL \textit{renaissance}, with DRL algorithms outperforming classic RL techinques
-on environments which were considered intractable. 
-Much like the game of Chess was considered out of the reach of machines until 
+on environments which were previously considered intractable. 
+Much like the game of Chess was believed out of the reach of machines until 
 IBM's \textit{Deep Blue} \cite{campbell2002deep} won against the world champion 
 Garry Kasparov, DRL has paved the way to solve a wide spectrum of complex tasks 
 which were previously considered a stronghold of humanity. 
@@ -20,33 +20,40 @@ which were previously considered a stronghold of humanity.
 In this chapter we present the most important and recent results in DRL research, 
 as well as some work related to the approach that is proposed in this thesis.
 
-\section{Value-based Deep Reinforcement Learning}
-In 2015, Mnih et al.\ \cite{mnih2015human} introduced the \textit{deep Q-learning} (DQL or, 
-more commonly, DQN) algorithm which we detailed in Section \ref{s:DQN}, and 
-basically ignited the field of DRL.
-The important contributions of DQN consisted in providing an end-to-end framework
-to train an agent starting from the pixel-level representation of the \textit{Atari} 
-games environments, which proved to be more stable than previous approaches thanks
-to the use of \textit{experience replay} \cite{lin1992self}. Moreover, the same 
-architecture was reused to solve many different games without performing 
-\textit{hyperparameter tuning}, which proved the effectiveness of the method. 
+\section{Value-based Deep Reinforcement Learning} \label{SOA:value}
+In 2015, Mnih et al.\ \cite{mnih2015human} introduced the \textit{deep 
+Q-learning} (DQL or, more commonly, DQN) algorithm which we detailed in Section
+\ref{s:DQN}, and basically ignited the field of DRL.
+The important contributions of DQN consisted in providing an end-to-end 
+framework to train an agent starting from the pixel-level representation of the 
+\textit{Atari} environments, which proved to be more stable than previous 
+approaches thanks to the use of \textit{experience replay} \cite{lin1992self}. 
+Moreover, the same architecture was reused to solve many different games without
+the need for \textit{hyperparameter tuning}, which proved the effectiveness of 
+the method. 
 From this work (which we could call \textit{introductory}), many improvements
 have been proposed in the literature.
-
-In 2016, Van Hasselt et al.\ proposed \textit{Double DQN} (DDQN) \cite{van2016deep} 
+%
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{pictures/atari}
+\centering
+\caption{some of the games available in the Atari suite of environments.}
+\end{figure}
+%
+Van Hasselt et al.\ (2016) proposed \textit{Double DQN} (DDQN) \cite{van2016deep} 
 to solve an over-estimation issue in DQN due to the $\max$ operator used in the 
 parameters update (see Algorithm \ref{alg:DQL}). This approach used two separate
 CNNs: an \textit{online network} to select the action for the collection of 
 samples, and a \textit{target network} to produce the update targets. DDQN 
 performed better than DQN on the \textit{Atari} games. 
 
-Also in 2016, Schaul et al.\ \cite{schaul2016prioritized} introduced the concept
+Schaul et al.\ (2016) \cite{schaul2016prioritized} introduced the concept
 of \textit{prioritized experience replay}, which replaced the uniform sampling 
 from the replay memory of DQN with a sampling strategy weighted by the 
 \textit{TD errors} committed by the network. This improved the performance of 
 both DQN and DDQN.
 
-Wang et al.\ introduced a slightly different end-to-end \textit{dueling 
+Wang et al.\ (2016) introduced a slightly different end-to-end \textit{dueling 
 architecture} \cite{wang2016dueling}, composed of two different deep estimators:
 one for the state-value function $V$ and one for the \textit{advantage function} 
 $A: S \times A \rightarrow \mathbb{R}$ defined as:
@@ -57,7 +64,7 @@ $A: S \times A \rightarrow \mathbb{R}$ defined as:
     %
 \end{IEEEeqnarray}
 %
-In dueling architectures, the two networks share the same convolutional layers
+In this approach, the two networks share the same convolutional layers
 but use two separate dense layers. The two streams are then combined to estimate
 the optimal action-value function as\footnote{In the original paper, the authors
 explicitly indicate the dependence of the estimates on different 
@@ -73,26 +80,164 @@ the network which approximates $V^\pi$ is indicated as $V^\pi$, and so on...)}:
     %
     \end{IEEEeqnarray}
 %
+Several other extensions of the DQN algorithm have been proposed in recent years. 
+Among these, we cite Osband et al.\ (2016) \cite{osband2016deep} who proposed 
+a better exploration strategy; He et al.\ (2017) \cite{he2017learning} added a 
+constrained optimization approach called \textit{optimality tightening} to 
+propagate the reward faster and improve accuracy and convergence; Anschel et 
+al.\ (2017) \cite{anschelaveraged} improved the variance and instability of DQN 
+by averaging previous $Q$ estimates; Munos et al.\ (2016) \cite{munos2016safe} 
+and Harutyunyan et al.\ (2016) \cite{harutyunyan2016q} proposed to incorporate 
+on-policy samples to the Q-learning target and seamlessly switch between 
+off-policy and on-policy samples, which resulted in faster reward propagation 
+and convergence. 
 
-Several other improvements have been proposed to the DQN and DDQN algorithms
-% Papers to cite
-Munos, Rémi, et al. "Safe and efficient off-policy reinforcement learning.
-Harutyunyan, Anna, et al. "Q(λ) with Off-Policy Corrections."
 
 \section{Other approaches}
-\subsection{Neural Episodic Control}
-Differentiable neural computer (DNC)
-Pritzel, Alexander, et al. "Neural Episodic Control."
+\subsection{Memory architectures}
+Graves et al.\ (2016) \cite{graves2016hybrid} proposed \textit{Differentiable 
+Neural Computer} (DNC), an architecture in which an ANN has access to an 
+external memory structure, and learns to read and write data by gradient descent
+in a goal-oriented manner.
+This approach outperformed normal ANNs and DNC's precursor \textit{Neural 
+Turing Machine} \cite{gravesneural} on a variety of query-answering and natural 
+language processing tasks, and was used to solve a simple \textit{moving block} 
+puzzle with a form of reinforcement learning in which a sequence of instructions
+describing a goal is coupled to a reward function that evaluates whether the 
+goal is satisfied (a set-up that resembles an animal training protocol with a 
+symbolic task cue).
+%
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{pictures/nec}
+\centering
+\caption{architecture of NEC.}
+\label{i:nec}
+\end{figure}
+%
+
+Pritzel et al.\ (2017) \cite{pritzel2017neural} extended the concept of 
+differentiable memory to DQN with \textit{Neural Episodic Control} (NEC). 
+In this apporach, the DRL agent consists of three components: a CNN which 
+processes pixel images, a set of memory modules (one per action), and a dense 
+ANN which converts read-outs from the action memories into action-values. The 
+memory modules, called \textit{differentiable neural dictionaries} (DNDs), are 
+memory structures which resemble the dictionary data type found in computer 
+programs. DNDs are used in NEC to associate the state embeddings computed by the
+CNN to a corresponding $Q$ estimate, for each visited state: a read-out for a 
+key consists in a weighted sum of the values in the DND, with weights given by 
+normalized kernels between the lookup key and the corresponding key in memory 
+(see Figure \ref{i:nec}). 
+DNDs are populated automatically by the algorithm without learning what to write
+(which greatly speeds up the training time with respect to DNC).
+
+NEC outperformed every previous DRL approach on Atari games, by achieving better
+results using less training samples.
 
 \subsection{AlphaGo}
-Silver, D., Huang, A., Maddison, C. J., Guez, A., Sifre, L., Van Den Driessche, G., Schrittwieser, J.,Antonoglou, I., Panneershelvam, V., Lanctot, M., et al. (2016a). Mastering the game of go with deep neural networks and tree search. Nature, 529(7587):484--489.
+Traditional board games like chess, checkers, Othello and Go are classical 
+test benches for artificial intelligence. Since the set of rules which
+characterizes this type of games is fairly simple to represent in a program, the
+difficulty in solving these environments stems from the complexity of the 
+state space. Among the cited games, Go was one of the last board games in which 
+an algorithm had never beaten top human players, with its characteristic 
+$19 \times 19$ board which allowed for approximately $250^{150}$ sequences of
+moves (number of legal moves per position elevated to the length of the game).
+%
+\begin{figure}[h]
+\includegraphics[width=0.7\textwidth]{pictures/alphago}
+\centering
+\caption{neural network training pipeline of AlphaGo.}
+\end{figure}
+%
+Silver et al.\ (2016) \cite{silver2016mastering} introduced \textit{AlphaGo}, 
+a computer program based on DRL which won 5 games to 0 against the European Go 
+champion in October 2015; soon after that, Alpha go defeated 18-time world 
+champion Lee Sedol 4 games to 1 in March 2016, and world champion Ke Jie 3 to 0 
+in May 2017. After these results, Google DeepMind (the company behind 
+AlphaGo) decided to retire the program from official competitions and released a
+dataset containing 50 self-play games \cite{alphago}.
 
-\subsection{A3C}
-Mnih, Volodymyr, et al. "Asynchronous methods for deep reinforcement learning."
+AlhpaGo is a complex architecture which combines deep CNNs, reinforcement 
+learning, and Monte Carlo Tree Search (MCTS) \cite{browne2012survey, gelly2012grand}. 
+The process is divided in two phases: a neural network training pipeline and 
+MCTS. In the training pipeline, four different networks are trained: a 
+\textit{supervised learning} (SL) policy network trained to predict human moves;
+a \textit{fast} policy network to rapidly sample actions during MC rollouts; a 
+\textit{reinforcement learning} policy network that improves the SL network by 
+optimizing the final outcome of games of self-play; a \textit{value} network 
+that predicts the winner of games. Finally, the policy and value networks are 
+combined in an MCTS algorithm that selects actions with a lookahead search, by 
+building a partial search tree using the estimates computed with each network.
 
-\subsection{Transfer Learning}
-PathNet
+\subsection{Asynchronous Advantage Actor-Critic}
+\textit{Actor-critic} algorithms \cite{sutton1998reinforcement} are TD methods 
+that have a separate memory structure to explicitly represent the policy 
+independent of the value function. The policy structure is known as the actor, 
+because it is used to select actions, and the estimated value function is known 
+as the critic, because it criticizes the actions made by the actor.
+%
+\begin{figure}[h]
+\includegraphics[width=0.5\textwidth]{pictures/a3c}
+\centering
+\caption{the asynchronous architecture of A3C.}
+\end{figure}
+%
+Mnih et al.\ (2016) \cite{mnih2016asynchronous} presented a deep variation of 
+the actor-critic algorithm, called \textit{Asynchronous Advantage Actor-Critic} 
+(A3C). In this approach, different instances of actor-critic pairs are run in 
+parallel to obtain a lower-variance estimate of the value function, without the 
+need of a replay memory to stabilize training. Each \textit{worker} consists in 
+a deep CNN with a unique convolutional section and two separate dense networks
+on top, one for the value function and one for the policy. 
+
+This asynchronous methodology was applied to other classical RL algorithms in 
+the same paper; we only report the actor-critic variant as it was the best 
+performing, with substantially shorter training times and comparable performance
+to DQN and its variations described in Section \ref{SOA:value}.
 
 \section{Related work}
+In this section we give an overview of previous work with similarities to our
+approach.
+
+Lange and Riedmiller (2010) \cite{lange2010deep} proposed the \textit{Deep 
+Fitted Q-iteration} (DFQ) algorithm, a batch RL method which used deep dense 
+autoencoders to extract a state representation from pixel images. 
+In this algorithm, a training set of $<s, a, r, s'>$ transitions is collected
+with a random exploration strategy, where $s, s'$ are pixel images of two 
+consecutive states. The samples are then used to train a dense autoencoder with 
+two neurons in the innermost layer, which is in turn used to encode all states 
+in the training set. This encoded dataset is then passed as input to FQI, 
+which produces an estimate for the $Q$ function using a kernel based 
+approximator. A new policy is then computed from the estimated $Q$ and the 
+encoder, and the process is repeated using the new policy until the obtained 
+$Q$ is considered satisfactory.
+The authors applied DFQ to 
+
 FE: Deep Auto-Encoder Neural Networks in Reinforcement Learning
 Predict dynamics: Faster Reinforcement Learning After Pretraining Deep Networks to Predict State Dynamics
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
