@@ -13,17 +13,17 @@ The recent and exciting achievements of DL, however, have caused a sort of
 RL \textit{renaissance}, with DRL algorithms outperforming classic RL techinques
 on environments which were previously considered intractable. 
 Much like the game of Chess was believed out of the reach of machines until 
-IBM's \textit{Deep Blue} \cite{campbell2002deep} won against the world champion 
-Garry Kasparov, DRL has paved the way to solve a wide spectrum of complex tasks 
-which were previously considered a stronghold of humanity. 
+IBM's \textit{Deep Blue} \cite{campbell2002deep} won against world champion 
+Garry Kasparov in 1997, DRL has paved the way to solve a wide spectrum of 
+complex tasks which were previously considered a stronghold of humanity. 
 
-In this chapter we present the most important and recent results in DRL research, 
-as well as some work related to the approach that is proposed in this thesis.
+In this chapter we present the most important and recent results of DRL research, 
+as well as some work related to the method proposed in this thesis.
 
 \section{Value-based Deep Reinforcement Learning} \label{SOA:value}
 In 2015, Mnih et al.\ \cite{mnih2015human} introduced the \textit{deep 
-Q-learning} (DQL or, more commonly, DQN) algorithm which we detailed in Section
-\ref{s:DQN}, and basically ignited the field of DRL.
+Q-learning} (DQN\footnote{Acronym of \textit{Deep Q-Network.}}) algorithm which 
+we detailed in Section \ref{s:DQN}, and basically ignited the field of DRL.
 The important contributions of DQN consisted in providing an end-to-end 
 framework to train an agent starting from the pixel-level representation of the 
 \textit{Atari} environments, which proved to be more stable than previous 
@@ -41,15 +41,15 @@ have been proposed in the literature.
 \end{figure}
 %
 Van Hasselt et al.\ (2016) proposed \textit{Double DQN} (DDQN) \cite{van2016deep} 
-to solve an over-estimation issue in DQN due to the $\max$ operator used in the 
-parameters update (see Algorithm \ref{alg:DQL}). This approach used two separate
-CNNs: an \textit{online network} to select the action for the collection of 
-samples, and a \textit{target network} to produce the update targets. DDQN 
-performed better than DQN on the \textit{Atari} games. 
+to solve an over-estimation issue in DQN due to the \textit{max} operator used 
+in the parameters update (see Algorithm \ref{alg:DQL}). This consisted in using 
+two separate CNNs: an \textit{online network} to select the action for the 
+collection of samples, and a \textit{target network} to produce the update 
+targets. DDQN performed better than DQN on the \textit{Atari} games. 
 
-Schaul et al.\ (2016) \cite{schaul2016prioritized} introduced the concept
-of \textit{prioritized experience replay}, which replaced the uniform sampling 
-from the replay memory of DQN with a sampling strategy weighted by the 
+Schaul et al.\ (2016) \cite{schaul2016prioritized} developed the concept
+of \textit{prioritized experience replay}, which replaced DQN's uniform sampling 
+strategy from the replay memory with a sampling strategy weighted by the 
 \textit{TD errors} committed by the network. This improved the performance of 
 both DQN and DDQN.
 
@@ -82,15 +82,17 @@ the network which approximates $V^\pi$ is indicated as $V^\pi$, and so on...)}:
 %
 Several other extensions of the DQN algorithm have been proposed in recent years. 
 Among these, we cite Osband et al.\ (2016) \cite{osband2016deep} who proposed 
-a better exploration strategy; He et al.\ (2017) \cite{he2017learning} added a 
-constrained optimization approach called \textit{optimality tightening} to 
-propagate the reward faster and improve accuracy and convergence; Anschel et 
-al.\ (2017) \cite{anschelaveraged} improved the variance and instability of DQN 
-by averaging previous $Q$ estimates; Munos et al.\ (2016) \cite{munos2016safe} 
-and Harutyunyan et al.\ (2016) \cite{harutyunyan2016q} proposed to incorporate 
+a better exploration strategy based on Thompson sampling, to select an 
+exploration policy based on the probability that it is the optimal policy; He et
+al.\ (2017) \cite{he2017learning} added a constrained optimization approach 
+called \textit{optimality tightening} to propagate the reward faster during 
+updates and improve accuracy and convergence; Anschel et al.\ (2017) 
+\cite{anschelaveraged} improved the variance and instability of DQN by averaging
+previous $Q$ estimates; Munos et al.\ (2016) \cite{munos2016safe} and 
+Harutyunyan et al.\ (2016) \cite{harutyunyan2016q} proposed to incorporate 
 on-policy samples to the Q-learning target and seamlessly switch between 
-off-policy and on-policy samples, which resulted in faster reward propagation 
-and convergence. 
+off-policy and on-policy samples, which again resulted in faster reward 
+propagation and convergence. 
 
 
 \section{Other approaches}
@@ -127,8 +129,8 @@ CNN to a corresponding $Q$ estimate, for each visited state: a read-out for a
 key consists in a weighted sum of the values in the DND, with weights given by 
 normalized kernels between the lookup key and the corresponding key in memory 
 (see Figure \ref{i:nec}). 
-DNDs are populated automatically by the algorithm without learning what to write
-(which greatly speeds up the training time with respect to DNC).
+DNDs are populated automatically by the algorithm without learning what to write,
+which greatly speeds up the training time with respect to DNC.
 
 NEC outperformed every previous DRL approach on Atari games, by achieving better
 results using less training samples.
@@ -139,9 +141,10 @@ test benches for artificial intelligence. Since the set of rules which
 characterizes this type of games is fairly simple to represent in a program, the
 difficulty in solving these environments stems from the complexity of the 
 state space. Among the cited games, Go was one of the last board games in which 
-an algorithm had never beaten top human players, with its characteristic 
-$19 \times 19$ board which allowed for approximately $250^{150}$ sequences of
-moves (number of legal moves per position elevated to the length of the game).
+an algorithm had never beaten top human players, because its characteristic 
+$19 \times 19$ board which allows for approximately $250^{150}$ sequences of
+moves\footnote{Number of legal moves per position elevated to the length of the 
+game.} was too complex for exhaustive search methods.
 %
 \begin{figure}[h]
 \includegraphics[width=0.7\textwidth]{pictures/alphago}
@@ -149,6 +152,7 @@ moves (number of legal moves per position elevated to the length of the game).
 \caption{neural network training pipeline of AlphaGo.}
 \end{figure}
 %
+
 Silver et al.\ (2016) \cite{silver2016mastering} introduced \textit{AlphaGo}, 
 a computer program based on DRL which won 5 games to 0 against the European Go 
 champion in October 2015; soon after that, Alpha go defeated 18-time world 
@@ -192,8 +196,8 @@ on top, one for the value function and one for the policy.
 
 This asynchronous methodology was applied to other classical RL algorithms in 
 the same paper; we only report the actor-critic variant as it was the best 
-performing, with substantially shorter training times and comparable performance
-to DQN and its variations described in Section \ref{SOA:value}.
+performing, with notably shorter training times and performance comparable 
+to DQN and its variations.
 
 \section{Related work}
 In this section we give an overview of previous work with similarities to our
@@ -202,19 +206,24 @@ approach.
 Lange and Riedmiller (2010) \cite{lange2010deep} proposed the \textit{Deep 
 Fitted Q-iteration} (DFQ) algorithm, a batch RL method which used deep dense 
 autoencoders to extract a state representation from pixel images. 
-In this algorithm, a training set of $<s, a, r, s'>$ transitions is collected
+In this algorithm, a training set of $(s, a, r, s')$ transitions is collected
 with a random exploration strategy, where $s, s'$ are pixel images of two 
 consecutive states. The samples are then used to train a dense autoencoder with 
-two neurons in the innermost layer, which is in turn used to encode all states 
+two neurons in the innermost layer, which in turn is used to encode all states 
 in the training set. This encoded dataset is then passed as input to FQI, 
 which produces an estimate for the $Q$ function using a kernel based 
 approximator. A new policy is then computed from the estimated $Q$ and the 
-encoder, and the process is repeated using the new policy until the obtained 
-$Q$ is considered satisfactory.
-The authors applied DFQ to 
+encoder, and the process is repeated starting with the new policy until the 
+obtained $Q$ is considered satisfactory.
+The authors applied DFQ to a simple \textit{gridworld} environment with fixed 
+size and goal state, and were able to outperform other image-based feature
+extraction methods (like \textit{Principal Components Analysis}) with good
+sample efficiency.
 
-FE: Deep Auto-Encoder Neural Networks in Reinforcement Learning
-Predict dynamics: Faster Reinforcement Learning After Pretraining Deep Networks to Predict State Dynamics
+Another work which has common aspects with our method is the one by Anderson et
+al.\ (2015) \cite{anderson2015faster}, who improved convergence of DRL on 
+simple problems (e.g.\ \textit{Cart-pole} and \textit{Dynamic cart}) by 
+pre-training the Q-network to predict state dynamics.
 
 
 

@@ -1,0 +1,87 @@
+\chapter{Fitted Q-Iteration with Deep State-Dynamics Features}
+\label{ch3_setup}
+\thispagestyle{empty}
+
+\vspace{0.5cm}
+
+% Leave it here to compile this chapter only
+\cite{lange2010deep}
+
+\noindent We propose a DRL method which combines the feature extraction 
+capabilities of deep CNNs with the quick and powerful batch RL approach of FQI. 
+Given a state space of $4 \times 110 \times 84$ pixels representing a sequence
+of four greyscale frames from an Atari game, we use a deep convolutional 
+autoencoder to map the original state space to a compressed \textit{feature 
+space}. This compressed representation is then used to run a \textit{tree-based}
+FQI algorithm on a fixed collection of samples (either collected with a random 
+policy or sampled from an expert policy).
+
+In this chapter we give a formal description of the method and its core 
+components. Technical details of implementation will be discussed in the next
+chapter.
+
+\section{Problem Formulation}
+The general setting of this problem is typical of DRL problems: use a deep ANN 
+to extract a representation of an environment, and use that representation to 
+control an agent with standard RL methods. 
+
+In our approach we use a modular architecture with two separate stages for the
+training phase, and combine the two stages in an end-to-end fashion during
+the control phase. The two main components of the algorithm are:
+%
+\begin{enumerate}
+    \item a deep convolutional autoencoder, which we use to extract a 
+    representation of the state space and (most importantly) of its dynamics;
+    the purpose of the AE is to map the original, pixel-level state space $S$ of
+    the environment into a heavily compressed feature space ${\tilde{S}}$ which
+    contains information of both the state space and the transition model of the
+    environment. 
+    \item a \textit{tree-based} FQI learning algorithm, which produces an 
+    estimator for the action-value function from the domain of the compressed
+    feature space learned by the autoencoder. The estimator is then used for 
+    standard greedy control.
+\end{enumerate}
+%
+% Combine the two components
+The two main components are therefore separately trained to produce the two 
+transformations $ENC: S \rightarrow \tilde{S}$ and $\tilde{Q}^\pi: \tilde{S} 
+\times A \rightarrow \mathbb{R}$. After the training phase, we simply combine 
+the two functions to obtain the action-value function $Q^\pi: S \times A 
+\rightarrow \mathbb{R}$ as: 
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    Q^\pi(s, a) = \tilde{Q}^\pi(ENC(s), a)
+    %
+\end{IEEEeqnarray}
+%
+
+%
+\begin{algorithm}[h]
+    \caption{Fitted Q-Iterations with Deep State-Dynamics Features}
+    \label{alg:FQI-DSDF}
+    \begin{algorithmic}
+	\STATE \textbf{Given}: an arbitrary policy $\pi$;
+	\STATE Initialize the encoder $ENC: S \rightarrow \tilde{S}$ arbitrarily;
+	\STATE Initialize the decoder $DEC: \tilde{S} \rightarrow S$ arbitrarily;
+	\REPEAT 
+	    \STATE Collect a set $\mathcal{TS}$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ using $\pi$;
+	    \STATE Train the composition $DEC \circ ENC: S \rightarrow S$ using the first column of $\mathcal{TS}$ as input and the last column as target;
+	    \STATE Build a set $\mathcal{TS}_F$ of four-tuples $(f \in \tilde{S}, a \in A, r \in \mathbb{R}, f' \in \tilde{S})$ by applying the encoder to the first and last column of $\mathcal{TS}$ s.t. $f = ENC(s)$;
+	    \STATE Call FQI on $\mathcal{TS}_F$ to produce $\tilde{Q}^\pi: \tilde{S} \times A \rightarrow \mathbb{R}$;
+	    \STATE Combine $\tilde{Q}^\pi$ and $ENC$ to produce $Q^\pi: S \times A \rightarrow \mathbb{R}$:
+		\[
+		Q^\pi(s, a) = \tilde{Q}^\pi(ENC(s), a)
+		\]
+	    \STATE Set $\pi(s) = \underset{a}{\arg\max} Q^{\pi}(s, a)$;
+	\UNTIL{stopping condition is met;}
+    \end{algorithmic}
+\end{algorithm}
+%
+
+\section{Dynamics Encoding for Fitted Q-Iteration}
+
+\section{Tree-based Fitted Q-Iteration}
+\subsection{Extremely Randomized Trees}
+
+\section{Feature Selection of State Space}

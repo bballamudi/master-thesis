@@ -55,7 +55,7 @@
 % \include{chapter0_3_acknowledgments}
 % \thispagestyle{empty} \vspace*{.75truecm} \normalfont \cleardoublepage
 
-% Style setup for main body
+% ---- Style setup for main body ----
 \pagestyle{plain}\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}} 
 \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}         
 \fancyhead[LE,RO]{\bfseries\thepage}    
@@ -68,13 +68,12 @@
 
 % ---- Main body ----
 % \include{chapter1_introduction}
-% \include{chapter2_background}
-\include{chapter3_state_of_the_art}
-% \include{chapter4_problem_setup}
-% \include{chapter5}
-% \include{chapter6}
-% \include{chapter7_experiments}
-% \include{chapter8_conclusion}
+\include{chapter2_background}
+% \include{chapter3_state_of_the_art}
+\include{chapter4_research_problem}
+% \include{chapter5_technical_details}
+% \include{chapter6_experiments}
+% \include{chapter7_conclusions}
 \cleardoublepage
 
 % ---- Bibliography ----
@@ -84,17 +83,17 @@
 %\nocite{*}
 
 % ---- Appendices ----
-\appendix
-
-\pagestyle{fancy} 
-\fancyfoot{}                                               
-\renewcommand{\chaptermark}[1]{\markboth{\appendixname\ \thechapter.\ #1}{}} 
-\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}         
-\fancyhead[LE,RO]{\bfseries\thepage}    
-                                        
-\fancyhead[RE]{\bfseries\leftmark}    
-\fancyhead[LO]{\bfseries\rightmark}     
-\renewcommand{\headrulewidth}{0.3pt} 
+% \appendix
+% 
+% \pagestyle{fancy} 
+% \fancyfoot{}                                               
+% \renewcommand{\chaptermark}[1]{\markboth{\appendixname\ \thechapter.\ #1}{}} 
+% \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}         
+% \fancyhead[LE,RO]{\bfseries\thepage}    
+%                                         
+% \fancyhead[RE]{\bfseries\leftmark}    
+% \fancyhead[LO]{\bfseries\rightmark}     
+% \renewcommand{\headrulewidth}{0.3pt} 
 
 %\include{appendixA}
 %\include{appendixB}
