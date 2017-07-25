@@ -42,7 +42,7 @@ neurons and synapses in biological brains.
 \begin{figure}[H]
     \includegraphics[width=0.6\textwidth]{pictures/perceptron}
     \centering
-    \caption{graphical representation of the perceptron model.}
+    \caption{Graphical representation of the perceptron model}
 \end{figure}
 %
 ANNs are based on a fairly simple computational model called \textit{perceptron}, 
@@ -76,7 +76,7 @@ of perceptrons (called \textit{neurons}) which:
 \begin{figure}[h]
     \includegraphics[width=0.6\textwidth]{pictures/neuron}
     \centering
-    \caption{graphical representation of a neuron.}
+    \caption{Graphical representation of a neuron}
 \end{figure}
 %
 In simpler terms, each hidden layer computes an affine transformation of its 
@@ -99,7 +99,7 @@ co-domain of the target function.
 \begin{figure}[h]
     \includegraphics[width=0.6\textwidth]{pictures/ann}
     \centering
-    \caption{a neural network with one hidden layer.}
+    \caption{A neural network with one hidden layer}
 \end{figure}
 %
 
@@ -134,10 +134,10 @@ of classification).
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{pictures/perceptron_separability}
     \centering
-    \caption{different 2D classification problems, respectively linearly, 
-	     non-linearly and non separable. The perceptron would be able to 
-	     converge and correctly classify the points only in the first 
-	     setting.}
+    \caption[Linear separability with perceptron]{Different 2D classification 
+	    problems, respectively linearly, non-linearly and non separable. The 
+	    perceptron would be able to converge and correctly classify 
+	    the points only in the first setting}
 \end{figure}
 %
 
@@ -171,7 +171,7 @@ for which the loss is lower.
 \begin{figure}[h]
 \includegraphics[width=0.8\textwidth]{pictures/SGD}
 \centering
-\caption{visualization of SGD on a space of two parameters.}
+\caption{Visualization of SGD on a space of two parameters}
 \end{figure}
 %
 
@@ -195,9 +195,9 @@ is too small.
 \begin{figure}[h]
 \includegraphics[width=0.6\textwidth]{pictures/SGD_overshooting}
 \centering
-\caption{effect of the learning rate on SGD updates. Too small (left) may 
-	 take longer to converge, too big (right) may \textit{overshoot} the
-	 optimum and even diverge.}
+\caption[Effect of the learning rate on SGD updates]{Effect of the learning 
+	rate on SGD updates. Too small (left) may take longer to converge, too 
+	big (right) may \textit{overshoot} the optimum and even diverge}
 \end{figure}
 %
 
@@ -244,9 +244,9 @@ pixels in which there is an edge).
 \begin{figure}[h]
 \includegraphics[width=	\textwidth]{pictures/CNN}
 \centering
-\caption{typical structure of a deep convolutional neural network for image
-	 processing, with two convolutional hidden layers and a dense section
-	 at the end (for classification or regression).}
+\caption[CNN for image processing]{Typical structure of a deep convolutional 
+	neural network for image processing, with two convolutional hidden 
+	layers and a dense section at the end (for classification or regression)}
 \end{figure}
 %
 
@@ -262,10 +262,11 @@ subset of neurons covered by the filter.
 \begin{figure}[h]
 \includegraphics[width=0.5\textwidth]{pictures/shared_weights}
 \centering
-\caption{simple representation of shared weights in a 1D CNN. Each neuron in 
-	 the second layer applies the same receptive field of three weights
-	 to three adjacent neurons of the previous layer. The filter is applied 
-	 with a stride of one element to produce the feature map.}
+\caption[Shared weights in CNN]{simple representation of shared weights in a 1D 
+	CNN. Each neuron in  the second layer applies the same receptive field 
+	of three weights to three adjacent neurons of the previous layer. The 
+	filter is applied with a stride of one element to produce the feature 
+	map}
 \end{figure}
 %
 
@@ -290,8 +291,8 @@ by two square of input neurons, keep only the maximum activation value).
 \begin{figure}[h]
 \includegraphics[width=0.7\textwidth]{pictures/max-pooling}
 \centering
-\caption{example of \textit{max pooling}, where only the highest activation 
-	 value in the pooling window is kept.}
+\caption[Max pooling]{Example of \textit{max pooling}, where only the highest 
+		      activation value in the pooling window is kept}
 \end{figure}
 %
 
@@ -304,7 +305,7 @@ in this case is done in an end-to-end fashion, with the classification error
 being propagated across all layers to \textit{fine-tune} all weights and filters
 to the specific problem.
 
-\subsection{Autoencoders}
+\subsection{Autoencoders} \label{s:AE}
 Autoencoders (AE) are a type of ANN which is used to learn a sparse and 
 compressed representation of the input space, by sequentially compressing and 
 reconstructing the inputs under some sparsity constraint.
@@ -321,8 +322,9 @@ invert the transformation.
 \begin{figure}[h]
 \includegraphics[width=0.7\textwidth]{pictures/autoencoder}
 \centering
-\caption{schematic view of an autoencoder, with the two main components 
-	 highlighted.}
+\caption[Schematic view of an autoencoder]{Schematic view of an autoencoder, 
+					   with the two main components 
+					   highlighted}
 \end{figure}
 %
 
@@ -379,8 +381,10 @@ selection of the main techniques used to solve RL problems.
 \begin{figure}[h]
 \includegraphics[width=0.7\textwidth]{pictures/reinforcement}
 \centering
-\caption{the reinforcement learning setting, with the agent performing actions
-	 on the environment and in turn observing the state and reward.}
+\caption[Reinforcement learning setting]{The reinforcement learning setting, 
+					 with the agent performing actions on 
+					 the environment and in turn observing 
+					 the state and reward}
 \end{figure}
 %
 
@@ -431,9 +435,10 @@ where:
 \begin{figure}[h]
 \includegraphics[width=0.5\textwidth]{pictures/mdp}
 \centering
-\caption{graph representation of an MDP. Each node represents a state, each arc
-	 is a transition from a state to another; note that actions may have 
-	 probability distributions associated to the following states.}
+\caption[Graph representation of an MDP]{Graph representation of an MDP. Each 
+	node represents a state, each arc is a transition from a state to 
+	another; note that actions may have probability distributions associated 
+	to the following states}
 \end{figure}
 %
 
@@ -663,10 +668,11 @@ iteration} and \textit{value iteration}.
 \begin{figure}[h]
 \includegraphics[width=0.5\textwidth]{pictures/policyiter}
 \centering
-\caption{classical representation of the policy iteration algorithm, which
-	 highlights the relation between policies and their associated value
-	 functions. Each pair of arrows starting from a policy and ending on a
-	 greedy policy based on the value function is a step of the algorithm.}
+\caption[Policy iteration]{Classical representation of the policy iteration 
+	algorithm, which highlights the relation between policies and their 
+	associated value functions. Each pair of arrows starting from a policy 
+	and ending on a greedy policy based on the value function is a step of 
+	the algorithm}
 \end{figure}
 %
 \textit{Policy iteration} is based of the following theorem:
@@ -992,9 +998,9 @@ overview of the state-of-the-art DRL techniques in Chapter \ref{chapter3_state_o
 \begin{figure}[h]
 \includegraphics[width=0.4\textwidth]{pictures/dqn}
 \centering
-\caption{structure of the deep Q-network used by Mnih et al.\ in 
+\caption[Deep Q-Network]{Structure of the deep Q-network used by Mnih et al.\ in 
 	 \cite{mnih2015human}. The network is trained to approximate the 
-	 action-value function from the raw images of a game (used as states).}
+	 action-value function from the raw images of a game (used as states)}
 \end{figure}
 %
 The key idea of deep Q-learning is to embed the update step of Q-learning into

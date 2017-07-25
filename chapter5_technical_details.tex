@@ -4,9 +4,186 @@
 
 \vspace{0.5cm}
 
-\noindent Si mostra il progetto dell'architettura del sistema con i vari moduli.
+\noindent In this chapter we show the implementation details of the architecture
+used to perform experiments. We try to provide a complete description of the 
+parametrization of the components and of the training procedure to ensure 
+reproducibility of the experimental results.
+
+\section{Environment Preprocessing}
+The Atari simulator that we used as test bench provides the state observations 
+in the form of $3 \times 110 \times 84$ RGB images. When an action is executed
+in the environment, the simulator repeats the action for four consecutive 
+frames of the game and then provides another observation, effectively lowering
+the frame rate from $60$ \textit{FPS} to $15$ \textit{FPS} and making the 
+effects of actions more evident. 
+We perform a preprocessing operation on the states similar to that performed
+by Mnih et al.\ in DQN, in order to include all necessary information about
+the environment and its dynamics in the new state representation.
+First we convert each RGB observation to a 1D greyscale representation in the
+discrete 8-bit interval $[0, 255]$ using the \textit{ITU-R 601-2 luma transform}:
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    L = \frac{299}{1000}R + \frac{587}{1000}G + \frac{114}{1000}B
+    %
+\end{IEEEeqnarray}
+%
+where $R$, $G$, $B$ are the 8-bit components of the image. We then normalize 
+these values in the $[0, 1]$ interval via \textit{max-scaling} (i.e.\ dividing 
+each pixel by $255$).
+We also reduce the height of the image by two pixels in order to prevent 
+information loss due to a rounding operation performed by the AE.
+Finally, we concatenate the preprocessed observation to the last three 
+preprocessed frames observed from the environment, effectively blowing up the
+state space to a $4 \times 108 \times 84$ vector space. The initial state for
+an episode is artificially set as a repetition of the first observation provided
+by the simulator. 
+% TODO: put an image here to expalin the sampling technique.
+    
+Moreover, in order to facilitate comparisons and improve stability, we remain 
+loyal to the methodology used for DQN and perform the same clipping of the 
+reward signal in a $[-1, 1]$ interval. 
 
 \section{Dynamics Autoencoder}
+%
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l c c c c c c} 
+	\hline
+	Type & Input & Output & \# Filters & Filter & Stride & Activation \\ 
+	\hline 
+	Conv. & $4 \times 108 \times 84$ & $32 \times 26 \times 20$ & 32 & $8 \times 8$ & $4 \times 4$ & ReLU \\ 
+	Conv. & $32 \times 26 \times 20$ & $64 \times 12 \times 9$ & 64 & $4 \times 4$ & $2 \times 2$ & ReLU \\ 
+	Conv. & $64 \times 12 \times 9$ & $64 \times 10 \times 7$ & 64 & $3 \times 3$ & $1 \times 1$ & ReLU \\ 
+	Conv. & $64 \times 10 \times 7$ & $16 \times 8 \times 5$ & 16 & $3 \times 3$ & $1 \times 1$ & ReLU \\ 
+	Flatten	& $16 \times 8 \times 5$ & $640$ & - & - & - & - \\ 
+	\hline
+	Reshape & $640$ & $16 \times 8 \times 5$ & - & - & - & - \\
+	Deconv. & $16 \times 8 \times 5$ & $16 \times 10 \times 7$ & 16 & $3 \times 3$ & $1 \times 1$ & ReLU \\ 
+	Deconv. & $16 \times 10 \times 7$ & $64 \times 12 \times 9$ & 64 & $3 \times 3$ & $1 \times 1$ & ReLU \\
+	Deconv. & $64 \times 12 \times 9$ & $64 \times 26 \times 20$ & 64 & $4 \times 4$ & $2 \times 2$ & ReLU \\
+	Deconv. & $64 \times 26 \times 20$ & $32 \times 108 \times 84$ & 32 & $8 \times 8$ & $4 \times 4$ & ReLU \\
+	Deconv. & $32 \times 108 \times 84$ & $4 \times 108 \times 84$ & 4 & $1 \times 1$ & $1 \times 1$ & Sigmoid \\
+	\hline
+    \end{tabular}
+    \caption{Layers of the autoencoder with key parameters}
+    \label{t:AE_structure}
+\end{table}
+%
+We structure the AE to take as input the the preprocessed observations from the
+environment and predict values on the same vector space.
+The first four convolutional layers make up the encoder and perform a 2D 
+convolution with the \textit{valid} padding algorithm such that the input of 
+each layer (in the format $channels \times height \times width$) is reduced 
+automatically across the last two dimensions (height and width) according to the
+following formula: 
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    output_i = \lfloor(input_i - filter_i  + stride_i) / stride_i\rfloor
+    %
+\end{IEEEeqnarray}
+%
+Since the main purpose of pooling layers is to provide translation invariance to 
+the representation of the CNN (meaning that slightly shifted or tilted inputs
+are considered the same by the network), here we choose to not use pooling 
+layers in order to preserve the precious information regarding the position of
+different elements in the games; this same approach was adopted in DQN.
+A final \textit{Flatten} layer is added at the end of the encoder to provide a 
+1D representation of the feature space, which is reversed before the beginning 
+of the decoder. 
+
+The decoder consists of deconvolutional layers with symmetrical filter sizes, 
+filter numbers and strides with respect to the encoder. Here the \textit{valid} 
+padding algorithm is inversed to expand the representation with this formula:
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    output_i = \lfloor (input_i \cdot stride_i) + filter_i  - stride_i\rfloor
+    %
+\end{IEEEeqnarray}
+% 
+A final deconvolutional layer is added at the end to reduce the number of 
+channels back to the original four, without changing the width and height of
+the frames (i.e.\ using unitary filters and strides).
+All layers in the autoencoder use the \textit{Rectified Linear Unit} (ReLU) 
+\cite{nair2010rectified, krizhevsky2012imagenet} nonlinearity as activation 
+function, except for the last layer which uses \textit{sigmoids} to limit the 
+activations values in the same $[0, 1]$ interval of the input.
+Details of the AE layers are summarized in Table \ref{t:AE_structure}.
+
+We train the AE with the Adam optimization algorithm \cite{kingma2014adam} 
+(see Table \ref{t:adam_params} for details on the hyperparameters) set to 
+minimize the \textit{binary crossentropy} loss defined as:
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    L(y, \hat y) = - \frac{1}{N} \sum\limits_{n=1}^{N}[y_n log(\hat y_n) + (1-y_n) log(1-\hat y_n)]
+    %
+\end{IEEEeqnarray}
+%
+where $y$ and $\hat y$ are vectors of $N$ target and predicted observations in 
+the state space. The dataset used for training is a subset of the dataset 
+collected for the whole learning procedure described in Algorithm 
+\ref{alg:FQI-DSDF}, namely the first and last elements of the four-tuples
+$(s, a, r, s') \in \mathcal{TS}$.
+%
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l c} 
+	\hline
+	Parameter & Value \\ 
+	\hline 
+	Learning rate &  0.001 \\
+	Batch size & 32 \\
+	Exponential decay rate ($\beta_1$) & 0.9 \\
+	Exponential decay rate ($\beta_1$) & 0.999 \\
+	Fuzz factor ($\varepsilon$) & $10^{-8}$ \\
+	\hline
+    \end{tabular}
+    \caption{Optimization hyperparameters for Adam}
+    \label{t:adam_params}
+\end{table}
+%
+
+We prevent \textit{overfitting} of the training set by monitoring the 
+performance of the AE on a held-out set of validation samples, and stopping the 
+procedure when the validation loss does not improve for five consequent 
+training epochs. 
+
+Finally, we modify the loss function to account for the sparsity of the reward
+signal of the environment. Atari games produce a positive reward for the agent
+only on rather rare events, such as scoring a point in \textit{Pong} or breaking
+a brick in \textit{Breakout}, whereas for the majority of the time the agent
+collects a null reward. This means that any training set with samples collected
+by playing a game will have an unbalance between the transitions in which the 
+game is in a \textit{nominal} behavior and those in which the agent collects the
+reward. 
+To deal with this unbalance, we introduce a weighting factor by which we scale 
+the gradient associated to each sample. Since each training sample of the AE
+is associated to a transition $(s_i, a_i, r_i, s'_i) \in \mathcal{TS}$, we 
+compute the sample weights for $(s_i, s'_i)$ as the inverse probability of 
+observing a transition with reward $r_i$ in $\mathcal{TS}$:
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    SW_i = \frac{1}{P((s, a, r_i, s') | \mathcal{TS})} 
+    %
+\end{IEEEeqnarray}
+%
+
+% Why flatten
+% Why last layer
+% Why sigmoid in last layer
+% Sample preprocessing (scale to 0-1, binarize, cut)
+% Total number of parameters
+% Adam w/ parameters
+% Batch size
+% Dataset size
+% Training accuracy / loss + plots
+% Loss: binary crossentropy
+% Sample weights
+% Reward clipping
 
 \section{Tree-based Fitted Q-Iteration}
 \subsection{Extremely Randomized Trees}
