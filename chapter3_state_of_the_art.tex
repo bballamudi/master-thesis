@@ -4,16 +4,16 @@
 
 \vspace{0.5cm}
 
-\noindent The integration of RL and neural networks has a long history. Early 
+The integration of RL and neural networks has a long history. Early 
 RL literature \cite{rummery1994line, tesauro1995temporal, bertsekas1995neuro}
 presents \textit{connectionist} approaches in conjunction with a variety
 of RL algorithms, mostly using dense ANNs as approximators for the value 
 functions from low-dimensional (or engineered) state spaces.
-The recent and exciting achievements of DL, however, have caused a sort of 
-RL \textit{renaissance}, with DRL algorithms outperforming classic RL techinques
-on environments which were previously considered intractable. 
+The recent and exciting achievements of DL, however, have caused a sort of RL 
+renaissance, with DRL algorithms outperforming classic RL techinques on 
+environments which were previously considered intractable. 
 Much like the game of Chess was believed out of the reach of machines until 
-IBM's \textit{Deep Blue} \cite{campbell2002deep} won against world champion 
+IBM's Deep Blue computer \cite{campbell2002deep} won against world champion 
 Garry Kasparov in 1997, DRL has paved the way to solve a wide spectrum of 
 complex tasks which were previously considered a stronghold of humanity. 
 
@@ -23,16 +23,65 @@ as well as some work related to the method proposed in this thesis.
 \section{Value-based Deep Reinforcement Learning} \label{SOA:value}
 In 2015, Mnih et al.\ \cite{mnih2015human} introduced the \textit{deep 
 Q-learning} (DQN\footnote{Acronym of \textit{Deep Q-Network.}}) algorithm which 
-we detailed in Section \ref{s:DQN}, and basically ignited the field of DRL.
+basically ignited the field of DRL.
 The important contributions of DQN consisted in providing an end-to-end 
-framework to train an agent starting from the pixel-level representation of the 
-\textit{Atari} environments, which proved to be more stable than previous 
-approaches thanks to the use of \textit{experience replay} \cite{lin1992self}. 
-Moreover, the same architecture was reused to solve many different games without
-the need for \textit{hyperparameter tuning}, which proved the effectiveness of 
-the method. 
-From this work (which we could call \textit{introductory}), many improvements
-have been proposed in the literature.
+framework to train an agent on the \textit{Atari} environments starting from 
+the pixel-level representation of the states, with a deep CNN (called 
+\textit{deep Q-network}) used to estimate the $Q$ function and apply greedy 
+control. The authors were able to reuse the same architecture to solve many 
+different games without the need for \textit{hyperparameter tuning}, which 
+proved the effectiveness of the method.
+
+The key idea of DQN is to embed the update step of Q-learning into the loss used
+for SGD to train the deep CNN, resulting in the following gradient update:
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    \frac{\partial L}{\partial W_i^{old}} = E[(r + \gamma \max_{a'} Q(s', a'; \theta') - Q(s, a)) \frac{\partial Q(s, a; \theta)}{\partial W_i^{old}}]
+    %
+\end{IEEEeqnarray}
+%
+where $\theta, \theta'$ indicate two different sets of parameters for the CNN, 
+which are respectively called the \textit{online network} ($\theta$) to select 
+the action for the collection of samples, and the \textit{target network} 
+($\theta'$) to produce the update targets. The online network is continuously 
+updated during training, whereas the target network is kept fixed for longer 
+time intervals in order to stabilize the online estimate.
+Moreover, a sampling procedure called \textit{experience replay} 
+\cite{lin1992self} is used to stabilize training. This consists in keeping a
+variable training set of transitions collected with increasingly better policies
+(starting from a fully random $\varepsilon$-greedy policy and decreasing 
+$\varepsilon$ as the $Q$ estimate improves), from which training samples are
+randomly selected.
+The full training procedure of DQN is reported in Algorithm \ref{alg:DQN}.
+%
+\begin{algorithm}[h]
+    \caption{Deep Q-Learning with Experience Replay}
+    \label{alg:DQN}
+    \begin{algorithmic}
+	\STATE Initialize replay memory $\mathcal{D}$ to capacity $N$
+	\STATE Initialize action-value function $Q$ with two random sets of weights $\theta, \theta'$
+	\FOR{$episode = 1,M$}
+	    \FOR{$t = 1,T$}
+		\STATE Select a random action $a_t$ with probability $\varepsilon$
+		\STATE Otherwise, select $a_t = {\arg\max}_a Q(s_t, a; \theta)$
+		\STATE Execute action $a_t$, collect reward $r_{t+1}$ and observe next state $s_{t+1}$
+		\STATE Store the transition $(s_t, a_t, r_{t+1}, s_{t+1})$ in $\mathcal{D}$
+		\STATE Sample minibatch of transitions $(s_j, a_j, r_{j+1}, s_{j+1})$ from $\mathcal{D}$
+		\STATE Set $ y_j = \begin{cases} 
+					r_{j+1}, & \mbox{if } s_{j+1}\mbox{ is terminal} \\ 
+					r_{j+1} + \gamma \max_{a'} Q(s_{j+1}, a'; \theta'), & \mbox{otherwise}
+				    \end{cases}$
+		\STATE Perform a gradient descent step using targets $y_j$ with respect to the online parameters $\theta$
+		\STATE Every $C$ steps, set $\theta' = \theta$
+	    \ENDFOR
+	\ENDFOR
+    \end{algorithmic}
+\end{algorithm}
+%
+ 
+From this work (which we could call introductory), many improvements have been 
+proposed in the literature.
 %
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{pictures/atari}
@@ -41,11 +90,38 @@ have been proposed in the literature.
 \end{figure}
 %
 Van Hasselt et al.\ (2016) proposed \textit{Double DQN} (DDQN) \cite{van2016deep} 
-to solve an over-estimation issue in DQN due to the \textit{max} operator used 
-in the parameters update (see Algorithm \ref{alg:DQL}). This consisted in using 
-two separate CNNs: an \textit{online network} to select the action for the 
-collection of samples, and a \textit{target network} to produce the update 
-targets. DDQN performed better than DQN on the \textit{Atari} games. 
+to solve an over-estimation issue typical of Q-learning, due to the use of the 
+maximum action value as an approximation for the maximum expected action value
+(see Equation \eqref{eq:QL_update}).
+This general issue was addressed by Van Hasselt (2010) with \textit{Double 
+Q-learning} \cite{hasselt2010double}, a learning algorithm which keeps two 
+separate estimates of the action-value function $Q^A$ and $Q^B$, and uses one to
+update the other as follows:
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    Q^A(s, a) \leftarrow Q^A(s, a) + \alpha[r + \gamma Q^B(s', \underset{a}{\arg\max}Q^A(s', a)) - Q^A(s, a)]
+    %
+\end{IEEEeqnarray}
+%
+and vice-versa for $Q^B$.
+DDQN uses a similar approach to limit over-estimation in DQN by evaluating the 
+greedy policy according to the online network, but using the target network to 
+estimate its value. This is achieved with a small change in the computation of 
+the update targets:
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    y_j = \begin{cases} 
+	    r_{j+1}, & \mbox{if } s_{j+1}\mbox{ is terminal} \\ 
+		r_{j+1} + \gamma Q(s_{j+1}, \underset{a}{\arg\max}Q(s_{j+1}, a; \theta); \theta'), & \mbox{otherwise}
+	  \end{cases}
+    %
+\end{IEEEeqnarray}
+%    
+DDQN performed better (higher median and mean) on the 49 Atari games used as
+benchmark by Mnih et al.\ (2015), equaling or even surpassing humans on several
+games.
 
 Schaul et al.\ (2016) \cite{schaul2016prioritized} developed the concept
 of \textit{prioritized experience replay}, which replaced DQN's uniform sampling 
@@ -70,9 +146,9 @@ the optimal action-value function as\footnote{In the original paper, the authors
 explicitly indicate the dependence of the estimates on different 
 parameters (e.g.\ $V^\pi(s, a; \phi, \alpha)$ where $\phi$ is the set of
 parameters of the convolutional layers and $\alpha$ of the dense layers). 
-For coherence in the notation of this thesis, here we report the estimates 
-computed by the network with the same notation as the estimated functions (i.e. 
-the network which approximates $V^\pi$ is indicated as $V^\pi$, and so on...)}:
+For simplicity in the notation, here we report the estimates computed by the 
+network with the same notation as the estimated functions (i.e. the network 
+which approximates $V^\pi$ is indicated as $V^\pi$, and so on...).}:
 %
     \begin{IEEEeqnarray}{rCl}
     %
@@ -113,7 +189,7 @@ symbolic task cue).
 \includegraphics[width=\textwidth]{pictures/nec}
 \centering
 \caption{Architecture of NEC}
-\label{i:nec}
+\label{f:nec}
 \end{figure}
 %
 
@@ -128,7 +204,7 @@ programs. DNDs are used in NEC to associate the state embeddings computed by the
 CNN to a corresponding $Q$ estimate, for each visited state: a read-out for a 
 key consists in a weighted sum of the values in the DND, with weights given by 
 normalized kernels between the lookup key and the corresponding key in memory 
-(see Figure \ref{i:nec}). 
+(see Figure \ref{f:nec}). 
 DNDs are populated automatically by the algorithm without learning what to write,
 which greatly speeds up the training time with respect to DNC.
 
@@ -150,18 +226,19 @@ game.} was too complex for exhaustive search methods.
 \includegraphics[width=0.7\textwidth]{pictures/alphago}
 \centering
 \caption{Neural network training pipeline of AlphaGo}
+\label{f:alphago}
 \end{figure}
 %
 
 Silver et al.\ (2016) \cite{silver2016mastering} introduced \textit{AlphaGo}, 
 a computer program based on DRL which won 5 games to 0 against the European Go 
-champion in October 2015; soon after that, Alpha go defeated 18-time world 
+champion in October 2015; soon after that, AlphaGo defeated 18-time world 
 champion Lee Sedol 4 games to 1 in March 2016, and world champion Ke Jie 3 to 0 
 in May 2017. After these results, Google DeepMind (the company behind 
 AlphaGo) decided to retire the program from official competitions and released a
 dataset containing 50 self-play games \cite{alphago}.
 
-AlhpaGo is a complex architecture which combines deep CNNs, reinforcement 
+AlphaGo is a complex architecture which combines deep CNNs, reinforcement 
 learning, and Monte Carlo Tree Search (MCTS) \cite{browne2012survey, gelly2012grand}. 
 The process is divided in two phases: a neural network training pipeline and 
 MCTS. In the training pipeline, four different networks are trained: a 
@@ -169,9 +246,10 @@ MCTS. In the training pipeline, four different networks are trained: a
 a \textit{fast} policy network to rapidly sample actions during MC rollouts; a 
 \textit{reinforcement learning} policy network that improves the SL network by 
 optimizing the final outcome of games of self-play; a \textit{value} network 
-that predicts the winner of games. Finally, the policy and value networks are 
-combined in an MCTS algorithm that selects actions with a lookahead search, by 
-building a partial search tree using the estimates computed with each network.
+that predicts the winner of games (see Figure \ref{f:alphago}). 
+Finally, the policy and value networks are combined in an MCTS algorithm that 
+selects actions with a lookahead search, by building a partial search tree using
+the estimates computed with each network.
 
 \subsection{Asynchronous Advantage Actor-Critic}
 \textit{Actor-critic} algorithms \cite{sutton1998reinforcement} are TD methods 
@@ -215,7 +293,7 @@ which produces an estimate for the $Q$ function using a kernel based
 approximator. A new policy is then computed from the estimated $Q$ and the 
 encoder, and the process is repeated starting with the new policy until the 
 obtained $Q$ is considered satisfactory.
-The authors applied DFQ to a simple \textit{gridworld} environment with fixed 
+The authors applied DFQ to a simple \textit{Gridworld} environment with fixed 
 size and goal state, and were able to outperform other image-based feature
 extraction methods (like \textit{Principal Components Analysis}) with good
 sample efficiency.

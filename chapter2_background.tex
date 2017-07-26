@@ -4,15 +4,15 @@
 
 \vspace{0.5cm}
 
-\noindent In this chapter we outline the theoretical framework which will be 
+In this chapter we outline the theoretical framework which will be 
 used in the following chapters. The approach proposed in this thesis draws 
 equally from the fields of \textit{deep learning} and 
 \textit{reinforcement learning}, in a hybrid setting usually called 
 \textit{deep reinforcement learning}.
 
-In the following sections we give high level descriptions of these
-three fields, in order to introduce a theoretical background, a common notation, 
-and a general view of some of the most important techniques in each area. 
+In the following sections we give high level descriptions of these two fields, 
+in order to introduce a theoretical background, a common notation, and a general
+view of some of the most important techniques in each area. 
 
 \section{Deep Learning} \label{s:DL}
 \textit{Deep Learning} (DL) is a branch of machine learning which aims to learn
@@ -22,8 +22,8 @@ representation, obtained by composing simple but non-linear modules that each
 transform the representation at one level (starting with the raw input) into a 
 representation at a higher, slightly more abstract level \cite{lecun2015deep}.
 
-Deep learning has been at the heart of modern machine learning research, 
-where deep models have revolutionized many fields like computer vision 
+Deep learning in at the heart of modern machine learning research, where deep 
+models have revolutionized many fields like computer vision 
 \cite{krizhevsky2012imagenet, szegedy2015going}, machine translation 
 \cite{wu2016google} and speech synthesis \cite{vanwavenet}.
 Generally, the most impressive results of deep learning have been achieved 
@@ -43,10 +43,12 @@ neurons and synapses in biological brains.
     \includegraphics[width=0.6\textwidth]{pictures/perceptron}
     \centering
     \caption{Graphical representation of the perceptron model}
+    \label{f:perceptron}
 \end{figure}
 %
-ANNs are based on a fairly simple computational model called \textit{perceptron}, 
-which is a transformation of an n-space into a scalar value
+ANNs are based on a fairly simple computational model called \textit{perceptron}
+(Figure \ref{f:perceptron}), which is a transformation of an n-space into a 
+scalar value
 %
 \begin{IEEEeqnarray}{rCl}
     %
@@ -61,7 +63,7 @@ transformation by setting $x_0 = 1$ and $w_0 = b$).
 
 In ANNs, the simple model of the perceptron is used to create a layered 
 structure, in which each \textit{hidden} layer is composed by a given number 
-of perceptrons (called \textit{neurons}) which:
+of perceptrons (called \textit{neurons}) which (see Figure \ref{f:ann}):
 %
 \begin{enumerate}
     %
@@ -73,11 +75,11 @@ of perceptrons (called \textit{neurons}) which:
     %
 \end{enumerate}
 %
-\begin{figure}[h]
-    \includegraphics[width=0.6\textwidth]{pictures/neuron}
-    \centering
-    \caption{Graphical representation of a neuron}
-\end{figure}
+% \begin{figure}[h]
+%     \includegraphics[width=0.6\textwidth]{pictures/neuron}
+%     \centering
+%     \caption{Graphical representation of a neuron}
+% \end{figure}
 %
 In simpler terms, each hidden layer computes an affine transformation of its 
 input space:
@@ -100,6 +102,7 @@ co-domain of the target function.
     \includegraphics[width=0.6\textwidth]{pictures/ann}
     \centering
     \caption{A neural network with one hidden layer}
+    \label{f:ann}
 \end{figure}
 %
 
@@ -129,7 +132,7 @@ weights are allowed to change in a single update.
 Successive applications of the update rule for the perceptron guarantee 
 convergence to an optimum if and only if the approximated function is linear 
 (in the case of regression) or the problem is linearly separable (in the case 
-of classification).
+of classification) as shown in Figure \ref{f:separability}.
 %
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{pictures/perceptron_separability}
@@ -138,6 +141,7 @@ of classification).
 	    problems, respectively linearly, non-linearly and non separable. The 
 	    perceptron would be able to converge and correctly classify 
 	    the points only in the first setting}
+    \label{f:separability}
 \end{figure}
 %
 
@@ -190,7 +194,7 @@ optimization is stuck. The same applies to the learning rate, which is the other
 important factor in controlling the size of the gradient step: if the learning 
 rate is too big, SGD can \textit{overshoot} local minima and fail to converge, 
 but at the same time it may take longer to find the optimum if the learning rate
-is too small.
+is too small (Figure \ref{f:sgd_overshooting}).
 %
 \begin{figure}[h]
 \includegraphics[width=0.6\textwidth]{pictures/SGD_overshooting}
@@ -198,6 +202,7 @@ is too small.
 \caption[Effect of the learning rate on SGD updates]{Effect of the learning 
 	rate on SGD updates. Too small (left) may take longer to converge, too 
 	big (right) may \textit{overshoot} the optimum and even diverge}
+\label{f:sgd_overshooting}
 \end{figure}
 %
 
@@ -253,7 +258,8 @@ pixels in which there is an edge).
 While standard ANNs have a \textit{fully connected} (sometimes also called 
 \textit{dense}) structure, with each neuron of a layer connected to each neuron 
 of the previous and following layer, in CNNs the weights are associated to a 
-filter and \textit{shared} across all neurons of a layer. 
+filter and \textit{shared} across all neurons of a layer, as shown in Figure
+\ref{f:shared_weights}. 
 This \textit{weights sharing} has the double advantage of greatly reducing the 
 number of parameters that must be updated during training, and of forcing the 
 network to learn general abstractions of the input that can be applied to any 
@@ -267,6 +273,7 @@ subset of neurons covered by the filter.
 	of three weights to three adjacent neurons of the previous layer. The 
 	filter is applied with a stride of one element to produce the feature 
 	map}
+\label{f:shared_weights}
 \end{figure}
 %
 
@@ -286,13 +293,15 @@ representations.
 For this reason, convolutional layers in CNNs are often paired with 
 \textit{pooling layers} which reduce the dimensionality of their input according
 to some criteria applied to subregions of the input neurons (e.g. for each two 
-by two square of input neurons, keep only the maximum activation value).
+by two square of input neurons, keep only the maximum activation value as 
+shown in Figure \ref{f:max-pooling}).
 %
 \begin{figure}[h]
 \includegraphics[width=0.7\textwidth]{pictures/max-pooling}
 \centering
 \caption[Max pooling]{Example of \textit{max pooling}, where only the highest 
 		      activation value in the pooling window is kept}
+\label{f:max-pooling}
 \end{figure}
 %
 
@@ -311,10 +320,11 @@ compressed representation of the input space, by sequentially compressing and
 reconstructing the inputs under some sparsity constraint.
 
 The typical structure of an AE is split into two sections: an 
-\textit{encoder} and a \textit{decoder}. In the classic architecture of 
-autoencoders these two components are exact mirrors of one another, but in 
-general the only constraint that is needed to define an AE is that
-the dimensionality of the input be the same as the dimensionality of the output.
+\textit{encoder} and a \textit{decoder} (Figure \ref{f:autoencoder}). 
+In the classic architecture of autoencoders these two components are exact 
+mirrors of one another, but in general the only constraint that is needed to 
+define an AE is that the dimensionality of the input be the same as the 
+dimensionality of the output.
 In general, however, the last layer of the encoder should output a reduced 
 representation of the input which contains enough information for the decoder to
 invert the transformation.
@@ -325,6 +335,7 @@ invert the transformation.
 \caption[Schematic view of an autoencoder]{Schematic view of an autoencoder, 
 					   with the two main components 
 					   highlighted}
+\label{f:autoencoder}
 \end{figure}
 %
 
@@ -385,13 +396,14 @@ selection of the main techniques used to solve RL problems.
 					 with the agent performing actions on 
 					 the environment and in turn observing 
 					 the state and reward}
+\label{f:reinforcement}
 \end{figure}
 %
 
 \subsection{Markov Decision Processes}
 \textit{Markov Decision Processes} (MDPs) are discrete-time, stochastic control 
 processes, that can be used to describe the interaction of an \textit{agent} 
-with an \textit{environment}.
+with an \textit{environment} (Figure \ref{f:reinforcement}).
 
 Formally, MDPs are defined as 7-tuples $<S, S^{T}, A, P, R, \gamma, \mu>$, 
 where:
@@ -673,6 +685,7 @@ iteration} and \textit{value iteration}.
 	associated value functions. Each pair of arrows starting from a policy 
 	and ending on a greedy policy based on the value function is a step of 
 	the algorithm}
+\label{f:policyiter}
 \end{figure}
 %
 \textit{Policy iteration} is based of the following theorem:
@@ -691,7 +704,8 @@ iteration} and \textit{value iteration}.
 
 This approach works by iteratively computing the value function associated to 
 the current policy, and then improving that policy by making it act greedily 
-with respect to the value function, such that:
+with respect to the value function (as shown in Figure \ref{f:policyiter}), such
+that:
 %
 \begin{IEEEeqnarray}{rCl}
     % Lecture 11, slide 17
@@ -959,92 +973,5 @@ A more practical description on how to apply this algorithm to a real problem
 will be detailed in later sections of this thesis. For now, we limit this 
 section to a more abstract definition of the algorithm and we do not expand 
 further on the implementation details. 
-
-\section{Deep Reinforcement Learning} \label{s:DRL}
-\textit{Deep Reinforcement Learning} (DRL) is the study of reinforcement 
-learning using deep neural networks as function approximators. 
-The idea of combining these two areas of machine learning goes back to 
-the early RL literature \cite{rummery1994line, tesauro1995temporal}, but the 
-most groundbreaking results were only achieved in the early 2010s, with the 
-booming growth in DL research that we cited in Section \ref{s:DL}.
-With the advances in computing technology which enabled ANNs to be trained on 
-GPUs, those RL problems which had always been characterized by an intractable 
-complexity of the state space became suddenly in reach of traditional algorithms
-thanks to deep learning.
-
-Most notably, the first superhuman performance in a problem which had never 
-been tackled by reinforcement learning was reached by Google DeepMind's 
-\textit{Deep Q-Network} (DQN) \cite{mnih2015human}, on the \textit{Atari games} 
-suite of environments. 
-This introduced a new paradigm in RL, which is typical of DL approaches, of not 
-performing feature engineering before feeding data to an approximator, and 
-letting ANNs extract the best set of features to solve the problem from the 
-raw data (in this case a sequence of frames from the games), mimicking the human
-approach to problem-solving.
-Other important results in DRL have been presented in recent literature, 
-where convolutional neural networks were applied as approximators in classic
-RL algorithms, allowing for complex state spaces (typically images of the 
-environment, but also complex settings like the board in the game of \textit{Go}
-) to be reduced and processed by a trainable model.
-
-In the following section we describe the details of the above cited Deep 
-Q-Network, as the most well-established DRL algorithm. We will give a wider 
-overview of the state-of-the-art DRL techniques in Chapter \ref{chapter3_state_of_the_art}.
-
-\subsection{Deep Q-Learning} \label{s:DQN}
-\textit{Deep Q-learning} is an \textit{on-line}, \textit{off-policy}, 
-\textit{model-free} approach to DRL.
-%
-\begin{figure}[h]
-\includegraphics[width=0.4\textwidth]{pictures/dqn}
-\centering
-\caption[Deep Q-Network]{Structure of the deep Q-network used by Mnih et al.\ in 
-	 \cite{mnih2015human}. The network is trained to approximate the 
-	 action-value function from the raw images of a game (used as states)}
-\end{figure}
-%
-The key idea of deep Q-learning is to embed the update step of Q-learning into
-the loss used for gradient descent to train a neural network (called 
-\textit{deep Q-network}), resulting in the following gradient update:
-%
-\begin{IEEEeqnarray}{rCl}
-    %
-    \frac{\partial L}{\partial W_i^{old}} = E[(r + \gamma \max_{a'} Q(s', a') - Q(s, a)) \frac{\partial Q(s, a)}{\partial W_i^{old}}]
-    %
-\end{IEEEeqnarray}
-%
-The algorithm for deep Q-learning was introduced by Mnih et al. in \cite{mnih2015human}, 
-using a convolutional neural network with multidimensional output (one output 
-neuron for each action) as $Q$, and a set of samples collected with an 
-exploratory policy from which the transitions for the update steps were sampled 
-(a technique called \textit{experience replay}).
-The CNN was structured to take as input a sequence of four frames (the states) 
-from the games in the Atari suite of environments, and output an estimate of 
-the action-value function which was then used to control the agent.
-The samples used to update the estimates were collected with an 
-$\varepsilon$-greedy policy with a decaying $\varepsilon$ (hence the algorithm 
-is \textit{off-policy}). The algorithm proposed in the original paper is 
-reported in Algorithm \ref{alg:DQL}.
-%
-\begin{algorithm}[h]
-\caption{Deep Q-Learning with Experience Replay}
-\label{alg:DQL}
-    \begin{algorithmic}
-	\STATE Initialize replay memory $\mathcal{D}$ to capacity $N$
-	\STATE Initialize action-value function $Q$ with random weights
-	\FOR{$episode = 1,M$}
-	    \FOR{$t = 1,T$}
-		\STATE Select a random action $a_t$ with probability $\varepsilon$
-		\STATE Otherwise, select $a_t = \max_aQ^*(s_t, a)$
-		\STATE Execute action $a_t$, collect reward $r_{t+1}$ and observe next state $s_{t+1}$
-		\STATE Store the transition $(s_t, a_t, r_{t+1}, s_{t+1})$ in $\mathcal{D}$
-		\STATE Sample random minibatch of transitions $(s_j, a_j, r_{j+1}, s_{j+1})$ from $\mathcal{D}$
-		\STATE Set $ y_j = \begin{cases} r_j, & \mbox{if } s_{t+1}\mbox{ is terminal} \\ r_j + \max_{a'}Q(s_{t+1}, a'), & \mbox{otherwise}\end{cases}$
-		\STATE Perform a gradient descent step using targets $y_j$
-	    \ENDFOR
-	\ENDFOR
-    \end{algorithmic}
-\end{algorithm}
-%
 
 

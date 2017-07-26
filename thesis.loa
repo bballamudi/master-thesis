@@ -1,5 +1,5 @@
-\contentsline {algorithm}{\numberline {1}{\ignorespaces SARSA\relax }}{23}
-\contentsline {algorithm}{\numberline {2}{\ignorespaces Q-Learning\relax }}{23}
-\contentsline {algorithm}{\numberline {3}{\ignorespaces Fitted Q-Iteration\relax }}{24}
-\contentsline {algorithm}{\numberline {4}{\ignorespaces Deep Q-Learning with Experience Replay\relax }}{26}
-\contentsline {algorithm}{\numberline {5}{\ignorespaces Fitted Q-Iterations with Deep State-Dynamics Features\relax }}{35}
+\contentsline {algorithm}{\numberline {1}{\ignorespaces SARSA\relax }}{20}
+\contentsline {algorithm}{\numberline {2}{\ignorespaces Q-Learning\relax }}{21}
+\contentsline {algorithm}{\numberline {3}{\ignorespaces Fitted Q-Iteration\relax }}{22}
+\contentsline {algorithm}{\numberline {4}{\ignorespaces Deep Q-Learning with Experience Replay\relax }}{24}
+\contentsline {algorithm}{\numberline {5}{\ignorespaces Fitted Q-Iterations with Deep State-Dynamics Features\relax }}{33}
