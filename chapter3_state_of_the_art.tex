@@ -119,9 +119,9 @@ the update targets:
     %
 \end{IEEEeqnarray}
 %    
-DDQN performed better (higher median and mean) on the 49 Atari games used as
-benchmark by Mnih et al.\ (2015), equaling or even surpassing humans on several
-games.
+DDQN performed better (higher median and mean score) on the 49 Atari games used 
+as benchmark by Mnih et al.\ (2015), equaling or even surpassing humans on 
+several games.
 
 Schaul et al.\ (2016) \cite{schaul2016prioritized} developed the concept
 of \textit{prioritized experience replay}, which replaced DQN's uniform sampling 
@@ -277,9 +277,10 @@ the same paper; we only report the actor-critic variant as it was the best
 performing, with notably shorter training times and performance comparable 
 to DQN and its variations.
 
-\section{Related work}
-In this section we give an overview of previous work with similarities to our
-approach.
+\section{Related Work}
+% TODO: remove part on dynamics
+% In this section we give an overview of previous work with similarities to our
+% approach.
 
 Lange and Riedmiller (2010) \cite{lange2010deep} proposed the \textit{Deep 
 Fitted Q-iteration} (DFQ) algorithm, a batch RL method which used deep dense 
@@ -295,13 +296,13 @@ encoder, and the process is repeated starting with the new policy until the
 obtained $Q$ is considered satisfactory.
 The authors applied DFQ to a simple \textit{Gridworld} environment with fixed 
 size and goal state, and were able to outperform other image-based feature
-extraction methods (like \textit{Principal Components Analysis}) with good
-sample efficiency.
+extraction methods (like \textit{Principal Components Analysis} 
+\cite{wold1987principal}) with good sample efficiency.
 
-Another work which has common aspects with our method is the one by Anderson et
-al.\ (2015) \cite{anderson2015faster}, who improved convergence of DRL on 
-simple problems (e.g.\ \textit{Cart-pole} and \textit{Dynamic cart}) by 
-pre-training the Q-network to predict state dynamics.
+% Another work which has common aspects with our method is the one by Anderson et
+% al.\ (2015) \cite{anderson2015faster}, who improved convergence of DRL on 
+% simple problems (e.g.\ \textit{Cart-pole} and \textit{Dynamic cart}) by 
+% pre-training the Q-network to predict state dynamics.
 
 
 

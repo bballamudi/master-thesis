@@ -22,7 +22,7 @@ representation, obtained by composing simple but non-linear modules that each
 transform the representation at one level (starting with the raw input) into a 
 representation at a higher, slightly more abstract level \cite{lecun2015deep}.
 
-Deep learning in at the heart of modern machine learning research, where deep 
+Deep learning is at the heart of modern machine learning research, where deep 
 models have revolutionized many fields like computer vision 
 \cite{krizhevsky2012imagenet, szegedy2015going}, machine translation 
 \cite{wu2016google} and speech synthesis \cite{vanwavenet}.
@@ -150,7 +150,7 @@ ANN with multiple layers because the true outputs of the hidden layers are not
 known a priori. 
 To solve this issue, it is sufficient to notice that the function computed by 
 each layer of a network is nonlinear, but differentiable with respect to the 
-layer's input (i.e. it is linear in the weights).
+layer's input (i.e.\ it is linear in the weights).
 This simple fact allows to compute the partial derivative of the loss function
 for each weight matrix in the network to, in a sense, impute the error committed
 on a training sample proportionally across neurons. The error is therefore 
@@ -974,4 +974,11 @@ will be detailed in later sections of this thesis. For now, we limit this
 section to a more abstract definition of the algorithm and we do not expand 
 further on the implementation details. 
 
+% \section{Additional Formalism} \label{s:addtional}
+% 
+% \subsection{Decision Trees}
+% % TODO 
+% 
+% \subsection{Extremely Randomized Forests}
+% % TODO 
 

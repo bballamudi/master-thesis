@@ -4,9 +4,6 @@
 
 \vspace{0.5cm}
 
-% Leave it here to compile this chapter only
-\cite{lange2010deep}
-
 As central argument of this thesis, we propose a DRL method which 
 combines the feature extraction capabilities of deep CNNs with the quick 
 and powerful batch RL approach of FQI. 
@@ -22,6 +19,7 @@ components. Technical details of implementation will be discussed in the next
 chapter.
 
 \section{Motivation}
+% TODO: remove part on dynamics1
 The state-of-the-art DRL methods listed in the previous chapter are able to 
 outperform classic RL algorithms in a wide variety of problems, and in some 
 cases are the only possible way of dealing with high-dimensional control 
@@ -50,6 +48,7 @@ features from the environments and try to reach better or equivalent performance
 in up to two orders of magnitude less samples than DQN on Atari games.
 
 \section{Problem Formulation}
+% TODO: add RFS
 The general setting of this problem is typical of DRL problems: we use a deep 
 ANN to extract a representation of an environment, and use that representation 
 to control an agent with standard RL algorithms. 
@@ -106,7 +105,8 @@ A general description of the process is given in Algorithm \ref{alg:FQI-DSDF}.
     \end{algorithmic}
 \end{algorithm}
 %
-\section{Dynamics Encoding for Fitted Q-Iteration}
+\section{Extraction of State Features}
+% TODO: remove part on dynamics
 The AE used in our approach consists of two main components, namely an 
 \textit{encoder} and a \textit{decoder} (cf. \ref{s:AE}). To the end of 
 explicitly representing the encoding purpose of the AE, we keep a separate 
@@ -127,6 +127,8 @@ policy.
 
 This ...
 
+\section{Tree-based Recursive Feature Selection}
+% TODO
 
 \section{Tree-based Fitted Q-Iteration}
-\subsection{Extremely Randomized Trees}
+% TODO
