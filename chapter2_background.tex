@@ -924,9 +924,9 @@ This approach is especially useful in problems for which the closed form
 solutions of DP, or the guarantees of visiting all state-action pairs required 
 for MC and TD are not feasible.
 
-Here, we choose the \textit{Fitted Q-Iteration} (FQI) approach as representative
-for this whole class, because it will be used in later sections of this thesis 
-as a key component of the presented methodology.
+Here, we choose the \textit{Fitted Q-Iteration} (FQI) \cite{ernst2005tree} 
+approach as representative for this whole class, because it will be used in 
+later sections of this thesis as a key component of the presented methodology.
 FQI is an \textit{off-line}, \textit{off-policy}, \textit{model-free}, 
 \textit{value-based} reinforcement learning algorithm which computes an 
 approximation of the optimal policy from a set of four-tuples $(s, a, r, s')$
@@ -974,11 +974,181 @@ will be detailed in later sections of this thesis. For now, we limit this
 section to a more abstract definition of the algorithm and we do not expand 
 further on the implementation details. 
 
-% \section{Additional Formalism} \label{s:addtional}
-% 
-% \subsection{Decision Trees}
-% % TODO 
-% 
-% \subsection{Extremely Randomized Forests}
-% % TODO 
+\section{Additional Formalism} \label{s:addtional}
+In this section we briefly introduce some additional algorithms and concepts 
+which will be used in later chapters as secondary components of our approach. 
+
+\subsection{Decision Trees}
+\textit{Decision trees} are a non-parametric supervised learning method for
+classification and regression. A decision tree is a tree structure defined 
+over a domain (\textit{attributes}) and co-domain (\textit{labels}), in which
+each internal node represents a boolean test on an attribute and each leaf node 
+represents a label. Given a set of attributes for a data point, the tests 
+are applied to the attributes starting from the root until a leaf is reached, 
+and the corresponding label is output by the model. 
+
+To learn a decision tree, the input space is partitioned recursively by 
+splitting a subset of the input space according to a binary condition, in a 
+greedy procedure called \textit{Top-Down Induction of Decision Trees} (TDIDT) 
+based on \textit{recursive binary partitioning} (see Figure 
+\ref{f:recursive_splitting}). 
+This recursive procedure is iterated over the input space until all training 
+samples belonging to a partition have the same label, or splitting the domain 
+further would not add information to the model. 
+%
+\begin{figure}[h]
+\includegraphics[width=1\textwidth]{pictures/recursive_splitting}
+\centering
+\caption[Recursive binary partitioning]{A 2D space partitioned with a random 
+					splitting algorithm (left) and recursive
+					splitting (center); the recursively 
+					partitioned feature space can then be 
+					converted to a decision tree (right)}
+\label{f:recursive_splitting}
+\end{figure}
+%
+At each step, the attribute which best splits the training samples is selected
+for splitting, where the quality of the split is determined according to 
+different criteria such as:
+\begin{itemize}
+    \item \textit{Gini impurity}: the probability of incorrectly labeling a 
+    random training sample, if it was randomly labeled according to the 
+    distribution of labels in the partition. Attributes with low Gini impurity
+    are selected with a higher priority. The measure is defined for a set as:
+    %
+    \begin{IEEEeqnarray}{rCl}
+        %
+        I_G(S) = \sum\limits_{i=1}^{K} p_i(1-p_i)
+        %
+    \end{IEEEeqnarray}
+    %
+    where $S$ is a set of samples with labels $\{1, ..., K\}$ and $p_i$ is the
+    fraction of samples with label $i$ in the set.
+    \item \textit{Information gain}: the expected change in  information entropy
+    resulting form the split. To build a tree, the information gain of each 
+    possible split is computed and the most informative split is selected. The 
+    process is then repeated iteratively until the tree is complete. The measure
+    is defined as the difference of entropy between a father node and a weighted
+    sum of the children's entropy, where entropy is:
+    %
+    \begin{IEEEeqnarray}{rCl}
+	%
+	H(S) = - \sum\limits_{i=1}^{K}p_i \log p_i
+	%
+    \end{IEEEeqnarray}
+    %
+    and the information gain is formalized as:
+    %
+    \begin{IEEEeqnarray}{rCl}
+	%
+	I_I(S, a) = H(S) - H(S|a)
+	%
+    \end{IEEEeqnarray}
+    %
+    for a set $S$ and a split $a$.
+    \item \textit{Variance reduction}: typically used in regression trees (with 
+    a continuous co-domain), it quantifies the total reduction of the variance
+    in the target after the split. Attributes with higher variance reduction
+    are selected for splitting with higher priority. The metric is computed as:
+    %
+    \begin{IEEEeqnarray}{rCl}
+	%
+	I_V(S) & = & \frac{1}{|S^{\mathit{All}}|^2}\sum_{i \in S^{\mathit{All}}} \sum_{j \in S^{\mathit{All}}} \frac{1}{2} (x_i - x_j)^2 \>+  \nonumber \\
+	    && -\> \frac{1}{|S^{\mathit{T}}|^2}\sum_{i \in S^{\mathit{T}}} \sum_{j \in S^{\mathit{T}}} \frac{1}{2} (x_i - x_j)^2 \>+ \nonumber \\
+	    && -\> \frac{1}{|S^{\mathit{F}}|^2}\sum_{i \in S^{\mathit{F}}} \sum_{j \in S^{\mathit{F}}} \frac{1}{2} (x_i - x_j)^2
+	%
+    \end{IEEEeqnarray}
+    %
+    where $S^{\mathit{All}}$ is the set of all indices in the set, 
+    $S^{\mathit{T}}$ is the set of indices for which the attribute test is true,
+    and $S^{\mathit{F}}$ is the set of indices for which the attribute test is
+    false.
+\end{itemize}
+
+ 
+\subsection{Extremely Randomized Trees}
+\textit{Extremely Randomized Trees} (Extra-Trees) \cite{geurts2006extremely}
+is a tree-based ensemble method for supervised learning, which consists in 
+strongly randomizing both attribute and cut-point choice while splitting a tree 
+node. 
+The Extra-Trees algorithm builds an ensemble of unpruned trees according to the 
+classical top-down procedure, but differently from other tree induction methods
+it splits nodes by choosing cut-points fully at random. 
+Extra-Trees can be applied to both classification and regression by building 
+an ensemble of trees for either task.
+
+The procedure to randomly split a node when building the ensemble is summarized 
+in Algorithm \ref{alg:extra}.
+%
+\begin{algorithm}[h]
+\caption{Extra-Trees node splitting}
+\label{alg:extra}
+\begin{algorithmic}
+    \STATE \textbf{Split\_node}($S$):
+	\begin{ALC@g}
+	\STATE \textbf{Input}: the local learning subset $S$ corresponding to the node we want to split
+	\STATE \textbf{Output}: a split $[a < a_c]$ or nothing
+	\IF{\textbf{Stop\_split(S)} is True}
+	    \STATE Return nothing
+	\ELSE{} 
+	    \STATE Select $K$ attributes $\{a_1, ..., a_k\}$ among all non constant candidate attributes in $S$
+	    \STATE Draw $K$ splits $\{S_1, ..., S_k\}$ where $S_i=$\textbf{Pick\_random\_split}($S, a_i$)
+	    \STATE Return a split $S_*$ such that $Score(S_*, S)=\max_{i}Score(S_i, S)$
+	\ENDIF
+	\end{ALC@g}
+    \STATE
+    \STATE \textbf{Pick\_random\_split}(S, a):
+	\begin{ALC@g}
+	\STATE \textbf{Input}: a subset $S$ and an attribute $a$
+	\STATE \textbf{Output}: a split
+	\STATE Let $a_{max}^S$ and $a_{min}^S$ denote the maximal and minimal value of $a$ in $S$
+	\STATE Draw a random cut-point $a_c$ uniformly in $[a_{min}^S, a_{max}^S]$
+	\STATE Return the split $[a < a_c]$
+	\end{ALC@g}
+    \STATE
+    \STATE \textbf{Stop\_split}($S$):
+	\begin{ALC@g}
+	\STATE \textbf{Input}: a subset $S$
+	\STATE \textbf{Output}: a boolean
+	\IF{$|S| < n_{min}$} \STATE return True \ENDIF
+	\IF{All attributes are constant in $S$} \STATE return True \ENDIF
+	\IF{The output is constant in $S$} \STATE return True \ENDIF
+	\STATE Return False
+	\end{ALC@g}
+\end{algorithmic}
+\end{algorithm}
+%
+
+The procedure has two main parameters: $K$, the number of attributes randomly 
+selected at each node and $n_{min}$, the minimum sample size for splitting a 
+node. 
+In the prediction phase, the output of each tree in the ensemble is aggregated
+to compute the final prediction, with a majority voting in classification 
+problems and arithmetic average in regression problems.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

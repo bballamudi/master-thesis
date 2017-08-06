@@ -24,21 +24,13 @@ The state-of-the-art DRL methods listed in the previous chapter are able to
 outperform classic RL algorithms in a wide variety of problems, and in some 
 cases are the only possible way of dealing with high-dimensional control 
 settings like the Atari games. 
-However, the representations learned by deep approximators in DRL are often 
-tailored to the problem and give little more information than that required 
-to learn a very specific function of the state-action space. Anderson et al.\ 
-\cite{anderson2015faster} try to partially address this problem with good 
-results in terms of convergence, indicating that RL methods work better when 
-provided with true information about the environment rather than by sheer
-brute-force.
-Moreover, the approaches cited above tend to be grossly 
+However, the approaches cited above tend to be grossly 
 \textit{sample-inefficient}, requiring tens of millions of samples collected
 on-line to reach optimal performance. Several publications successfully deal 
 with this aspect, but nonetheless leave room for improvement (lowering at most
 by one order of magnitude the number of samples required).
 The method introduced by Lange and Riedmiller (2010) \cite{lange2010deep} is 
-similar to ours but lacks in extracting useful information about the dynamics
-of the environment; moreover, their dense architecture predates the more modern
+similar to ours but their dense architecture predates the more modern 
 convolutional approaches in image processing and is less suited for complex
 tasks than our AE.
 
@@ -51,41 +43,54 @@ in up to two orders of magnitude less samples than DQN on Atari games.
 % TODO: add RFS
 The general setting of this problem is typical of DRL problems: we use a deep 
 ANN to extract a representation of an environment, and use that representation 
-to control an agent with standard RL algorithms. 
+to control an agent with standard RL algorithms. We add an additional step after
+the deep feature extraction to further reduce the representation down to the 
+essential bits of information required to solve the problem by using the 
+\textit{Recursive Feature Selection} (RFS) algorithm \cite{castelletti2011tree}.
 
-In our approach we use a modular architecture with two separate stages for the
-training phase, and combine the two stages in an end-to-end fashion during
-the control phase. The two main components of the algorithm are:
+In our approach we use a modular architecture with three separate stages for the
+training phase, and combine the three stages in an end-to-end fashion during
+the control phase. The main components of the algorithm are:
 %
 \begin{enumerate}
     \item a deep convolutional autoencoder which we use to extract a 
     representation of the environment;
     the purpose of the AE is to map the original, pixel-level state space $S$ of
-    the environment into a heavily compressed feature space ${\tilde{S}}$ which
-    contains information of both the state space and the transition model of the
-    environment;
+    the environment into a strongly compressed feature space ${\tilde{S}}$ which
+    contains information of both the state space and part of the transition 
+    model of the environment;
+    \item a \textit{Recursive Feature Selection} (RFS) technique to further 
+    reduce the state representation $\tilde{S}$ and keep only the truly 
+    informative features extracted by the AE, effectively mapping the extracted 
+    state-space to a subspace $\hat{S}$.
     \item a \textit{tree-based} FQI learning algorithm which produces an 
-    estimator for the action-value function, with $\tilde{S}$ as domain. 
-    The estimator is then used for standard greedy control.
+    estimator for the action-value function, with $\hat{S}$ as domain. 
 \end{enumerate}
 %
-% Combine the two components
-The two main components are separately trained to produce the two 
-transformations $ENC: S \rightarrow \tilde{S}$ and $\tilde{Q}^\pi: \tilde{S} 
-\times A \rightarrow \mathbb{R}$. After the training phase, we simply combine 
-the two functions to obtain the action-value function $Q^\pi: S \times A 
-\rightarrow \mathbb{R}$ as follows: 
+The three components are separately trained to produce the following 
+transformations respectively:
+\begin{itemize}
+    \item $ENC: S \rightarrow \tilde{S}$, from the pixel representation to a 
+    compressed feature space;
+    \item $RFS: \tilde{S} \rightarrow \hat{S}$, from the compressed feature space
+    to a minimal subspace with the most informative features;
+    \item $\hat{Q}^\pi: \hat{S} \times A \rightarrow \mathbb{R}$, an 
+    action-value function on $\hat{S}$.
+\end{itemize}
+
+After the training phase, we simply combine the three functions to obtain the 
+action-value function $Q^\pi: S \times A \rightarrow \mathbb{R}$ as follows: 
 %
 \begin{IEEEeqnarray}{rCl}
     %
-    Q^\pi(s, a) = \tilde{Q}^\pi(ENC(s), a)
+    Q^\pi(s, a) = \hat{Q}^\pi(RFS(ENC(s)), a)
     %
 \end{IEEEeqnarray}
 %
 A general description of the process is given in Algorithm \ref{alg:FQI-DSDF}.
 %
 \begin{algorithm}[h]
-    \caption{Fitted Q-Iterations with Deep State-Dynamics Features}
+    \caption{Fitted Q-Iterations with Deep State Features}
     \label{alg:FQI-DSDF}
     \begin{algorithmic}
 	\STATE \textbf{Given}: an arbitrary policy $\pi$;
@@ -93,12 +98,14 @@ A general description of the process is given in Algorithm \ref{alg:FQI-DSDF}.
 	\STATE Initialize the decoder $DEC: \tilde{S} \rightarrow S$ arbitrarily;
 	\REPEAT 
 	    \STATE Collect a set $\mathcal{TS}$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ using $\pi$;
-	    \STATE Train the composition $DEC \circ ENC: S \rightarrow S$ using the first column of $\mathcal{TS}$ as input and the last column as target;
+	    \STATE Train the composition $DEC \circ ENC: S \rightarrow S$ using the first column of $\mathcal{TS}$ as input and target;
 	    \STATE Build a set $\mathcal{TS}_F$ of four-tuples $(f \in \tilde{S}, a \in A, r \in \mathbb{R}, f' \in \tilde{S})$ by applying the encoder to the first and last column of $\mathcal{TS}$ s.t. $f = ENC(s)$;
-	    \STATE Call FQI on $\mathcal{TS}_F$ to produce $\tilde{Q}^\pi: \tilde{S} \times A \rightarrow \mathbb{R}$;
-	    \STATE Combine $\tilde{Q}^\pi$ and $ENC$ to produce $Q^\pi: S \times A \rightarrow \mathbb{R}$:
+	    \STATE Call the RFS feature selection algorithm on $\mathcal{TS}_F$ to obtain a space reduction $FS: \tilde{S} \rightarrow \hat{S}$;
+	    \STATE Build a set $\mathcal{TS}_{\hat{F}}$ of four-tuples $(\hat{f} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{f'} \in \hat{S})$ by applying $RFS$ to the first and last column of $\mathcal{TS}_F$ s.t. $\hat{f} = RFS(f)$;
+	    \STATE Call FQI on $\mathcal{TS}_{\hat{F}}$ to produce $\hat{Q}^\pi: \hat{S} \times A \rightarrow \mathbb{R}$;
+	    \STATE Combine $\hat{Q}^\pi$, $RFS$ and $ENC$ to produce $Q^\pi: S \times A \rightarrow \mathbb{R}$:
 		\[
-		Q^\pi(s, a) = \tilde{Q}^\pi(ENC(s), a)
+		Q^\pi(s, a) = \hat{Q}^\pi(RFS(ENC(s)), a)
 		\]
 	    \STATE Set $\pi(s) = \underset{a}{\arg\max} Q^{\pi}(s, a)$;
 	\UNTIL{stopping condition is met;}
