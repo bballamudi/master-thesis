@@ -988,7 +988,7 @@ are applied to the attributes starting from the root until a leaf is reached,
 and the corresponding label is output by the model. 
 
 To learn a decision tree, the input space is partitioned recursively by 
-splitting a subset of the input space according to a binary condition, in a 
+splitting a subset of the space according to a binary condition, in a 
 greedy procedure called \textit{Top-Down Induction of Decision Trees} (TDIDT) 
 based on \textit{recursive binary partitioning} (see Figure 
 \ref{f:recursive_splitting}). 
@@ -1059,10 +1059,10 @@ different criteria such as:
 	%
     \end{IEEEeqnarray}
     %
-    where $S^{\mathit{All}}$ is the set of all indices in the set, 
-    $S^{\mathit{T}}$ is the set of indices for which the attribute test is true,
-    and $S^{\mathit{F}}$ is the set of indices for which the attribute test is
-    false.
+    where $S^{\mathit{All}}$ is the set of all sample indices in the set $S$, 
+    $S^{\mathit{T}}$ is the partition of indices for which the attribute test is 
+    true, and $S^{\mathit{F}}$ is the partition of indices for which the 
+    attribute test is false.
 \end{itemize}
 
  
@@ -1119,9 +1119,11 @@ in Algorithm \ref{alg:extra}.
 \end{algorithm}
 %
 
-The procedure has two main parameters: $K$, the number of attributes randomly 
-selected at each node and $n_{min}$, the minimum sample size for splitting a 
-node. 
+The procedure has two main parameters: 
+\begin{itemize}
+    \item $K$, the number of attributes randomly selected at each node;
+    \item $n_{min}$, the minimum sample size for splitting a node. 
+\end{itemize}
 In the prediction phase, the output of each tree in the ensemble is aggregated
 to compute the final prediction, with a majority voting in classification 
 problems and arithmetic average in regression problems.

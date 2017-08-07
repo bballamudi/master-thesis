@@ -19,7 +19,6 @@ components. Technical details of implementation will be discussed in the next
 chapter.
 
 \section{Motivation}
-% TODO: remove part on dynamics1
 The state-of-the-art DRL methods listed in the previous chapter are able to 
 outperform classic RL algorithms in a wide variety of problems, and in some 
 cases are the only possible way of dealing with high-dimensional control 
@@ -83,7 +82,7 @@ action-value function $Q^\pi: S \times A \rightarrow \mathbb{R}$ as follows:
 %
 \begin{IEEEeqnarray}{rCl}
     %
-    Q^\pi(s, a) = \hat{Q}^\pi(RFS(ENC(s)), a)
+    Q^\pi(s, a) = \hat{Q}^\pi(RFS(ENC(s)), a) \label{eq:final_output}
     %
 \end{IEEEeqnarray}
 %
@@ -112,8 +111,10 @@ A general description of the process is given in Algorithm \ref{alg:FQI-DSDF}.
     \end{algorithmic}
 \end{algorithm}
 %
+\section{Atari Games}
+% TODO: Brief introduction
+
 \section{Extraction of State Features}
-% TODO: remove part on dynamics
 The AE used in our approach consists of two main components, namely an 
 \textit{encoder} and a \textit{decoder} (cf. \ref{s:AE}). To the end of 
 explicitly representing the encoding purpose of the AE, we keep a separate 
@@ -125,17 +126,29 @@ networks $AE: DEC \circ ENC: S \rightarrow S$. Note that the composition is
 differentiable end-to-end, and basically consists in \textit{plugging} the last
 layer of the encoder as input to the decoder. 
 
-We train the AE to extract\footnote{By \textit{extraction} we mean the 
-transformation computed by the encoder.} a joint representation of the 
-environment's state and dynamics by SGD, using a training set of $(s, s')$ 
-tuples of consecutive states collected with a sufficiently explorative policy. 
-The AE must therefore learn to map a state to its successor under the sampling 
-policy. 
-
-This ...
+We train the AE ...
 
 \section{Tree-based Recursive Feature Selection}
 % TODO
 
 \section{Tree-based Fitted Q-Iteration}
-% TODO
+The last component of our training pipeline is the Fitted Q-Iteration algorithm 
+applied to the training set $\mathcal{TS}_{\hat{F}}$ of four-tuples
+$(\hat{f} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{f'} \in \hat{S})$, 
+obtained by applying RFS to the first and last column of 
+$\mathcal{TS}_{\tilde{F}}$.
+For consistency with the feature selection algorithm, we use the Extra-Trees 
+learning method as function approximator for the action-value function. 
+We train the model to output a multi-dimensional estimate, with one value for 
+each action that the agent can take in the environment, and we select the single
+output value on $\mathbb{R}$ using the action identifier as index (e.g.\ 
+$Q(s, 0)$ will return the first dimension of the model's output). 
+The final output of the training procedure is an estimator 
+$\hat{Q}^\pi: \hat{S} \times A \rightarrow \mathbb{R}$ which maps the compressed
+and reduced state-action space to a real value. 
+
+% TODO: image of the full model AE + RFS + FQI
+ 
+The final step of our algorithm consists in composing the outputs of the three 
+modules in a single, end-to-end model which can operate directly on the original
+feature space $S$ as defined in \eqref{eq:final_output}.
