@@ -555,7 +555,7 @@ $V^{\pi}$}:
     %
 \end{IEEEeqnarray}
 %
-Intuitively, relation \eqref{eq:BEV} decomposes the state-value function as the 
+Intuitively, Equation \eqref{eq:BEV} decomposes the state-value function as the 
 sum of the immediate reward collected from a state $s$ to a successor state 
 $s'$, and the value of $s'$ itself; by considering the transition model of the 
 MDP and the policy being followed, we see that the Bellman equation simply 
@@ -601,12 +601,12 @@ denoted $Q^*$:
     %
 \end{IEEEeqnarray}
 %
-Notice that equivalence \eqref{eq:Qstar_V} in this definition highlights the 
+Notice that Equation \eqref{eq:Qstar_V} in this definition highlights the 
 relation between $Q^*$ and $V^*$.
 
 Since $V^*$ and $Q^*$ are value functions of an MDP, they must satisfy the same
-type of recursive relations that we described in \eqref{eq:BEV}, in this case
-called the \textit{Bellman optimality equations}.
+type of recursive relations that we described in Equation \eqref{eq:BEV}, 
+in this case called the \textit{Bellman optimality equations}.
 The Bellman optimality equation for $V^*$ expresses the fact that the value of
 a state associated to an optimal policy must be the expected return of the best
 action that the agent can take in that state:
@@ -721,7 +721,7 @@ because:
     Q^\pi(s, \pi'(s)) = \max_{a \in A} Q^\pi(s, a) \ge Q^\pi(s, \pi(s)) = V^\pi(s) \label{eq:policy_improv}
 \end{IEEEeqnarray}
 %
-This continuous improvement is applied until the inequality in \eqref{eq:policy_improv} 
+This continuous improvement is applied until Inequality \eqref{eq:policy_improv} 
 becomes an equality, i.e. until the improved policy satisfies the 
 Bellman optimality equation \eqref{eq:BOEV}. Since the algorithm gives no 
 assurances on the number of updates required for convergence, some stopping
@@ -856,7 +856,7 @@ The training procedure of SARSA can be summarized with Algorithm \ref{alg:SARSA}
 	    \REPEAT	
 		\STATE Take action $a$, observe $r$, $s'$
 		\STATE Choose $a'$ from $s'$ using $\pi$
-		\STATE Update $Q(s, a)$ using rule \eqref{eq:SARSA_update}
+		\STATE Update $Q(s, a)$ using Rule \eqref{eq:SARSA_update}
 		\IF{$\pi$ is time-variant}
 		    \STATE Update $\pi$ towards greediness
 		\ENDIF
@@ -903,7 +903,7 @@ provided in Algorithm \ref{alq:q_learning}.
 	    \REPEAT	
 		\STATE Choose $a$ from $s'$ using $\pi$
 		\STATE Take action $a$, observe $r$, $s'$
-		\STATE Update $Q(s, a)$ using rule \eqref{eq:QL_update}
+		\STATE Update $Q(s, a)$ using Rule \eqref{eq:QL_update}
 		\STATE $s \leftarrow s'$
 	    \UNTIL{$s$ is terminal or Q did not change}
 	\UNTIL{training ended or Q did not change}
@@ -913,19 +913,19 @@ provided in Algorithm \ref{alq:q_learning}.
 
 \subsection{Fitted Q-Iteration}
 Having introduced a more classic set of traditional RL algorithms in the 
-previous sections, we now present a more modern approach to solve MDPs with the 
+previous sections, we now present a more modern algorithm to solve MDPs with the 
 use of supervised learning algorithms to estimate the value functions.
 
 As we will see later in this thesis, the general idea of estimating the value 
 functions with a supervised model is not an uncommon approach, and it has been 
 often used in the literature to solve a wide range of environments with 
 high-dimensional state-action spaces.
-This approach is especially useful in problems for which the closed form 
-solutions of DP, or the guarantees of visiting all state-action pairs required 
-for MC and TD are not feasible.
+This is especially useful in problems for which the closed form solutions of DP,
+or the guarantees of visiting all state-action pairs required for MC and TD are 
+not feasible.
 
 Here, we choose the \textit{Fitted Q-Iteration} (FQI) \cite{ernst2005tree} 
-approach as representative for this whole class, because it will be used in 
+algorithm as representative for this whole class, because it will be used in 
 later sections of this thesis as a key component of the presented methodology.
 FQI is an \textit{off-line}, \textit{off-policy}, \textit{model-free}, 
 \textit{value-based} reinforcement learning algorithm which computes an 
@@ -937,9 +937,9 @@ a priori.
 
 The core idea behind the algorithm is to produce a sequence of approximations of
 $Q^\pi$, where each approximation is associated to one step of the 
-\textit{value-iteration} algorithm seen in \ref{s:value_iteration}, and computed
-using the previous approximation as part of the target for the supervised 
-learning problem. The process is described in Algorithm \ref{alg:FQI}.
+\textit{value-iteration} algorithm seen in Section \ref{s:value_iteration}, 
+and computed using the previous approximation as part of the target for the 
+supervised learning problem. The process is described in Algorithm \ref{alg:FQI}.
 %
 \begin{algorithm}[h]
     \caption{Fitted Q-Iteration}
@@ -1011,7 +1011,7 @@ At each step, the attribute which best splits the training samples is selected
 for splitting, where the quality of the split is determined according to 
 different criteria such as:
 \begin{itemize}
-    \item \textit{Gini impurity}: the probability of incorrectly labeling a 
+    \item \textit{gini impurity}, the probability of incorrectly labeling a 
     random training sample, if it was randomly labeled according to the 
     distribution of labels in the partition. Attributes with low Gini impurity
     are selected with a higher priority. The measure is defined for a set as:
@@ -1023,8 +1023,8 @@ different criteria such as:
     \end{IEEEeqnarray}
     %
     where $S$ is a set of samples with labels $\{1, ..., K\}$ and $p_i$ is the
-    fraction of samples with label $i$ in the set.
-    \item \textit{Information gain}: the expected change in  information entropy
+    fraction of samples with label $i$ in the set;
+    \item \textit{information gain}, the expected change in  information entropy
     resulting form the split. To build a tree, the information gain of each 
     possible split is computed and the most informative split is selected. The 
     process is then repeated iteratively until the tree is complete. The measure
@@ -1045,8 +1045,8 @@ different criteria such as:
 	%
     \end{IEEEeqnarray}
     %
-    for a set $S$ and a split $a$.
-    \item \textit{Variance reduction}: typically used in regression trees (with 
+    for a set $S$ and a split $a$;
+    \item \textit{variance reduction}, typically used in regression trees (with 
     a continuous co-domain), it quantifies the total reduction of the variance
     in the target after the split. Attributes with higher variance reduction
     are selected for splitting with higher priority. The metric is computed as:
@@ -1066,14 +1066,14 @@ different criteria such as:
 \end{itemize}
 
  
-\subsection{Extremely Randomized Trees}
+\subsection{Extremely Randomized Trees}\label{s:extra-trees}
 \textit{Extremely Randomized Trees} (Extra-Trees) \cite{geurts2006extremely}
 is a tree-based ensemble method for supervised learning, which consists in 
-strongly randomizing both attribute and cut-point choice while splitting a tree 
-node. 
-The Extra-Trees algorithm builds an ensemble of unpruned trees according to the 
-classical top-down procedure, but differently from other tree induction methods
-it splits nodes by choosing cut-points fully at random. 
+strongly randomizing both attribute and cut-point choice while splitting a 
+decision tree node. 
+The Extra-Trees algorithm builds an ensemble of unpruned decision trees 
+according to the classical top-down procedure, but differently from other tree 
+induction methods it splits nodes by choosing cut-points fully at random. 
 Extra-Trees can be applied to both classification and regression by building 
 an ensemble of trees for either task.
 

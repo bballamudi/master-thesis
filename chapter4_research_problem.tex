@@ -1,4 +1,4 @@
-\chapter{Fitted Q-Iteration with Deep State-Dynamics Features}
+\chapter{Fitted Q-Iteration with Deep State Features}
 \label{ch3_setup}
 \thispagestyle{empty}
 
@@ -10,9 +10,11 @@ and powerful batch RL approach of FQI.
 Given a high-dimensional state space of pixels representing sequences of 
 greyscale frames from an Atari game, we use a deep convolutional autoencoder 
 to map the original state space to a compressed \textit{feature space} which 
-accounts for both the states and their one-step dynamics (i.e. the transition 
-model). This compressed representation is then used to run a \textit{tree-based}
-FQI algorithm in batch mode.
+accounts for the states and its nominal state dynamics (i.e. those changes not
+directly influenced by the agent). We reduce the representation further by 
+applying a feature selection algorithm to the extracted state features and this 
+final compressed representation is then used to run a \textit{tree-based} FQI 
+algorithm in batch mode.
 
 In this chapter we give a formal description of the method and its core 
 components. Technical details of implementation will be discussed in the next
@@ -111,12 +113,10 @@ A general description of the process is given in Algorithm \ref{alg:FQI-DSDF}.
     \end{algorithmic}
 \end{algorithm}
 %
-\section{Atari Games}
-% TODO: Brief introduction
 
 \section{Extraction of State Features}
 The AE used in our approach consists of two main components, namely an 
-\textit{encoder} and a \textit{decoder} (cf. \ref{s:AE}). To the end of 
+\textit{encoder} and a \textit{decoder} (cf.\ Section \ref{s:AE}). To the end of 
 explicitly representing the encoding purpose of the AE, we keep a separate 
 notation of the two modules; we therefore refer to two different CNNs, namely 
 $ENC: S \rightarrow \tilde{S}$ that maps the original state space to the 
@@ -131,14 +131,12 @@ We train the AE ...
 \section{Tree-based Recursive Feature Selection}
 % TODO
 
-\section{Tree-based Fitted Q-Iteration}
+\section{Fitted Q-Iteration}
 The last component of our training pipeline is the Fitted Q-Iteration algorithm 
 applied to the training set $\mathcal{TS}_{\hat{F}}$ of four-tuples
 $(\hat{f} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{f'} \in \hat{S})$, 
 obtained by applying RFS to the first and last column of 
-$\mathcal{TS}_{\tilde{F}}$.
-For consistency with the feature selection algorithm, we use the Extra-Trees 
-learning method as function approximator for the action-value function. 
+$\mathcal{TS}_{\tilde{F}}$. 
 We train the model to output a multi-dimensional estimate, with one value for 
 each action that the agent can take in the environment, and we select the single
 output value on $\mathbb{R}$ using the action identifier as index (e.g.\ 
@@ -151,4 +149,4 @@ and reduced state-action space to a real value.
  
 The final step of our algorithm consists in composing the outputs of the three 
 modules in a single, end-to-end model which can operate directly on the original
-feature space $S$ as defined in \eqref{eq:final_output}.
+feature space $S$ as defined in Equation \eqref{eq:final_output}.

@@ -9,16 +9,25 @@ used to perform experiments. We try to provide a complete description of the
 parametrization of the components and of the training procedure to ensure 
 reproducibility of the experimental results.
 
-\section{Environment Preprocessing}
-The Atari simulator that we used as test bench provides the state observations 
-in the form of $3 \times 110 \times 84$ RGB images. When an action is executed
-in the environment, the simulator repeats the action for four consecutive 
-frames of the game and then provides another observation, effectively lowering
-the frame rate from $60$ \textit{FPS} to $15$ \textit{FPS} and making the 
+\section{Atari Environments}
+The \textit{Arcade Learning Environment} (ALE) \cite{bellemare2013arcade} is an 
+evaluation platform for RL agents.
+ALE offers a programmatic interface to hundreds of game environments for the 
+\textit{Atari 2600}, a popular home video game console developed in 1977 with 
+more than 500 games available, and is often referred to simply as 
+Atari environments (or games). 
+We use the implementation of ALE provided by the \textit{Gym 0.8.1} package for 
+Python 2.7, developed by OpenAI and maintained as an open source project. 
+This implementation provides access to the game state in the form of 
+$3 \times 110 \times 84$ RGB frames, produced at an internal frame-rate of $60$ 
+frames per second (FPS).
+When an action is executed in the environment, the simulator repeats the action 
+for four consecutive frames of the game and then provides another observation, 
+effectively lowering the frame rate from $60$ FPS to $15$ FPS and making the 
 effects of actions more evident. 
 We perform a preprocessing operation on the states similar to that performed
 by Mnih et al.\ in DQN, in order to include all necessary information about
-the environment and its dynamics in the new state representation.
+the environment and its nominal dynamics in the new state representation.
 First we convert each RGB observation to a 1D greyscale representation in the
 discrete 8-bit interval $[0, 255]$ using the \textit{ITU-R 601-2 luma transform}:
 %
@@ -32,7 +41,8 @@ where $R$, $G$, $B$ are the 8-bit components of the image. We then normalize
 these values in the $[0, 1]$ interval via \textit{max-scaling} (i.e.\ dividing 
 each pixel by $255$).
 We also reduce the height of the image by two pixels in order to prevent 
-information loss due to a rounding operation performed by the AE.
+information loss due to a rounding operation performed by the convolution
+method used in the AE.
 Finally, we concatenate the preprocessed observation to the last three 
 preprocessed frames observed from the environment, effectively blowing up the
 state space to a $4 \times 108 \times 84$ vector space. The initial state for
@@ -43,6 +53,13 @@ by the simulator.
 Moreover, in order to facilitate comparisons and improve stability, we remain 
 loyal to the methodology used for DQN and perform the same clipping of the 
 reward signal in a $[-1, 1]$ interval. 
+
+We add a final tweak to the Gym implementation of ALE in order to fix a 
+requirement of some of the environments to perform some specific actions in 
+order to start an episode (e.g. in \textit{Breakout} it is required that the 
+agent takes actions 1, 4 or 5 to start the game). We automatically start each 
+episode by randomly selecting one of the initial actions of the game and forcing
+the agent to take that action at the beginning of the episode. 
 
 \section{Autoencoder}
 %
@@ -70,7 +87,7 @@ reward signal in a $[-1, 1]$ interval.
     \label{t:AE_structure}
 \end{table}
 %
-We structure the AE to take as input the the preprocessed observations from the
+We structure the AE to take as input the preprocessed observations from the
 environment and predict values on the same vector space.
 The first four convolutional layers make up the encoder and perform a 2D 
 convolution with the \textit{valid} padding algorithm such that the input of 
@@ -191,8 +208,76 @@ observing a transition with reward $r_i$ in $\mathcal{TS}$:
 % Significance
 
 \section{Tree-based Fitted Q-Iteration}
-% I/O
-% Parametrization of trees
+We use the FQI algorithm to learn an approximation of the $Q$ function form the
+compressed and reduced state space extracted by the previous two modules. 
+For consistency with the feature selection algorithm, we use the Extra-Trees 
+learning method as function approximator for the action-value function.
+The model is trained to map the 1D compressed feature space $\hat{S}$ to the 
+$|A|$-dimensional action-value space $\mathbb{R}^{|A|}$, and we use the action 
+identifiers to select the single output value of our approximated $\hat{Q}$ 
+function. 
+The parametrization of the decision trees built for the ensemble is reported in
+Table \ref{t:tree_params}\footnote{We use two different values for the minimum 
+number of samples required to split an internal node or a leaf.} and the
+parametrization for the whole algorithm is reported in Table 
+\ref{t:extra_params} (cf.\ Section \ref{s:extra-trees}).
+
+%
+\begin{table}[h]	
+    \centering
+    \begin{tabular}{l c} 
+	\hline
+	Parameter & Value \\ 
+	\hline 
+	Scoring method &  Variance reduction \\
+	Max tree depth & None \\
+	$n_{min}$ (node) & 5\\
+	$n_{min}$ (leaf) & 2 \\
+	\hline
+    \end{tabular}
+    \caption{Parameters for base estimators in Extra-Trees}
+    \label{t:tree_params}
+\end{table}
+%
+
+%
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l c} 
+	\hline
+	Parameter & Value \\ 
+	\hline 
+	Number of estimators & 100 \\
+	$K$ &  All available attributes \\
+	\hline
+    \end{tabular}
+    \caption{Parameters for Extra-Trees}
+    \label{t:extra_params}
+\end{table}
+%
+
+No explicit pre or post processing is performed on the input and targets since
+trees are know to be robust to the scale and noise of the data (unlike neural
+networks, for which we had to perform explicit normalization). 
+
+Since the FQI procedure introduces a small bias to the action-value estimate at 
+each iteration (due to approximation error and a similar over-estimation issue 
+to that described in Section \ref{SOA:value}), we implement an early stopping 
+procedure based on the evaluation of the agent's performance under an 
+$\varepsilon$-greedy policy on the current approximation $\hat{Q}$ (with 
+$\varepsilon = 0.05$), and we stop the algorithm if the agent's performance 
+does not improve for five consecutive iterations.
+The evaluation procedure is executed after each fit of the Extra-Trees
+algorithm, by composing all the modules in the pipeline to obtain the full $Q$ 
+approximation defined in Equation \eqref{eq:final_output}. 
+The performance is evaluated by running the policy for five episodes and 
+averaging the clipped cumulative return of each evaluation episode. 
+We also consider the average number of steps per episode as indicator of the 
+agent performance for human assessment, but we never use it as part of the 
+algorithm. 
+
+Finally, we consider a discount factor $\gamma = 0.99$ for the MDP in order to 
+give importance to rewards in a sufficiently large time frame. 
 
 
 
