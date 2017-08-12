@@ -10,7 +10,7 @@ and powerful batch RL approach of FQI.
 Given a high-dimensional state space of pixels representing sequences of 
 greyscale frames from an Atari game, we use a deep convolutional autoencoder 
 to map the original state space to a compressed \textit{feature space} which 
-accounts for the states and its nominal state dynamics (i.e. those changes not
+accounts for the states and its nominal state dynamics (i.e.\ those changes not
 directly influenced by the agent). We reduce the representation further by 
 applying a feature selection algorithm to the extracted state features and this 
 final compressed representation is then used to run a \textit{tree-based} 
@@ -56,13 +56,12 @@ starting from $0$ with no particular order.
 We also assume to be operating in a three dimensional state space 
 ($C \times W \times H$\footnote{Channels times Width times Height}) for 
 consistency with the experimental setting on which we tested the algorithm (with
-CNNs and pixel-level state spaces), although in general the algorithm requires 
-no such assumption and could be easily adapted to higher or lower dimensional 
-settings. 
+pixel-level state spaces), although in general the algorithm requires no such 
+assumption and could be easily adapted to higher or lower dimensional settings. 
 
-The algorithm uses a modular architecture which results in three separate stages
-for the training phase, and combines the modules in an end-to-end fashion during
-the control phase. The main components of the algorithm are:
+The algorithm uses a modular architecture with three different components which 
+are combined after training to produce an approximator of the action-value 
+function. The main components of the algorithm are:
 %
 \begin{enumerate}
     \item a deep convolutional autoencoder which we use to extract a 
@@ -80,8 +79,14 @@ the control phase. The main components of the algorithm are:
 \end{enumerate}
 %
 
-At each training step, the modules are sequentially trained to produce the 
-following transformations:
+The full procedure consists in alternating a training step and an evaluation 
+step, until the desired performance is reached.
+
+A training step of the algorithm takes as input a training set $\mathcal{TS}$ of
+four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ and produces a new 
+approximation of the action-value function, and consists in sequentially 
+training the three components from scratch to produce the following 
+transformations respectively:
 \begin{itemize}
     \item $ENC: S \rightarrow \tilde{S}$, from the pixel representation to a 
     compressed feature space;
@@ -90,8 +95,8 @@ following transformations:
     \item $\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$, an approximation
     of the optimal action-value function on $\hat{S}$.
 \end{itemize}
-After the training phase, we simply combine the three functions to obtain the 
-real action-value function $Q: S \times A \rightarrow \mathbb{R}$ as follows: 
+After training, we simply combine the three functions to obtain the full
+action-value function $Q: S \times A \rightarrow \mathbb{R}$ as follows: 
 %
 \begin{IEEEeqnarray}{rCl}
     %
@@ -100,10 +105,8 @@ real action-value function $Q: S \times A \rightarrow \mathbb{R}$ as follows:
 \end{IEEEeqnarray}
 %
 
-A full training step of the algorithm takes as input a training set 
-$\mathcal{TS}$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$
-and produces a new approximation of the action-value function.
-We define a greedy policy $\pi$ based on the current approximation of $Q$ as:
+To collect the training set, we define a greedy policy $\pi$ based on the 
+current approximation of $Q$ as:
 %
 \begin{IEEEeqnarray}{rCl}
     %
@@ -111,28 +114,38 @@ We define a greedy policy $\pi$ based on the current approximation of $Q$ as:
     %
 \end{IEEEeqnarray}
 %
-and we use an $\varepsilon$-greedy policy $\pi_\varepsilon$ based on $\pi$ to 
-collect $\mathcal{TS}$ at each training step, in a \textit{semi-batch} way.
-% TODO: talk about how you initialize the policy to random, maybe split in more paragraphs
-After each step, we decrease the randomicity of $\pi_\varepsilon$ and allow the
-agent to exploit the learned $Q$ to collect the new training set. This 
-results in a sufficiently high exploration at the beginning of the procedure, 
-but increasingly exploits the learned knowledge to improve the quality of the 
-collected samples after each training step, as the agents sees better and rarer
-states. 
+and we use an $\varepsilon$-greedy policy $\pi_\varepsilon$ based on $\pi$ 
+(cf.\ Section \ref{s:policies}) to collect $\mathcal{TS}$.
+We initialize the $\varepsilon$-greedy policy as fully random (which means that
+we do not need an approximation of $Q$ for the first step), and we decrease 
+$\varepsilon$ after each step down to a fixed minimum positive value 
+$\varepsilon_{min}$. 
+This results in a sufficiently high exploration at the beginning of the 
+procedure, but increasingly exploits the learned knowledge to improve the 
+quality of the collected samples after each training step, as the agent learns 
+to reach states with a higher value. The lower positive bound on $\varepsilon$ 
+is kept to minimize overfitting and allow the agent to explore potentially 
+better states even in the later steps of the algorithm.
 A similar approach, called \textit{$\varepsilon$-annealing}, was used by Mnih et
 al.\ (2015) \cite{mnih2015human} for the online updates in DQN.
-Each training step is followed by an evaluation of the greedy policy $\pi$ to 
-determine the quality of the learned $Q$ and eventually stop the procedure
-when the performance is deemed satisfactory. 
+
+Each training step is followed by an evaluation phase to determine the quality 
+of the learned policy and eventually stop the procedure when the performance is 
+deemed satisfactory.
 
 A general description of the process is reported in Algorithm \ref{alg:FQI-DSDF},
-and details on each training phase are given in the following sections. 
+and details on the training phases and evaluation step are given in the 
+following sections. 
 %
 \begin{algorithm}[h]
-    \caption{Fitted Q-Iterations with Deep State Features}
+    \caption{Fitted Q-Iteration with Deep State Features}
     \label{alg:FQI-DSDF}
     \begin{algorithmic}
+	\STATE Given: 
+	    \begin{ALC@g}
+	        \STATE $\varepsilon_{min} \in (0, 1)$
+	        \STATE $\varphi: [\varepsilon_{min}, 1] \rightarrow [\varepsilon_{min}, 1]$ s.t.\ $\varphi(x) < x, \forall x \in (\varepsilon_{min}, 1]$ and $\varphi(\varepsilon_{min}) = \varepsilon_{min}$;
+	    \end{ALC@g}
 	\STATE Initialize the encoder $ENC: S \rightarrow \tilde{S}$ arbitrarily;
 	\STATE Initialize the decoder $DEC: \tilde{S} \rightarrow S$ arbitrarily;
 	\STATE Initialize $Q$ arbitrarily;
@@ -141,20 +154,29 @@ and details on each training phase are given in the following sections.
 	\REPEAT 
 	    \STATE Collect a set $\mathcal{TS}$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ using $\pi_\varepsilon$;
 	    \STATE Train the composition $DEC \circ ENC: S \rightarrow S$ using the first column of $\mathcal{TS}$ as input and target;
-	    \STATE Build a set $\mathcal{TS}_F$ of four-tuples $(f \in \tilde{S}, a \in A, r \in \mathbb{R}, f' \in \tilde{S})$ by applying the encoder to the first and last column of $\mathcal{TS}$ s.t. $f = ENC(s)$;
-	    \STATE Call the RFS feature selection algorithm on $\mathcal{TS}_F$ to obtain a space reduction $FS: \tilde{S} \rightarrow \hat{S}$;
-	    \STATE Build a set $\mathcal{TS}_{\hat{F}}$ of four-tuples $(\hat{f} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{f'} \in \hat{S})$ by applying $RFS$ to the first and last column of $\mathcal{TS}_F$ s.t. $\hat{f} = RFS(f)$;
-	    \STATE Call FQI on $\mathcal{TS}_{\hat{F}}$ to produce $\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$;
+	    \STATE Build a set $\mathcal{TS}_{ENC}$ of four-tuples $(\tilde{s} \in \tilde{S}, a \in A, r \in \mathbb{R}, \tilde{s}' \in \tilde{S})$ by applying the encoder to the first and last column of $\mathcal{TS}$ s.t. $\tilde{s} = ENC(s)$;
+	    \STATE Call the RFS feature selection algorithm on $\mathcal{TS}_{ENC}$ to obtain a space reduction $RFS: \tilde{S} \rightarrow \hat{S}$;
+	    \STATE Build a set $\mathcal{TS}_{RFS}$ of four-tuples $(\hat{s} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{s}' \in \hat{S})$ by applying $RFS$ to the first and last column of $\mathcal{TS}_{ENC}$ s.t. $\hat{s} = RFS(\tilde{s})$;
+	    \STATE Call FQI on $\mathcal{TS}_{RFS}$ to produce $\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$;
 	    \STATE Combine $\hat{Q}$, $RFS$ and $ENC$ to produce $Q: S \times A \rightarrow \mathbb{R}$:
 		\[
 		    Q(s, a) = \hat{Q}(RFS(ENC(s)), a)
 		\]
-	    \STATE Reduce $\varepsilon$ according to some criterion;
-	\UNTIL{stopping condition is met;}
+	    \STATE Set $\varepsilon = \varphi(\varepsilon)$;
+	    \STATE Evaluate $\pi$; 
+	\UNTIL{stopping condition on evaluation performance is met;}
 	\STATE Return $Q$
     \end{algorithmic}
 \end{algorithm}
 %
+Note that in general the \textit{semi-batch} approach which starts from a 
+training set collected under a fully random policy and sequentially collects new
+dataset as performance improves is not strictly necessary. It is also possible
+to run a single training step in pure batch mode, using a dataset collected 
+under an expert policy (albeit with some degree of exploration required by FQI) 
+to produce an approximation of the optimal $Q$ function in one step. 
+This allows to exploit the sample efficiency of the algorithm in situations 
+where, for instance, collecting expert samples is expensive or difficult.
 
 \section{Extraction of State Features}
 The AE used in our approach consists of two main components, namely an 
@@ -162,9 +184,9 @@ The AE used in our approach consists of two main components, namely an
 explicitly representing the encoding purpose of the AE, we keep a separate 
 notation of the two modules; we therefore refer to two different CNNs, namely 
 $ENC: S \rightarrow \tilde{S}$ that maps the original state space to the 
-compressed representation $\tilde{S}$, and $DEC: \tilde{S} \rightarrow S$ which
-performs the inverse transformation. The full AE is the composition of the two 
-networks $AE: DEC \circ ENC: S \rightarrow S$. Note that the composition is 
+compressed representation in $\tilde{S}$, and $DEC: \tilde{S} \rightarrow S$ 
+which performs the inverse transformation. The full AE is the composition of the
+two networks $AE: DEC \circ ENC: S \rightarrow S$. Note that the composition is 
 differentiable end-to-end, and basically consists in \textit{plugging} the last
 layer of the encoder as input to the decoder. 
 
@@ -175,20 +197,21 @@ We train the AE ...
 
 \section{Fitted Q-Iteration}
 The last component of our training pipeline is the Fitted Q-Iteration algorithm 
-(cf. \ref{s:FQI}) run on the training set $\mathcal{TS}_{\hat{F}}$ of 
-four-tuples $(\hat{f} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{f'} \in \hat{S})$, 
-obtained by applying RFS to the first and last column of 
-$\mathcal{TS}_{\tilde{F}}$. 
-We train the model to output a multi-dimensional estimate on $\mathbb{R}^{|A|}$,
-with one value for each action that the agent can take in the environment, and 
-we select the single output value on $\mathbb{R}$ using the action identifier as
-index (e.g.\ $Q(s, 0)$ will return the first dimension of the model's output). 
-The final output of the training procedure is an estimator 
-$\hat{Q}^\pi: \hat{S} \times A \rightarrow \mathbb{R}$ which maps the compressed
-and reduced state-action space to a real value. 
+(cf.\ \ref{s:FQI}).
+We provide as input to the procedure a new training set $\mathcal{TS}_{RFS}$
+of four-tuples $(\hat{s} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{s}' \in \hat{S})$, 
+obtained by applying the $RFS$ transformation to the first and last column of 
+$\mathcal{TS}_{ENC}$. 
+We train the model to output a multi-dimensional estimate of the action-value
+function on $\mathbb{R}^{|A|}$, with one value for each action that the agent 
+can take in the environment, and we restrict the output to a single value on 
+$\mathbb{R}$ using the action identifier as index (e.g.\ $Q(s, 0)$ will return 
+the first dimension of the model's output, corresponding to the value of action
+0 in state $s$). 
+The output of this training phase is the transformation 
+$\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$, which is then combined with 
+$ENC$ and $RFS$ as per Equation \eqref{eq:final_output} to produce the next
+approximation of $Q$. This phase also concludes the training step.
 
 % TODO: image of the full model AE + RFS + FQI
- 
-The final step of our algorithm consists in composing the outputs of the three 
-modules in a single, end-to-end model which can operate directly on the original
-feature space $S$ as defined in Equation \eqref{eq:final_output}.
+

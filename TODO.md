@@ -10,7 +10,6 @@
 
 * Chapter 4: Research Problem
     * Add images
-    * Re-check section 4.2 because I'm not sure it isn't total shit
     * Write AE training methodology 		[when methodology is final]
     * Write RFS (4.4)
 

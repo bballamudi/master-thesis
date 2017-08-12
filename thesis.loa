@@ -3,4 +3,4 @@
 \contentsline {algorithm}{\numberline {3}{\ignorespaces Fitted Q-Iteration\relax }}{24}
 \contentsline {algorithm}{\numberline {4}{\ignorespaces Extra-Trees node splitting\relax }}{27}
 \contentsline {algorithm}{\numberline {5}{\ignorespaces Deep Q-Learning with Experience Replay\relax }}{30}
-\contentsline {algorithm}{\numberline {6}{\ignorespaces Fitted Q-Iterations with Deep State Features\relax }}{40}
+\contentsline {algorithm}{\numberline {6}{\ignorespaces Fitted Q-Iteration with Deep State Features\relax }}{41}

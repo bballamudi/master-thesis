@@ -28,8 +28,9 @@ effects of actions more evident.
 We perform a preprocessing operation on the states similar to that performed
 by Mnih et al.\ in DQN, in order to include all necessary information about
 the environment and its nominal dynamics in the new state representation.
-First we convert each RGB observation to a 1D greyscale representation in the
-discrete 8-bit interval $[0, 255]$ using the \textit{ITU-R 601-2 luma transform}:
+First we convert each RGB observation to a single-channel greyscale 
+representation in the discrete 8-bit interval $[0, 255]$ using the 
+\textit{ITU-R 601-2 luma transform}:
 %
 \begin{IEEEeqnarray}{rCl}
     %
@@ -56,7 +57,7 @@ reward signal in a $[-1, 1]$ interval.
 
 We add a final tweak to the Gym implementation of ALE in order to fix a 
 requirement of some of the environments to perform some specific actions in 
-order to start an episode (e.g. in \textit{Breakout} it is required that the 
+order to start an episode (e.g.\ in \textit{Breakout} it is required that the 
 agent takes actions 1, 4 or 5 to start the game). We automatically start each 
 episode by randomly selecting one of the initial actions of the game and forcing
 the agent to take that action at the beginning of the episode. 
@@ -69,18 +70,18 @@ the agent to take that action at the beginning of the episode.
 	\hline
 	Type & Input & Output & \# Filters & Filter & Stride & Activation \\ 
 	\hline 
-	Conv. & $4 \times 108 \times 84$ & $32 \times 26 \times 20$ & 32 & $8 \times 8$ & $4 \times 4$ & ReLU \\ 
-	Conv. & $32 \times 26 \times 20$ & $64 \times 12 \times 9$ & 64 & $4 \times 4$ & $2 \times 2$ & ReLU \\ 
-	Conv. & $64 \times 12 \times 9$ & $64 \times 10 \times 7$ & 64 & $3 \times 3$ & $1 \times 1$ & ReLU \\ 
-	Conv. & $64 \times 10 \times 7$ & $16 \times 8 \times 5$ & 16 & $3 \times 3$ & $1 \times 1$ & ReLU \\ 
+	Conv. & $4 \times 108 \times 84$ & $32 \times 26 \times 20$ & $32$ & $8 \times 8$ & $4 \times 4$ & ReLU \\ 
+	Conv. & $32 \times 26 \times 20$ & $64 \times 12 \times 9$ & $64$ & $4 \times 4$ & $2 \times 2$ & ReLU \\ 
+	Conv. & $64 \times 12 \times 9$ & $64 \times 10 \times 7$ & $64$ & $3 \times 3$ & $1 \times 1$ & ReLU \\ 
+	Conv. & $64 \times 10 \times 7$ & $16 \times 8 \times 5$ & $16$ & $3 \times 3$ & $1 \times 1$ & ReLU \\ 
 	Flatten	& $16 \times 8 \times 5$ & $640$ & - & - & - & - \\ 
 	\hline
 	Reshape & $640$ & $16 \times 8 \times 5$ & - & - & - & - \\
-	Deconv. & $16 \times 8 \times 5$ & $16 \times 10 \times 7$ & 16 & $3 \times 3$ & $1 \times 1$ & ReLU \\ 
-	Deconv. & $16 \times 10 \times 7$ & $64 \times 12 \times 9$ & 64 & $3 \times 3$ & $1 \times 1$ & ReLU \\
-	Deconv. & $64 \times 12 \times 9$ & $64 \times 26 \times 20$ & 64 & $4 \times 4$ & $2 \times 2$ & ReLU \\
-	Deconv. & $64 \times 26 \times 20$ & $32 \times 108 \times 84$ & 32 & $8 \times 8$ & $4 \times 4$ & ReLU \\
-	Deconv. & $32 \times 108 \times 84$ & $4 \times 108 \times 84$ & 4 & $1 \times 1$ & $1 \times 1$ & Sigmoid \\
+	Deconv. & $16 \times 8 \times 5$ & $16 \times 10 \times 7$ & $16$ & $3 \times 3$ & $1 \times 1$ & ReLU \\ 
+	Deconv. & $16 \times 10 \times 7$ & $64 \times 12 \times 9$ & $64$ & $3 \times 3$ & $1 \times 1$ & ReLU \\
+	Deconv. & $64 \times 12 \times 9$ & $64 \times 26 \times 20$ & $64$ & $4 \times 4$ & $2 \times 2$ & ReLU \\
+	Deconv. & $64 \times 26 \times 20$ & $32 \times 108 \times 84$ & $32$ & $8 \times 8$ & $4 \times 4$ & ReLU \\
+	Deconv. & $32 \times 108 \times 84$ & $4 \times 108 \times 84$ & $4$ & $1 \times 1$ & $1 \times 1$ & Sigmoid \\
 	\hline
     \end{tabular}
     \caption{Layers of the autoencoder with key parameters}
@@ -151,10 +152,10 @@ $(s, a, r, s') \in \mathcal{TS}$.
 	\hline
 	Parameter & Value \\ 
 	\hline 
-	Learning rate &  0.001 \\
-	Batch size & 32 \\
-	Exponential decay rate ($\beta_1$) & 0.9 \\
-	Exponential decay rate ($\beta_2$) & 0.999 \\
+	Learning rate &  $0.001$ \\
+	Batch size & $32$ \\
+	Exponential decay rate ($\beta_1$) & $0.9$ \\
+	Exponential decay rate ($\beta_2$) & $0.999$ \\
 	Fuzz factor ($\varepsilon$) & $10^{-8}$ \\
 	\hline
     \end{tabular}
@@ -206,6 +207,9 @@ observing a transition with reward $r_i$ in $\mathcal{TS}$:
 % I/O (?)
 % Parametrization of trees
 % Significance
+We use the RFS algorithm to reduce the state space representation computed by 
+the AE down to the most informative features. 
+
 
 \section{Tree-based Fitted Q-Iteration}
 We use the FQI algorithm to learn an approximation of the $Q$ function form the
@@ -219,8 +223,8 @@ function.
 The parametrization of the decision trees built for the ensemble is reported in
 Table \ref{t:tree_params}\footnote{We use two different values for the minimum 
 number of samples required to split an internal node or a leaf.} and the
-parametrization for the whole algorithm is reported in Table 
-\ref{t:extra_params} (cf.\ Section \ref{s:extra-trees}).
+parametrization specific to Extra-Trees is reported in Table \ref{t:extra_params} 
+(cf.\ Section \ref{s:extra-trees}).
 
 %
 \begin{table}[h]	
@@ -231,8 +235,8 @@ parametrization for the whole algorithm is reported in Table
 	\hline 
 	Scoring method &  Variance reduction \\
 	Max tree depth & None \\
-	$n_{min}$ (node) & 5\\
-	$n_{min}$ (leaf) & 2 \\
+	$n_{min}$ (node) & $5$\\
+	$n_{min}$ (leaf) & $2$ \\
 	\hline
     \end{tabular}
     \caption{Parameters for base estimators in Extra-Trees}
@@ -247,7 +251,7 @@ parametrization for the whole algorithm is reported in Table
 	\hline
 	Parameter & Value \\ 
 	\hline 
-	Number of estimators & 100 \\
+	Number of estimators & $100$ \\
 	$K$ &  All available attributes \\
 	\hline
     \end{tabular}
@@ -262,11 +266,13 @@ networks, for which we had to perform explicit normalization).
 
 Since the FQI procedure introduces a small bias to the action-value estimate at 
 each iteration (due to approximation error and a similar over-estimation issue 
-to that described in Section \ref{SOA:value}), we implement an early stopping 
-procedure based on the evaluation of the agent's performance under an 
-$\varepsilon$-greedy policy on the current approximation $\hat{Q}$ (with 
-$\varepsilon = 0.05$), and we stop the algorithm if the agent's performance 
-does not improve for five consecutive iterations.
+to that described in Section \ref{SOA:value} for Q-learning), we implement an 
+\textit{early stopping} procedure based on the evaluation of the agent's 
+performance under an $\varepsilon$-greedy policy (with $\varepsilon = 0.05$) on 
+the current partial approximation $\hat{Q}_i$, where $i$ is the number of FQI 
+steps occurred so far. If the agent's performance does not improve for five 
+consecutive iterations, we stop the training and produce the best performing 
+estimation as output to the training phase.
 The evaluation procedure is executed after each fit of the Extra-Trees
 algorithm, by composing all the modules in the pipeline to obtain the full $Q$ 
 approximation defined in Equation \eqref{eq:final_output}. 
@@ -279,6 +285,50 @@ algorithm.
 Finally, we consider a discount factor $\gamma = 0.99$ for the MDP in order to 
 give importance to rewards in a sufficiently large time frame. 
 
+\section{Evaluation}
+An evaluation step is run after each training step of the full procedure.
+Similarly to what we do to evaluate the agent's performance during the training
+of FQI, here we use an $\varepsilon$-greedy policy with $\varepsilon = 0.05$ 
+based on the full $Q$ composition of Equation \eqref{eq:final_output}.
+The reason for using a non-zero exploration rate during evaluation is that ALE
+provides a fully deterministic initial state for each episode, and by using a 
+deterministic policy we would always observe the same trajectories (thus leading
+to overfitting to the best policy from the initial state, rather than a generic
+good policy from any state). Using a non-zero exploration rate allows us to 
+assess the agent's capability of playing effectively in any state of the game, 
+and of correcting its behavior after an (albeit artificial) mistake.
 
+We let the agent experience $N$ separate episodes under the $\varepsilon$-greedy 
+policy, and for each episode we consider the cumulative clipped return and the
+number of steps occurred. The mean and variance of these two metrics across the 
+$N$ episodes provide us with insights on the agent's performance: a high mean 
+return obviously means that the algorithm has produced a good policy, but at the
+same time a low variance in the number of steps could indicate that the agent is 
+stuck in some trivial policy (e.g. take always the same action) which causes the
+episodes to be essentially identical, even accounting for the non-zero 
+exploration rate. The latter aspect, while not negative in general, can help in 
+the initial steps of experiments to detect potential problems in the 
+implementation.
 
+Note that here too, similarly to what done for the collection of the training 
+sets, we force-start each episode by randomly selecting one of the initial 
+actions of the game. 
+
+Evaluation parameters are summarized in Table \ref{t:eval}.
+
+%
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l c} 
+	\hline
+	Parameter & Value \\ 
+	\hline 
+	Exploration rate $\varepsilon$ & $0.05$ \\
+	$N$ &  $10$ \\
+	\hline
+    \end{tabular}
+    \caption{Parameters for evaluation}
+    \label{t:eval}
+\end{table}
+%
 

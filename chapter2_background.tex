@@ -242,7 +242,7 @@ the input, in a fashion that resembles how a signal is \textit{strided} across
 the other during convolution. 
 The result of this operation is a nonlinear transformation of 
 the input space into a new space (of compatible dimensions) which preserves
-the spatial information encoded in the input (e.g. form the $n \times m$ pixels
+the spatial information encoded in the input (e.g.\ form the $n \times m$ pixels
 of a grayscale image to a $j \times k$ matrix that represents subgroups of 
 pixels in which there is an edge).
 %
@@ -292,7 +292,7 @@ also necessary to force a reduction of the input in order to learn useful
 representations. 
 For this reason, convolutional layers in CNNs are often paired with 
 \textit{pooling layers} which reduce the dimensionality of their input according
-to some criteria applied to subregions of the input neurons (e.g. for each two 
+to some criteria applied to subregions of the input neurons (e.g.\ for each two 
 by two square of input neurons, keep only the maximum activation value as 
 shown in Figure \ref{f:max-pooling}).
 %
@@ -470,7 +470,7 @@ In other words, an environment is said to satisfy the Markov property when its
 one-step dynamics allow to predict the next state and reward given only the 
 current state and action.
 
-\subsubsection{Policy}
+\subsubsection{Policy} \label{s:policies}
 The behavior of the agent in an MDP can be defined as a probability 
 distribution $\pi: S \times A \rightarrow [0,1]$ called a \textit{policy}, 
 which given $s \in S, a \in A$, represents the probability of selecting $a$ as 
@@ -480,7 +480,7 @@ when in a given state is said to be \textit{following} the policy.
 
 A common problem when defining policies is the \textit{exploration-exploitation}
 dilemma. An agent following a policy may end up observing the same trajectories 
-in all episodes (e.g., when following a deterministic policy in a deterministic 
+in all episodes (e.g.\, when following a deterministic policy in a deterministic 
 MDP), but there may be cases in which a better behavior could be had if the 
 agent \textit{explored} other states instead of simply \textit{exploiting} its 
 knowledge. 
@@ -503,7 +503,7 @@ exploration degree of the agent. Common techniques to control the
 \subsubsection{Value Functions}
 Starting from the concept of policy, we can now introduce a function that 
 evaluates how good it is for an agent following a policy $\pi$ to be in a given 
-state. This evaluation is expressed in terms of the expected return, i.e.
+state. This evaluation is expressed in terms of the expected return, i.e.\
 the expected discounted sum of future rewards collected by an agent starting 
 from a state while following $\pi$, and the function that computes it is 
 called the \textit{state-value function for policy $\pi$} (or, more commonly, 
@@ -635,7 +635,7 @@ as:
 Notice that both Bellman optimality equations have a unique solution independent 
 of the policy. 
 If the dynamics of the environment ($R$ and $P$) are fully known, it is possible
-to solve the system of equations associated to the value functions (i.e. one
+to solve the system of equations associated to the value functions (i.e.\ one
 equation for each state in $S$) and get an exact value for $V^*$ and $Q^*$ in 
 each state. 
 
@@ -695,7 +695,7 @@ iteration} and \textit{value iteration}.
     \[
         Q^\pi(s, \pi'(s)) \ge V^\pi(s), \forall s \in S 
     \]
-    Then, $\pi' \ge \pi$, i.e. 
+    Then, $\pi' \ge \pi$, i.e.\ 
     \[
         V^{\pi'}(s) \ge V^{\pi}(s), \forall s \in S
     \]
@@ -722,7 +722,7 @@ because:
 \end{IEEEeqnarray}
 %
 This continuous improvement is applied until Inequality \eqref{eq:policy_improv} 
-becomes an equality, i.e. until the improved policy satisfies the 
+becomes an equality, i.e.\ until the improved policy satisfies the 
 Bellman optimality equation \eqref{eq:BOEV}. Since the algorithm gives no 
 assurances on the number of updates required for convergence, some stopping
 conditions are usually introduced to end the process when the new value function 
@@ -754,7 +754,7 @@ have a perfect knowledge of the environment's dynamics and may also not be
 tractable on sufficiently complex MDPs. 
 
 \textit{Monte Carlo} (MC) methods are a way of solving reinforcement learning 
-problems by only using \textit{experience}, i.e. a collection of \textit{sample 
+problems by only using \textit{experience}, i.e.\ a collection of \textit{sample 
 trajectories} from an actual interaction of an agent with the environment.
 This is often referred to as a \textit{model-free} approach because, while the
 environment (or a simulation thereof) is still required to observe the sample
@@ -810,7 +810,7 @@ the value functions, but with two core differences:
 \end{enumerate}
 
 In general, TD methods have several advantages over MC as they allow for an 
-\textit{on-line} (i.e. they don't require full episode trajectories to work), 
+\textit{on-line} (i.e.\ they don't require full episode trajectories to work), 
 bootstrapped, \textit{model-free} estimate, which is more suitable for problems 
 with long or even infinite time horizons. Moreover, TD is less susceptible to 
 errors or exploratory actions and in general provides a more stable learning.
@@ -819,9 +819,9 @@ a sufficiently large amount of experience, and that there are problems for which
 either of the two can converge faster to the solution.
 
 We will now present the two principal control algorithms in the TD family, one 
-said to be \textit{on-policy} (i.e. methods that attempt to evaluate and improve 
+said to be \textit{on-policy} (i.e.\ methods that attempt to evaluate and improve 
 the same policy that they use to make decisions) and the other 
-\textit{off-policy} (i.e. methods with no relations between the estimated policy
+\textit{off-policy} (i.e.\ methods with no relations between the estimated policy
 and the policy used to collect experience).
 
 \subsubsection{SARSA}
@@ -849,7 +849,7 @@ The training procedure of SARSA can be summarized with Algorithm \ref{alg:SARSA}
     \label{alg:SARSA}
     \begin{algorithmic}
         \STATE Initialize $Q(s,a)$ arbitrarily
-        \STATE Initialize $\pi$ as some function of $Q$ (e.g. greedy)
+        \STATE Initialize $\pi$ as some function of $Q$ (e.g.\ greedy)
         \REPEAT
 	    \STATE Initialize $s$
 	    \STATE Choose $a$ from $s$ using $\pi$
@@ -869,7 +869,7 @@ The training procedure of SARSA can be summarized with Algorithm \ref{alg:SARSA}
 
 Convergence of the SARSA method is guaranteed by the dependence of $\pi$ on the
 action-value function, as long as all state-action pairs are visited an infinite
-number of times and the policy converges in the limit to the greedy policy (e.g. 
+number of times and the policy converges in the limit to the greedy policy (e.g.\ 
 a time-dependent $\varepsilon$-greedy policy with $\varepsilon = 1/t$).
 
 \subsubsection{Q-learning}
@@ -879,7 +879,7 @@ important breakthroughs in reinforcement learning, \textit{Q-learning} is an
 action-value function independently of the policy being used to collect 
 experiences. 
 This simple, yet powerful idea guarantees convergence to the optimal 
-value function as long as all state-action pairs are continuously visited (i.e. 
+value function as long as all state-action pairs are continuously visited (i.e.\ 
 updated) during training.
 
 The update rule for the TD step in Q-learning is the following: 
