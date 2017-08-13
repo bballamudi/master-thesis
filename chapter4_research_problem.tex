@@ -5,17 +5,21 @@
 \vspace{0.5cm}
 
 As central argument of this thesis, we propose a DRL method which 
-combines the feature extraction capabilities of deep CNNs with the quick 
-and powerful batch RL approach of FQI. 
-Given a high-dimensional state space of pixels representing sequences of 
-greyscale frames from an Atari game, we use a deep convolutional autoencoder 
-to map the original state space to a compressed \textit{feature space} which 
-accounts for the states and its nominal state dynamics (i.e.\ those changes not
-directly influenced by the agent). We reduce the representation further by 
-applying a feature selection algorithm to the extracted state features and this 
-final compressed representation is then used to run a \textit{tree-based} 
-version of FQI. We repeat this procedure iteratively resulting in a 
-\textit{semi-batch} algorithm. 
+combines the feature extraction capabilities of deep CNNs with the fast and 
+powerful batch RL approach of FQI. 
+Given a control problem with high-dimensional states in a pixel-like space and
+a mono-dimensional discrete action space, we use a deep convolutional 
+autoencoder to map the original state space to a compressed 
+\textit{feature space} which accounts for information on the state and the 
+nominal state dynamics (i.e.\ those changes not directly influenced by the 
+agent). 
+We reduce the representation further by applying the \textit{Recursive Feature
+Selection} (RFS) algorithm to the extracted state features to further reduce 
+the dimensionality of the state space, and this final compressed representation 
+is then used to run FQI. 
+We repeat this procedure iteratively in a \textit{semi-batch} approach to 
+bootstrap the algorithm's performance starting from a purely random exploration
+of the environment.
 
 In this chapter we give a formal description of the method and its core 
 components. Technical details of implementation will be discussed in the next
@@ -39,7 +43,8 @@ tasks than our AE.
 The method that we propose tries to improve both aspects of information content
 of the compressed feature space and sample efficiency. We extract general 
 features from the environments and try to reach better or equivalent performance
-in up to two orders of magnitude less samples than DQN on Atari games.
+in up to two orders of magnitude less samples than DQN on comparable 
+environments.
 
 \section{Algorithm Description}
 The general structure of this algorithm is typical of DRL settings: we use a 
@@ -78,7 +83,6 @@ function. The main components of the algorithm are:
     estimator for the action-value function, with $\hat{S}$ as domain. 
 \end{enumerate}
 %
-
 The full procedure consists in alternating a training step and an evaluation 
 step, until the desired performance is reached.
 
@@ -162,7 +166,7 @@ following sections.
 		\[
 		    Q(s, a) = \hat{Q}(RFS(ENC(s)), a)
 		\]
-	    \STATE Set $\varepsilon = \varphi(\varepsilon)$;
+	    \STATE Set $\varepsilon \leftarrow \varphi(\varepsilon)$;
 	    \STATE Evaluate $\pi$; 
 	\UNTIL{stopping condition on evaluation performance is met;}
 	\STATE Return $Q$
@@ -192,12 +196,128 @@ layer of the encoder as input to the decoder.
 
 We train the AE ...
 
-\section{Tree-based Recursive Feature Selection}
-% TODO
+\section{Recursive Feature Selection}
+The \textit{Recursive Feature Selection} (RFS) \cite{castelletti2011tree} 
+algorithm is a dimensionality reduction technique for control problems proposed
+by Castelletti et al.\ (2011). 
+The algorithm identifies which state and action features (i.e.\ elements of the 
+state and action vector spaces) are most relevant for control purposes, reducing
+the dimensionality of both spaces by removing the less important features.
+The core of the algorithm consists in recursively selecting the features which 
+best explain the dynamics (i.e.\ the transition model) of the features already 
+selected, starting from the subset of features needed to explain the reward 
+model, using the \textit{Iterative Feature Selection} (IFS) 
+\cite{castelletti2011tree} algorithm in order to recursively build a dependency 
+tree of features.
+%
+\begin{algorithm}[h]
+    \caption{Recursive Feature Selection ($RFS$)}
+    \label{alg:RFS}
+    \begin{algorithmic}
+	\STATE Given: a dataset $\mathcal{D} = {\langle s \in S, a \in A, s' \in S \rangle}$, a target feature $F_0^i$ from the set of features of $S \cup A$, a set $\mathcal{F}_{sel}^i$ of previously selected features;
+	\STATE $\mathcal{F}_{F_0}^i \leftarrow IFS(\mathcal{D}, F_0^i)$
+	\STATE $\mathcal{F}_{new}^i \leftarrow \mathcal{F}_{F_0}^i \setminus \mathcal{F}_{sel}^i$
+	\FORALL{$F_j^{i+1} \in \mathcal{F}_{new}^i$}
+	    \STATE $\mathcal{F}_{F_0}^i \leftarrow \mathcal{F}_{F_0}^i \cup RFS(\mathcal{D}, F_j^{i+1}, \mathcal{F}_{sel}^i \cup \mathcal{F}_{F_0}^i)$
+	\ENDFOR
+	\RETURN $\mathcal{F}_{F_0}^i$
+    \end{algorithmic}
+\end{algorithm}
+%
+
+The main procedure (summarized in Algorithm \ref{alg:RFS}) takes as input a 
+dataset $\mathcal{D}$ of observed transitions from and environment, the values 
+of a target feature $F_0^i$ in the transitions of $\mathcal{D}$, and a set 
+$\mathcal{F}_{sel}^i$ of previously selected features. 
+The dataset and target feature are given as input to IFS, which returns a subset
+of features $\mathcal{F}_{F_0}^i$ which best explain the dynamics of $F_0^i$. 
+RFS is then recursively called on each feature in the set 
+$\mathcal{F}_{new}^i = \mathcal{F}_{F_0}^i \setminus \mathcal{F}_{sel}^i$ of new
+features selected by IFS.
+At the first step, the algorithm is usually run to identify the most important 
+features to explain the reward $R$ by setting $F_0^0 = R$ and 
+$\mathcal{F}_{sel}^0 = \emptyset$, so that the final output of the procedure 
+will be a set of features which describe the dynamics of the reward and of the 
+environment itself.
+
+The IFS procedure called at each step of RFS is a feature selection procedure 
+based on a \textit{feature ranking} algorithm, but in general can be replaced by
+any feature selection technique which is able to account for non-linear 
+dependencies and redundancy between features (as real-world control problems are
+usually characterized by non-linear dynamic models with multiple coupled 
+features). Here we use IFS for coherence with the paper by Castelletti et al., 
+and because it is a computationally efficient feature selection algorithm which
+works well with our semi-batch approach.
+IFS takes as input a dataset $\mathcal{D}$ of observed transitions 
+from the environment and the values of a target feature $F_0$ in $\mathcal{D}$.
+The algorithm starts by globally ranking the features in the feature space 
+according to a statistical level of significance provided by a feature ranking
+method $FR$ which takes as input the dataset and the target feature, 
+and the most significant feature $F^*$ according to the ranking is added to the 
+set of selected features $\mathcal{F}_{sel}$. 
+A supervised model $\hat{f}$ is then trained to approximate the target feature 
+$F_0$ from $\mathcal{F}_{sel}$.
+The algorithm then proceeds by repeating the ranking process using as new target
+feature for $FR$ the residual feature $\hat{F}_0 = F_0 - \hat{f}(\mathcal{F}_{sel})$ 
+(the difference between the target value and the approximation computed by 
+ $\hat{f}$ for each sample in $\mathcal{D}$). 
+The procedure continues to perform these operations until the best variable in 
+the feature ranking is already in $\mathcal{F}_{sel}$ or the accuracy of the 
+model built upon the selected variables does not improve. 
+The accuracy of the model is computed with the coefficient of determination
+$R^2$ between the values of the target feature $F_0$ and the values
+$F_{pred} = \hat{f}(\mathcal{F}_{sel})$ predicted by the model: 
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    R^2(F_0, F_{pred}) = 1 - \frac{\sum\limits_{k} (f_{0,k} - f_{pred, k})^2}{\sum\limits_{k}(f_{0, k} - \frac{1}{|\mathcal{D}|} \sum\limits_{i = 1}^{|\mathcal{D}|} f_{0, i})} \label{e:R2}
+    %
+\end{IEEEeqnarray}
+%
+The full IFS procedure is summarized in Algorithm \ref{alg:IFS}.
+%
+\begin{algorithm}[h]
+    \caption{Iterative Feature Selection ($IFS$)}
+    \label{alg:IFS}
+    \begin{algorithmic}
+	\STATE Given: a dataset $\mathcal{D} = {\langle s \in S, a \in A, s' \in S \rangle}$, a target feature $F_0$ from the set of features of $S \cup A$;
+	\STATE Initialize: $\mathcal{F}_{sel} \leftarrow \emptyset, \hat{F}_0 \leftarrow F_0, R^2_{old} \leftarrow 0$
+	\REPEAT
+	    \STATE $F^* \leftarrow \arg\max_F FR(\mathcal{D}, \hat{F}_0, F)$
+	    \IF{$F^* \in \mathcal{F}_{sel}$}
+		\RETURN $\mathcal{F}_{sel}$
+	    \ENDIF
+	    \STATE $\mathcal{F}_{sel} \leftarrow \mathcal{F}_{sel} \cup F^*$;
+	    \STATE Build a model $\hat{f}: \mathcal{F}_{sel} \rightarrow F_0$ using $\mathcal{D}$;
+	    \STATE $F_{pred} = \hat{f}(\mathcal{F}_{sel})$
+	    \STATE $\hat{F}_0 \leftarrow F_0 - F_{pred}$
+	    \STATE $\Delta R^2 \leftarrow R^2(\mathcal{D}, F_0, F_{pred}) - R^2_{old}$
+	    \STATE $R^2_{old} \leftarrow R^2 (\mathcal{D}, F_0, F_{pred})$
+	\UNTIL{$\Delta R^2 < \epsilon$}
+	\RETURN $\mathcal{F}_{sel}$	
+    \end{algorithmic}
+\end{algorithm}
+%
+
+To the extent of our algorithm, we apply the RFS procedure to a dataset 
+$\mathcal{TS}_{ENC}$ of four-tuples 
+$(\tilde{s} \in \tilde{S}, a \in A, r \in \mathbb{R}, \tilde{s}' \in \tilde{S})$
+built by applying the transformation $ENC$ to the first and last column of 
+$\mathcal{TS}$.
+We let the algorithm run on all the state and action features, but since we 
+assume to be working in a mono-dimensional action space we force the action 
+feature to always be part of the representation, so that the RFS procedure is 
+effectively working only on the state space extracted by the AE.
+
+At the end of the procedure, we define a simple filtering operation 
+$RFS: \tilde{S} \rightarrow \hat{S}$ that consists in keeping only the features
+of $\tilde{S}$ which have been selected by the algorithm. The output of the 
+training phase is this transformation. 
+
 
 \section{Fitted Q-Iteration}
 The last component of our training pipeline is the Fitted Q-Iteration algorithm 
-(cf.\ \ref{s:FQI}).
+(cf.\ Section \ref{s:FQI}).
 We provide as input to the procedure a new training set $\mathcal{TS}_{RFS}$
 of four-tuples $(\hat{s} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{s}' \in \hat{S})$, 
 obtained by applying the $RFS$ transformation to the first and last column of 

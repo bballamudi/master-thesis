@@ -26,8 +26,9 @@ for four consecutive frames of the game and then provides another observation,
 effectively lowering the frame rate from $60$ FPS to $15$ FPS and making the 
 effects of actions more evident. 
 We perform a preprocessing operation on the states similar to that performed
-by Mnih et al.\ in DQN, in order to include all necessary information about
-the environment and its nominal dynamics in the new state representation.
+by Mnih et al.\ in DQN \cite{mnih2015human}, in order to include all necessary 
+information about the environment and its nominal dynamics in the new state 
+representation.
 First we convert each RGB observation to a single-channel greyscale 
 representation in the discrete 8-bit interval $[0, 255]$ using the 
 \textit{ITU-R 601-2 luma transform}:
@@ -110,7 +111,6 @@ different elements in the games; this same approach was adopted in DQN.
 A final \textit{Flatten} layer is added at the end of the encoder to provide a 
 1D representation of the feature space, which is reversed before the beginning 
 of the decoder. 
-
 The decoder consists of deconvolutional layers with symmetrical filter sizes, 
 filter numbers and strides with respect to the encoder. Here the \textit{valid} 
 padding algorithm is inversed to expand the representation with this formula:
@@ -163,7 +163,6 @@ $(s, a, r, s') \in \mathcal{TS}$.
     \label{t:adam_params}
 \end{table}
 %
-
 We prevent \textit{overfitting} of the training set by monitoring the 
 performance of the AE on a held-out set of validation samples, and stopping the 
 procedure when the validation loss does not improve for five consequent 
@@ -208,24 +207,29 @@ observing a transition with reward $r_i$ in $\mathcal{TS}$:
 % Parametrization of trees
 % Significance
 We use the RFS algorithm to reduce the state space representation computed by 
-the AE down to the most informative features. 
+the AE down to the feature space $\hat{S}$.
+We base both the feature ranking method $FR$ and the model $\hat{f}$ used for
+computing the descriptiveness of the features on the Extra-Trees algorithm for
+supervised learning (cf.\ Section \ref{s:extra-trees}).
 
-
-\section{Tree-based Fitted Q-Iteration}
-We use the FQI algorithm to learn an approximation of the $Q$ function form the
-compressed and reduced state space extracted by the previous two modules. 
-For consistency with the feature selection algorithm, we use the Extra-Trees 
-learning method as function approximator for the action-value function.
-The model is trained to map the 1D compressed feature space $\hat{S}$ to the 
-$|A|$-dimensional action-value space $\mathbb{R}^{|A|}$, and we use the action 
-identifiers to select the single output value of our approximated $\hat{Q}$ 
-function. 
-The parametrization of the decision trees built for the ensemble is reported in
-Table \ref{t:tree_params}\footnote{We use two different values for the minimum 
-number of samples required to split an internal node or a leaf.} and the
-parametrization specific to Extra-Trees is reported in Table \ref{t:extra_params} 
-(cf.\ Section \ref{s:extra-trees}).
-
+The feature ranking approach with Extra-Trees is based on the idea of scoring
+each input feature by estimating the variance reduction produced anytime that 
+the feature is selected during the tree building process. The ranking score is
+computed as the percentage of variance reduction achieved by each feature over 
+the $M$ trees built by the algorithm.
+% TODO: maybe put the FR formula (6) from the paper here?
+At the same time, Extra-Trees is a sufficiently powerful and computationally 
+efficient supervised learning algorithm to use as $\hat{f}$.
+Note that in general $FR$ and $\hat{f}$ could be different algorithms with 
+different parametrization, but Castelletti et al.\ use the same regressor for 
+both tasks (as does the code implementation of RFS and IFS that we used for 
+experiments), and we therefore complied with this choice.
+The parametrization of Extra-Trees for $FR$ and $\hat{f}$ is reported in Tables
+\ref{t:RFS_tree_params}\footnote{We use two different values for the minimum 
+number of samples required to split an internal node or a leaf.} and 
+\ref{t:RFS_extra_params}, respectively for the parameters of the base trees used
+to build the ensemble and the Extra-Trees algorithm itself (cf.\ Section 
+\ref{s:extra-trees}).
 %
 \begin{table}[h]	
     \centering
@@ -239,11 +243,10 @@ parametrization specific to Extra-Trees is reported in Table \ref{t:extra_params
 	$n_{min}$ (leaf) & $2$ \\
 	\hline
     \end{tabular}
-    \caption{Parameters for base estimators in Extra-Trees}
-    \label{t:tree_params}
+    \caption{Parameters for base estimators in Extra-Trees (RFS)}
+    \label{t:RFS_tree_params}
 \end{table}
 %
-
 %
 \begin{table}[h]
     \centering
@@ -251,18 +254,93 @@ parametrization specific to Extra-Trees is reported in Table \ref{t:extra_params
 	\hline
 	Parameter & Value \\ 
 	\hline 
-	Number of estimators & $100$ \\
-	$K$ &  All available attributes \\
+	$M$ (Number of base estimators) & $50$ \\
+	$K$ (Number of randomly selected attributes) &  All available attributes \\
 	\hline
     \end{tabular}
-    \caption{Parameters for Extra-Trees}
-    \label{t:extra_params}
+    \caption{Parameters for Extra-Trees (RFS)}
+    \label{t:RFS_extra_params}
+\end{table}
+%
+We use the $R^2$ metric defined in Equation \eqref{e:R2} to compute the ability
+of the selected features to describe the target in $K$-fold cross validation 
+over the training set $\mathcal{D}$. We compute a confidence interval over the 
+scores of the validation predictions as:
+\begin{IEEEeqnarray}{rCl}
+    %
+    CI = \sqrt{\frac{1}{|\mathcal{D}|} \sum\limits_{i = 1}^{|\mathcal{D}|} (R^2)^2 \cdot (\frac{1}{|\mathcal{D}|} \sum\limits_{i = 1}^{|\mathcal{D}|} (R^2))^2}
+    %
+\end{IEEEeqnarray}
+and we adapt the stopping condition to RFS by setting $\epsilon = CI + CI_{old}$ 
+(where the suffix $old$ has the same meaning as in Algorithm \ref{alg:IFS}) so
+that the condition becomes $R^2 - CI < R^2_{old} - CI_{old}$.
+We also multiply $\epsilon$ by a \textit{significance} factor $s$ in order to
+control the amount of variance that a feature must explain in order to be added 
+to the selection: higher values of $s$ means that the selection will yield a 
+smaller subset composed exclusively of very informative features (even if the 
+overall amount of variance explained is not necessarily the whole possible 
+amount).
+The hyperparameters used for RFS are reported in Table \ref{t:RFS}.
+%
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l c} 
+	\hline
+	Parameter & Value \\ 
+	\hline 
+	$K$ (for $K$-fold cross-validation) & $3$ \\
+	$s$ (significance) &  0.5 \\
+	\hline
+    \end{tabular}
+    \caption{Parameters for RFS}
+    \label{t:RFS}
 \end{table}
 %
 
-No explicit pre or post processing is performed on the input and targets since
-trees are know to be robust to the scale and noise of the data (unlike neural
-networks, for which we had to perform explicit normalization). 
+\section{Tree-based Fitted Q-Iteration}
+We use the FQI algorithm to learn an approximation of the $Q$ function form the
+compressed and reduced state space extracted by the previous two modules. 
+For consistency with the feature selection algorithm, we use the Extra-Trees 
+learning method as function approximator for the action-value function.
+The model is trained to map the 1D compressed feature space $\hat{S}$ to the 
+$|A|$-dimensional action-value space $\mathbb{R}^{|A|}$, and we use the action 
+identifiers to select the single output value of our approximated $\hat{Q}$ 
+function. 
+The parametrization of the decision trees built for the ensemble is reported in
+Table \ref{t:FQI_tree_params} and the parametrization specific to Extra-Trees 
+is reported in Table \ref{t:FQI_extra_params} (cf.\ Section \ref{s:extra-trees}).
+%
+\begin{table}[h]	
+    \centering
+    \begin{tabular}{l c} 
+	\hline
+	Parameter & Value \\ 
+	\hline 
+	Scoring method &  Variance reduction \\
+	Max tree depth & None \\
+	$n_{min}$ (node) & $2$\\
+	$n_{min}$ (leaf) & $1$ \\
+	\hline
+    \end{tabular}
+    \caption{Parameters for base estimators in Extra-Trees (FQI)}
+    \label{t:FQI_tree_params}
+\end{table}
+%
+%
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l c} 
+	\hline
+	Parameter & Value \\ 
+	\hline 
+	$M$ (Number of base estimators) & $100$ \\
+	$K$ (Number of randomly selected attributes) &  All available attributes \\
+	\hline
+    \end{tabular}
+    \caption{Parameters for Extra-Trees (FQI)}
+    \label{t:FQI_extra_params}
+\end{table}
+%
 
 Since the FQI procedure introduces a small bias to the action-value estimate at 
 each iteration (due to approximation error and a similar over-estimation issue 

@@ -73,7 +73,7 @@ The full training procedure of DQN is reported in Algorithm \ref{alg:DQN}.
 					r_{j+1} + \gamma \max_{a'} Q(s_{j+1}, a'; \theta'), & \mbox{otherwise}
 				    \end{cases}$
 		\STATE Perform a gradient descent step using targets $y_j$ with respect to the online parameters $\theta$
-		\STATE Every $C$ steps, set $\theta' = \theta$
+		\STATE Every $C$ steps, set $\theta' \leftarrow \theta$
 	    \ENDFOR
 	\ENDFOR
     \end{algorithmic}

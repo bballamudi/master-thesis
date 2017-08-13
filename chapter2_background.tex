@@ -1071,7 +1071,7 @@ different criteria such as:
 is a tree-based ensemble method for supervised learning, which consists in 
 strongly randomizing both attribute and cut-point choice while splitting a 
 decision tree node. 
-The Extra-Trees algorithm builds an ensemble of unpruned decision trees 
+The Extra-Trees algorithm builds an ensemble of $M$ unpruned decision trees 
 according to the classical top-down procedure, but differently from other tree 
 induction methods it splits nodes by choosing cut-points fully at random. 
 Extra-Trees can be applied to both classification and regression by building 
@@ -1119,7 +1119,7 @@ in Algorithm \ref{alg:extra}.
 \end{algorithm}
 %
 
-The procedure has two main parameters: 
+The procedure has three main parameters: 
 \begin{itemize}
     \item $K$, the number of attributes randomly selected at each node;
     \item $n_{min}$, the minimum sample size for splitting a node. 
@@ -1127,7 +1127,6 @@ The procedure has two main parameters:
 In the prediction phase, the output of each tree in the ensemble is aggregated
 to compute the final prediction, with a majority voting in classification 
 problems and arithmetic average in regression problems.
-
 
 
 
