@@ -31,6 +31,13 @@ the pixel-level representation of the states, with a deep CNN (called
 control. The authors were able to reuse the same architecture to solve many 
 different games without the need for \textit{hyperparameter tuning}, which 
 proved the effectiveness of the method.
+%
+\begin{figure}[h]
+\includegraphics[width=0.5\textwidth]{pictures/dqn}
+\centering
+\caption{Structure of the Deep Q-Network by Mnih et al.\ }
+\end{figure}
+%
 
 The key idea of DQN is to embed the update step of Q-learning into the loss used
 for SGD to train the deep CNN, resulting in the following gradient update:
