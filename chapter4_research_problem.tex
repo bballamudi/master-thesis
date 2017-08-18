@@ -59,10 +59,10 @@ We focus exclusively on environments with a discrete and mono-dimensional
 action space $A$, where actions are assigned a unique integer identifier 
 starting from $0$ with no particular order. 
 We also assume to be operating in a three dimensional state space 
-($C \times W \times H$\footnote{Channels times Width times Height}) for 
-consistency with the experimental setting on which we tested the algorithm (with
-pixel-level state spaces), although in general the algorithm requires no such 
-assumption and could be easily adapted to higher or lower dimensional settings. 
+($channels \times height \times width$) for consistency with the experimental 
+setting on which we tested the algorithm (with pixel-level state spaces), 
+although in general the algorithm requires no such assumption and could be 
+easily adapted to higher or lower dimensional settings. 
 
 The algorithm uses a modular architecture with three different components which 
 are combined after training to produce an approximator of the action-value 
@@ -85,6 +85,14 @@ function. The main components of the algorithm are:
 %
 The full procedure consists in alternating a training step and an evaluation 
 step, until the desired performance is reached.
+%
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{pictures/full_pipeline}
+\centering
+\caption{Composition of the three main modules}
+\label{f:full_pipeline}
+\end{figure}
+%
 
 A training step of the algorithm takes as input a training set $\mathcal{TS}$ of
 four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ and produces a new 
@@ -99,8 +107,9 @@ transformations respectively:
     \item $\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$, an approximation
     of the optimal action-value function on $\hat{S}$.
 \end{itemize}
-After training, we simply combine the three functions to obtain the full
-action-value function $Q: S \times A \rightarrow \mathbb{R}$ as follows: 
+After training, we simply combine the three functions (see Figure 
+\ref{f:full_pipeline}) to obtain the full action-value function 
+$Q: S \times A \rightarrow \mathbb{R}$ as follows: 
 %
 \begin{IEEEeqnarray}{rCl}
     %
@@ -190,9 +199,17 @@ notation of the two modules; we therefore refer to two different CNNs, namely
 $ENC: S \rightarrow \tilde{S}$ that maps the original state space to the 
 compressed representation in $\tilde{S}$, and $DEC: \tilde{S} \rightarrow S$ 
 which performs the inverse transformation. The full AE is the composition of the
-two networks $AE: DEC \circ ENC: S \rightarrow S$. Note that the composition is 
+two networks $AE: DEC \circ ENC: S \rightarrow S$ (Figure \ref{f:ae}). Note that the composition is 
 differentiable end-to-end, and basically consists in \textit{plugging} the last
 layer of the encoder as input to the decoder. 
+%
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{pictures/conv_autoencoder}
+\centering
+\caption{Schematic view of the AE}
+\label{f:alphago}
+\end{figure}
+%
 
 We train the AE ...
 
@@ -207,7 +224,7 @@ The core of the algorithm consists in recursively selecting the features which
 best explain the dynamics (i.e.\ the transition model) of the features already 
 selected, starting from the subset of features needed to explain the reward 
 model, using the \textit{Iterative Feature Selection} (IFS) 
-\cite{castelletti2011tree} algorithm in order to recursively build a dependency 
+\cite{castelletti2013iter} algorithm in order to recursively build a dependency 
 tree of features.
 %
 \begin{algorithm}[h]
@@ -226,9 +243,9 @@ tree of features.
 %
 
 The main procedure (summarized in Algorithm \ref{alg:RFS}) takes as input a 
-dataset $\mathcal{D}$ of observed transitions from and environment, the values 
-of a target feature $F_0^i$ in the transitions of $\mathcal{D}$, and a set 
-$\mathcal{F}_{sel}^i$ of previously selected features. 
+dataset $\mathcal{D}$ of observed transitions from an environment, the values 
+of a target feature $F_0^i$ in $\mathcal{D}$, and a set $\mathcal{F}_{sel}^i$ of
+previously selected features. 
 The dataset and target feature are given as input to IFS, which returns a subset
 of features $\mathcal{F}_{F_0}^i$ which best explain the dynamics of $F_0^i$. 
 RFS is then recursively called on each feature in the set 
@@ -252,9 +269,9 @@ IFS takes as input a dataset $\mathcal{D}$ of observed transitions
 from the environment and the values of a target feature $F_0$ in $\mathcal{D}$.
 The algorithm starts by globally ranking the features in the feature space 
 according to a statistical level of significance provided by a feature ranking
-method $FR$ which takes as input the dataset and the target feature, 
-and the most significant feature $F^*$ according to the ranking is added to the 
-set of selected features $\mathcal{F}_{sel}$. 
+method $FR$, which takes as input the dataset and the target feature; 
+the most significant feature $F^*$ according to the ranking is added to the set 
+of selected features $\mathcal{F}_{sel}$. 
 A supervised model $\hat{f}$ is then trained to approximate the target feature 
 $F_0$ from $\mathcal{F}_{sel}$.
 The algorithm then proceeds by repeating the ranking process using as new target

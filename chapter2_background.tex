@@ -101,7 +101,7 @@ co-domain of the target function.
 \begin{figure}[h]
     \includegraphics[width=0.6\textwidth]{pictures/ann}
     \centering
-    \caption{A neural network with one hidden layer}
+    \caption{A fully-connected neural network with two hidden layers}
     \label{f:ann}
 \end{figure}
 %
@@ -197,7 +197,7 @@ but at the same time it may take longer to find the optimum if the learning rate
 is too small (Figure \ref{f:sgd_overshooting}).
 %
 \begin{figure}[h]
-\includegraphics[width=0.6\textwidth]{pictures/SGD_overshooting}
+\includegraphics[width=\textwidth]{pictures/SGD_overshooting}
 \centering
 \caption[Effect of the learning rate on SGD updates]{Effect of the learning 
 	rate on SGD updates. Too small (left) may take longer to converge, too 
@@ -245,15 +245,6 @@ the input space into a new space (of compatible dimensions) which preserves
 the spatial information encoded in the input (e.g.\ form the $n \times m$ pixels
 of a grayscale image to a $j \times k$ matrix that represents subgroups of 
 pixels in which there is an edge).
-%
-\begin{figure}[h]
-\includegraphics[width=	\textwidth]{pictures/CNN}
-\centering
-\caption[CNN for image processing]{Typical structure of a deep convolutional 
-	neural network for image processing, with two convolutional hidden 
-	layers and a dense section at the end (for classification or regression)}
-\end{figure}
-%
 
 While standard ANNs have a \textit{fully connected} (sometimes also called 
 \textit{dense}) structure, with each neuron of a layer connected to each neuron 
@@ -268,7 +259,7 @@ subset of neurons covered by the filter.
 \begin{figure}[h]
 \includegraphics[width=0.5\textwidth]{pictures/shared_weights}
 \centering
-\caption[Shared weights in CNN]{simple representation of shared weights in a 1D 
+\caption[Shared weights in CNN]{Simple representation of shared weights in a 1D 
 	CNN. Each neuron in  the second layer applies the same receptive field 
 	of three weights to three adjacent neurons of the previous layer. The 
 	filter is applied with a stride of one element to produce the feature 
@@ -285,6 +276,15 @@ which a 3-channel representation is used for red, green, and blue). In
 this case, there will be a set of shared weights for each filter.
 When a set of feature maps is given as input to a convolutional layer, a 
 multidimensional filter is strided simultaneously across all channels.
+%
+\begin{figure}[h]
+\includegraphics[width=	\textwidth]{pictures/CNN}
+\centering
+\caption[CNN for image processing]{Typical structure of a deep convolutional 
+				   neural network for image processing, with two convolutional hidden 
+				   layers and a dense section at the end (for classification or regression)}
+\end{figure}
+%
 
 At the same time, while it may be useful to have parallel abstractions of the 
 input space (which effectively enlarges the output space of the layers), it is
@@ -390,7 +390,7 @@ In this section we introduce the basic setting of RL and go over a brief
 selection of the main techniques used to solve RL problems. 
 %
 \begin{figure}[h]
-\includegraphics[width=0.7\textwidth]{pictures/reinforcement}
+\includegraphics[width=\textwidth]{pictures/reinforcement}
 \centering
 \caption[Reinforcement learning setting]{The reinforcement learning setting, 
 					 with the agent performing actions on 
@@ -448,9 +448,10 @@ where:
 \includegraphics[width=0.5\textwidth]{pictures/mdp}
 \centering
 \caption[Graph representation of an MDP]{Graph representation of an MDP. Each 
-	node represents a state, each arc is a transition from a state to 
-	another; note that actions may have probability distributions associated 
-	to the following states}
+	gray node represents a state, each arc leaving a state is associated to 
+	an action and its corresponding reward, an the action is in turn 
+	associated to the following state; note that actions may have 
+	probability distributions over the outgoing arcs}
 \end{figure}
 %
 

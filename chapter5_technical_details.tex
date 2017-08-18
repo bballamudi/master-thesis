@@ -89,6 +89,8 @@ the agent to take that action at the beginning of the episode.
     \label{t:AE_structure}
 \end{table}
 %
+We use the autoencoder to extract a high level representation $\tilde{S}$ of the
+state space in an unsupervised fashion.
 We structure the AE to take as input the preprocessed observations from the
 environment and predict values on the same vector space.
 The first four convolutional layers make up the encoder and perform a 2D 
@@ -121,14 +123,21 @@ padding algorithm is inversed to expand the representation with this formula:
     %
 \end{IEEEeqnarray}
 % 
-A final deconvolutional layer is added at the end to reduce the number of 
-channels back to the original four, without changing the width and height of
-the frames (i.e.\ using unitary filters and strides).
-All layers in the autoencoder use the \textit{Rectified Linear Unit} (ReLU) 
+A deconvolutional layer is added at the end to reduce the number of channels 
+back to the original four, without changing the width and height of the frames 
+(i.e.\ using unitary filters and strides). 
+All layers in the AE use the \textit{Rectified Linear Unit} (ReLU) 
 \cite{nair2010rectified, krizhevsky2012imagenet} nonlinearity as activation 
 function, except for the last layer which uses \textit{sigmoids} to limit the 
 activations values in the same $[0, 1]$ interval of the input.
 Details of the AE layers are summarized in Table \ref{t:AE_structure}.
+%
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{pictures/relu_sigmoid}
+\centering
+\caption{The ReLU and Sigmoid activation functions for the AE}
+\end{figure}
+%
 
 We train the AE with the Adam optimization algorithm \cite{kingma2014adam} 
 (see Table \ref{t:adam_params} for details on the hyperparameters) set to 
@@ -143,8 +152,8 @@ minimize the \textit{binary crossentropy} loss defined as:
 where $y$ and $\hat y$ are vectors of $N$ target and predicted observations in 
 the state space. The dataset used for training is a subset of the dataset 
 collected for the whole learning procedure described in Algorithm 
-\ref{alg:FQI-DSDF}, namely the first and last elements of the four-tuples
-$(s, a, r, s') \in \mathcal{TS}$.
+\ref{alg:FQI-DSDF}, namely the first elements of the four-tuples $(s, a, r, s') 
+\in \mathcal{TS}$ (which are used as input and targets).
 %
 \begin{table}[h]
     \centering
@@ -164,43 +173,10 @@ $(s, a, r, s') \in \mathcal{TS}$.
 \end{table}
 %
 We prevent \textit{overfitting} of the training set by monitoring the 
-performance of the AE on a held-out set of validation samples, and stopping the 
-procedure when the validation loss does not improve for five consequent 
+performance of the AE on a held-out set of validation samples which amounts to
+roughly $10\%$ of the training data, and stopping the procedure when the 
+validation loss does not improve by at least $10^{-5}$ for five consecutive 
 training epochs. 
-
-Finally, we modify the loss function to account for the sparsity of the reward
-signal of the environment. Atari games produce a positive reward for the agent
-only on rather rare events, such as scoring a point in \textit{Pong} or breaking
-a brick in \textit{Breakout}, whereas for the majority of the time the agent
-collects a null reward. This means that any training set with samples collected
-by playing a game will have an unbalance between the transitions in which the 
-game is in a \textit{nominal} behavior and those in which the agent collects the
-reward. 
-To deal with this unbalance, we introduce a weighting factor by which we scale 
-the gradient associated to each sample. Since each training sample of the AE
-is associated to a transition $(s_i, a_i, r_i, s'_i) \in \mathcal{TS}$, we 
-compute the sample weights for $(s_i, s'_i)$ as the inverse probability of 
-observing a transition with reward $r_i$ in $\mathcal{TS}$:
-%
-\begin{IEEEeqnarray}{rCl}
-    %
-    SW_i = \frac{1}{P((s, a, r_i, s') | \mathcal{TS})} 
-    %
-\end{IEEEeqnarray}
-%
-
-% Why flatten
-% Why last layer
-% Why sigmoid in last layer
-% Sample preprocessing (scale to 0-1, binarize, cut)
-% Total number of parameters
-% Adam w/ parameters
-% Batch size
-% Dataset size
-% Training accuracy / loss + plots
-% Loss: binary crossentropy
-% Sample weights
-% Reward clipping
 
 \section{Tree-based Recursive Feature Selection}
 % I/O (?)

@@ -1,35 +1,37 @@
 # TODO
 
 * Global
-    * Redo all images with a consistent style.................................[]
+    * Redo all images with a consistent style.............................[DONE]
 
 * Chapter 1: Introduction
-    * Write...................................................................[]
+    * Write...............................................................[]
 
 * Chapter 3: State of the Art
-    * Expand Related Work (3.3)......................[when methodology is final]
+    * Expand Related Work (3.3)...........................................[DONE]
 
 * Chapter 4: Research Problem
-    * Expand more on theoretical reasons behind algorithm.....................[]
-    * Add images..............................................................[]
-	* Full pipeline (4.2).................................................[]
-	* AE modules + transformation (4.3)...................................[]
-	* RFS example tree (4.4)..............................................[]
-    * Write AE training methodology..................[when methodology is final]
-    * Write RFS (4.4).........................................................[]
-	* Cite correct paper for IFS..........................................[]
+    * Expand more on theoretical reasons behind algorithm.................[]
+    * Add images..........................................................[]
+	* Full pipeline (4.2).............................................[DONE]
+	* AE modules + transformation (4.3)...............................[DONE]
+	* RFS example tree (4.4)..........................................[]
+    * Write AE training methodology.......................................[]
+    * Write RFS (4.4).....................................................[DONE]
+	  Cite correct paper for IFS......................................[DONE]
 
 * Chapter 5: Technical Details
-    * Add images..............................................................[]
-	* Example of state preprocessing (5.1)................................[]
-    * Fix AE details.................................[when methodology is final]
+    * Add images..........................................................[]
+    	* Example of state preprocessing (5.1)............................[]
+    	* Example of sampling technique (5.1).............................[]
+	* ReLU and Sigmoid (5.2)..........................................[DONE]
+    * Fix AE details (5.2)................................................[DONE]
     * Write RFS (5.3).....................................................[DONE]
 
 * Chapter 6: Experiments
-    * Main results...................................[when methodology is final]
-    * FQ test........................................[when methodology is final]
-    * Without RFS....................................[when methodology is final]
-    * AE w/ same # of features extracted by RFS......[when methodology is final]
+* Main results............................................................[]
+* FQ test.................................................................[]
+    * Without RFS.........................................................[]
+    * AE w/ same # of features extracted by RFS...........................[]
 
 * Chapter 7: Conclusions
-    * Write...................................................................[]
+    * Write...............................................................[]
