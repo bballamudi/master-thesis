@@ -16,7 +16,7 @@ ALE offers a programmatic interface to hundreds of game environments for the
 \textit{Atari 2600}, a popular home video game console developed in 1977 with 
 more than 500 games available, and is often referred to simply as 
 Atari environments (or games). 
-We use the implementation of ALE provided by the \textit{Gym 0.8.1} package for 
+We use the implementation of ALE provided by the \textit{Gym 0.9.2} package for 
 Python 2.7, developed by OpenAI and maintained as an open source project. 
 This implementation provides access to the game state in the form of 
 $3 \times 110 \times 84$ RGB frames, produced at an internal frame-rate of $60$ 
@@ -24,7 +24,15 @@ frames per second (FPS).
 When an action is executed in the environment, the simulator repeats the action 
 for four consecutive frames of the game and then provides another observation, 
 effectively lowering the frame rate from $60$ FPS to $15$ FPS and making the 
-effects of actions more evident. 
+effects of actions more evident (Figure \ref{f:sampling}). 
+%
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{pictures/sampling}
+\centering
+\caption{Sampling frames at a frequency of $\frac{1}{4}$ in \textit{Breakout}}
+\label{f:sampling}
+\end{figure}
+%
 We perform a preprocessing operation on the states similar to that performed
 by Mnih et al.\ in DQN \cite{mnih2015human}, in order to include all necessary 
 information about the environment and its nominal dynamics in the new state 
@@ -42,15 +50,32 @@ representation in the discrete 8-bit interval $[0, 255]$ using the
 where $R$, $G$, $B$ are the 8-bit components of the image. We then normalize 
 these values in the $[0, 1]$ interval via \textit{max-scaling} (i.e.\ dividing 
 each pixel by $255$).
+Moreover, we define a rounding threshold $v_{round}$ specific to each game
+and we round all pixel values above or below the threshold to $1$ or 
+$0$ respectively, reducing the images to a 1-bit color space in order to 
+facilitate the training of the AE. 
 We also reduce the height of the image by two pixels in order to prevent 
 information loss due to a rounding operation performed by the convolution
 method used in the AE.
 Finally, we concatenate the preprocessed observation to the last three 
 preprocessed frames observed from the environment, effectively blowing up the
-state space to a $4 \times 108 \times 84$ vector space. The initial state for
-an episode is artificially set as a repetition of the first observation provided
-by the simulator. 
-% TODO: put an image here to expalin the sampling technique.
+state space to a $4 \times 108 \times 84$ vector space (Figure \ref{f:state}). 
+The initial state for an episode is artificially set as a repetition of the 
+first observation provided by the simulator. 
+%
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{pictures/state}
+\centering
+\caption[Two consecutive states in \textit{Pong}]{Two consecutive states 
+	$s, s'$ in \textit{Pong}, after the preprocessing operation. Each 
+	binary image in a sequence of four is an observation of $108 \times 84$
+	pixels, and the full $4 \times 108 \times 84$ tensor is given as input
+	and target to the AE. Notice that between the two consecutive states 
+	there are three frames in common, with the newest observation appended
+	as last frame in $s'$ and the oldest being pushed out.}
+\label{f:state}
+\end{figure}
+%
     
 Moreover, in order to facilitate comparisons and improve stability, we remain 
 loyal to the methodology used for DQN and perform the same clipping of the 
@@ -129,13 +154,15 @@ back to the original four, without changing the width and height of the frames
 All layers in the AE use the \textit{Rectified Linear Unit} (ReLU) 
 \cite{nair2010rectified, krizhevsky2012imagenet} nonlinearity as activation 
 function, except for the last layer which uses \textit{sigmoids} to limit the 
-activations values in the same $[0, 1]$ interval of the input.
+activations values in the same $[0, 1]$ interval of the input (Figure 
+\ref{f:relu_sigmoid}).
 Details of the AE layers are summarized in Table \ref{t:AE_structure}.
 %
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{pictures/relu_sigmoid}
 \centering
 \caption{The ReLU and Sigmoid activation functions for the AE}
+\label{f:relu_sigmoid}
 \end{figure}
 %
 

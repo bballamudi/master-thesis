@@ -11,7 +11,7 @@ Given a control problem with high-dimensional states in a pixel-like space and
 a mono-dimensional discrete action space, we use a deep convolutional 
 autoencoder to map the original state space to a compressed 
 \textit{feature space} which accounts for information on the state and the 
-nominal state dynamics (i.e.\ those changes not directly influenced by the 
+nominal environment dynamics (i.e.\ those changes not directly influenced by the 
 agent). 
 We reduce the representation further by applying the \textit{Recursive Feature
 Selection} (RFS) algorithm to the extracted state features to further reduce 
@@ -89,7 +89,11 @@ step, until the desired performance is reached.
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{pictures/full_pipeline}
 \centering
-\caption{Composition of the three main modules}
+\caption[Schematic view of the three main modules]{Composition of the three main
+						   modules of the algorithm to
+						   produce the end-to-end 
+						   function 
+						   $Q: S \times A \rightarrow \mathbb{R}$}
 \label{f:full_pipeline}
 \end{figure}
 %
@@ -118,8 +122,8 @@ $Q: S \times A \rightarrow \mathbb{R}$ as follows:
 \end{IEEEeqnarray}
 %
 
-To collect the training set, we define a greedy policy $\pi$ based on the 
-current approximation of $Q$ as:
+To collect the training set $\mathcal{TS}$, we define a greedy policy $\pi$ 
+based on the current approximation of $Q$ as:
 %
 \begin{IEEEeqnarray}{rCl}
     %
@@ -157,7 +161,7 @@ following sections.
 	\STATE Given: 
 	    \begin{ALC@g}
 	        \STATE $\varepsilon_{min} \in (0, 1)$
-	        \STATE $\varphi: [\varepsilon_{min}, 1] \rightarrow [\varepsilon_{min}, 1]$ s.t.\ $\varphi(x) < x, \forall x \in (\varepsilon_{min}, 1]$ and $\varphi(\varepsilon_{min}) = \varepsilon_{min}$;
+	        \STATE $\varphi: [\varepsilon_{min}, 1] \rightarrow [\varepsilon_{min}, 1)$ s.t.\ $\varphi(x) < x, \forall x \in (\varepsilon_{min}, 1]$ and $\varphi(\varepsilon_{min}) = \varepsilon_{min}$;
 	    \end{ALC@g}
 	\STATE Initialize the encoder $ENC: S \rightarrow \tilde{S}$ arbitrarily;
 	\STATE Initialize the decoder $DEC: \tilde{S} \rightarrow S$ arbitrarily;
@@ -199,19 +203,40 @@ notation of the two modules; we therefore refer to two different CNNs, namely
 $ENC: S \rightarrow \tilde{S}$ that maps the original state space to the 
 compressed representation in $\tilde{S}$, and $DEC: \tilde{S} \rightarrow S$ 
 which performs the inverse transformation. The full AE is the composition of the
-two networks $AE: DEC \circ ENC: S \rightarrow S$ (Figure \ref{f:ae}). Note that the composition is 
-differentiable end-to-end, and basically consists in \textit{plugging} the last
-layer of the encoder as input to the decoder. 
+two networks $AE: DEC \circ ENC: S \rightarrow S$ (Figure \ref{f:ae}). 
+Note that the composition is differentiable end-to-end, and basically consists 
+in \textit{plugging} the last layer of the encoder as input to the decoder. 
+Both components (in our specific implementation, discussed further in the next
+chapter) are convolutional neural networks specifically structured to reduce the
+representation down to an arbitrary number of features in the new space.
 %
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{pictures/conv_autoencoder}
 \centering
 \caption{Schematic view of the AE}
-\label{f:alphago}
+\label{f:ae}
 \end{figure}
 %
 
-We train the AE ...
+We train the AE to reconstruct its input in an unsupervised fashion, using the 
+first column of (i.e.\ the first elements of each four-tuple in) a dataset 
+$\mathcal{TS}$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ 
+collected with the $\varepsilon$-greedy policy. 
+The output of this training phase is the trained encoder 
+$ENC: S \rightarrow \tilde{S}$, which takes as input the three-dimensional 
+state space of the environment and produces a one-dimensional feature vector
+representing a high-level abstraction of the state space.
+We refer to $\tilde{S}$ as a representation of both the state and the nominal 
+environment dynamics because we allow for the original state space $S$ to 
+contain both such types of information, accounting for changes in the 
+environment which are not directly (or even indirectly) caused by the user. 
+An example of this is the \textit{MsPacman} environment in the Atari suite, 
+implementation of the popular arcade game, in which the \textit{ghosts} are able
+to move autonomously, not necessarily influenced by the player; in such a 
+setting, the environment presents a non-trivial nominal dynamic which must be 
+taken into account in the extracted representation. Details on how we accomplish 
+this are provided in the following chapter when dealing with the specific 
+implementation of our experimental setting.
 
 \section{Recursive Feature Selection}
 The \textit{Recursive Feature Selection} (RFS) \cite{castelletti2011tree} 

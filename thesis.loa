@@ -3,6 +3,6 @@
 \contentsline {algorithm}{\numberline {3}{\ignorespaces Fitted Q-Iteration\relax }}{22}
 \contentsline {algorithm}{\numberline {4}{\ignorespaces Extra-Trees node splitting\relax }}{26}
 \contentsline {algorithm}{\numberline {5}{\ignorespaces Deep Q-Learning with Experience Replay\relax }}{29}
-\contentsline {algorithm}{\numberline {6}{\ignorespaces Fitted Q-Iteration with Deep State Features\relax }}{41}
-\contentsline {algorithm}{\numberline {7}{\ignorespaces Recursive Feature Selection ($RFS$)\relax }}{41}
+\contentsline {algorithm}{\numberline {6}{\ignorespaces Fitted Q-Iteration with Deep State Features\relax }}{38}
+\contentsline {algorithm}{\numberline {7}{\ignorespaces Recursive Feature Selection ($RFS$)\relax }}{40}
 \contentsline {algorithm}{\numberline {8}{\ignorespaces Iterative Feature Selection ($IFS$)\relax }}{42}

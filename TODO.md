@@ -10,19 +10,19 @@
     * Expand Related Work (3.3)...........................................[DONE]
 
 * Chapter 4: Research Problem
-    * Expand more on theoretical reasons behind algorithm.................[]
+    * Expand motivation Section...........................................[]
     * Add images..........................................................[]
 	* Full pipeline (4.2).............................................[DONE]
 	* AE modules + transformation (4.3)...............................[DONE]
 	* RFS example tree (4.4)..........................................[]
-    * Write AE training methodology.......................................[]
+    * Write AE training methodology.......................................[DONE]
     * Write RFS (4.4).....................................................[DONE]
 	  Cite correct paper for IFS......................................[DONE]
 
 * Chapter 5: Technical Details
-    * Add images..........................................................[]
-    	* Example of state preprocessing (5.1)............................[]
-    	* Example of sampling technique (5.1).............................[]
+    * Add images..........................................................[DONE]
+    	* Example of state preprocessing (5.1)............................[DONE]
+    	* Example of sampling technique (5.1).............................[DONE]
 	* ReLU and Sigmoid (5.2)..........................................[DONE]
     * Fix AE details (5.2)................................................[DONE]
     * Write RFS (5.3).....................................................[DONE]

@@ -231,7 +231,7 @@ moves\footnote{Number of legal moves per position elevated to the length of the
 game.} was too complex for exhaustive search methods.
 %
 \begin{figure}[h]
-\includegraphics[width=0.7\textwidth]{pictures/alphago}
+\includegraphics[width=\textwidth]{pictures/alphago}
 \centering
 \caption[Neural network training pipeline of AlphaGo]{Neural network training 
 						      pipeline of AlphaGo
@@ -273,15 +273,17 @@ as the critic, because it criticizes the actions made by the actor.
 \includegraphics[width=\textwidth]{pictures/a3c}
 \centering
 \caption{The asynchronous architecture of A3C}
+\label{f:a3c}
 \end{figure}
 %
 Mnih et al.\ (2016) \cite{mnih2016asynchronous} presented a deep variation of 
 the actor-critic algorithm, called \textit{Asynchronous Advantage Actor-Critic} 
 (A3C). In this approach, different instances of actor-critic pairs are run in 
-parallel to obtain a lower-variance estimate of the value function, without the 
-need of a replay memory to stabilize training. Each \textit{worker} consists in 
-a deep CNN with a unique convolutional section and two separate dense networks
-on top, one for the value function and one for the policy. 
+parallel (Figure \ref{f:a3c}) to obtain a lower-variance estimate of the value 
+function, without the need of a replay memory to stabilize training. 
+Each \textit{worker} consists in a deep CNN with a unique convolutional section 
+and two separate dense networks on top, one for the value function and one for 
+the policy. 
 
 This asynchronous methodology was applied to other classical RL algorithms in 
 the same paper; we only report the actor-critic variant as it was the best 
