@@ -14,8 +14,8 @@ The \textit{Arcade Learning Environment} (ALE) \cite{bellemare2013arcade} is an
 evaluation platform for RL agents.
 ALE offers a programmatic interface to hundreds of game environments for the 
 \textit{Atari 2600}, a popular home video game console developed in 1977 with 
-more than 500 games available, and is often referred to simply as 
-Atari environments (or games). 
+more than 500 games available, and is simply referred to as 
+\textit{Atari environments} (or \textit{games}). 
 We use the implementation of ALE provided by the \textit{Gym 0.9.2} package for 
 Python 2.7, developed by OpenAI and maintained as an open source project. 
 This implementation provides access to the game state in the form of 
@@ -47,9 +47,9 @@ representation in the discrete 8-bit interval $[0, 255]$ using the
     %
 \end{IEEEeqnarray}
 %
-where $R$, $G$, $B$ are the 8-bit components of the image. We then normalize 
-these values in the $[0, 1]$ interval via \textit{max-scaling} (i.e.\ dividing 
-each pixel by $255$).
+where $R$, $G$, $B$ are the 8-bit \textit{red, green} and \textit{blue} channels
+of the image. We then normalize these values in the $[0, 1]$ interval via 
+\textit{max-scaling} (i.e.\ dividing each pixel by $255$).
 Moreover, we define a rounding threshold $v_{round}$ specific to each game
 and we round all pixel values above or below the threshold to $1$ or 
 $0$ respectively, reducing the images to a 1-bit color space in order to 
@@ -81,12 +81,18 @@ Moreover, in order to facilitate comparisons and improve stability, we remain
 loyal to the methodology used for DQN and perform the same clipping of the 
 reward signal in a $[-1, 1]$ interval. 
 
-We add a final tweak to the Gym implementation of ALE in order to fix a 
-requirement of some of the environments to perform some specific actions in 
+We also add a tweak to the Gym implementation of ALE in order to fix a 
+requirement of some environments of performing some specific actions in 
 order to start an episode (e.g.\ in \textit{Breakout} it is required that the 
-agent takes actions 1, 4 or 5 to start the game). We automatically start each 
-episode by randomly selecting one of the initial actions of the game and forcing
-the agent to take that action at the beginning of the episode. 
+agent takes action 1 to start the game). We automatically start each episode by 
+randomly selecting one of the initial actions of the game and forcing the agent 
+to take that action at the beginning of the episode. 
+
+Finally, for those games in which the agent has a lives count, we monitor the 
+number of remaining lives provided by the simulator in the \textit{ale.lives}
+parameter. For those $(s, a, r, s')$ transitions in which the agent loses a life, 
+we consider $s'$ as a terminal state, so that the FQI update will only 
+propagate the reward rather than the full value. 
 
 \section{Autoencoder}
 %
@@ -134,7 +140,7 @@ Since the main purpose of pooling layers is to provide translation invariance to
 the representation of the CNN (meaning that slightly shifted or tilted inputs
 are considered the same by the network), here we choose to not use pooling 
 layers in order to preserve the precious information regarding the position of
-different elements in the games; this same approach was adopted in DQN.
+different elements in the game; this same approach was adopted in DQN.
 A final \textit{Flatten} layer is added at the end of the encoder to provide a 
 1D representation of the feature space, which is reversed before the beginning 
 of the decoder. 
@@ -211,20 +217,20 @@ training epochs.
 % Significance
 We use the RFS algorithm to reduce the state space representation computed by 
 the AE down to the feature space $\hat{S}$.
-We base both the feature ranking method $FR$ and the model $\hat{f}$ used for
-computing the descriptiveness of the features on the Extra-Trees algorithm for
-supervised learning (cf.\ Section \ref{s:extra-trees}).
+We base both the feature ranking method $FR$ and the model $\hat{f}$, used for
+computing the descriptiveness of the features, on the supervised Extra-Trees 
+algorithm (cf.\ Section \ref{s:extra-trees}).
 
 The feature ranking approach with Extra-Trees is based on the idea of scoring
 each input feature by estimating the variance reduction produced anytime that 
 the feature is selected during the tree building process. The ranking score is
 computed as the percentage of variance reduction achieved by each feature over 
 the $M$ trees built by the algorithm.
-% TODO: maybe put the FR formula (6) from the paper here?
+
 At the same time, Extra-Trees is a sufficiently powerful and computationally 
 efficient supervised learning algorithm to use as $\hat{f}$.
 Note that in general $FR$ and $\hat{f}$ could be different algorithms with 
-different parametrization, but Castelletti et al.\ use the same regressor for 
+different parametrizations, but Castelletti et al.\ use the same regressor for 
 both tasks (as does the code implementation of RFS and IFS that we used for 
 experiments), and we therefore complied with this choice.
 The parametrization of Extra-Trees for $FR$ and $\hat{f}$ is reported in Tables
@@ -266,7 +272,7 @@ to build the ensemble and the Extra-Trees algorithm itself (cf.\ Section
 \end{table}
 %
 We use the $R^2$ metric defined in Equation \eqref{e:R2} to compute the ability
-of the selected features to describe the target in $K$-fold cross validation 
+of the selected features to describe the target, in $K$-fold cross validation 
 over the training set $\mathcal{D}$. We compute a confidence interval over the 
 scores of the validation predictions as:
 \begin{IEEEeqnarray}{rCl}
@@ -274,12 +280,12 @@ scores of the validation predictions as:
     CI = \sqrt{\frac{1}{|\mathcal{D}|} \sum\limits_{i = 1}^{|\mathcal{D}|} (R^2)^2 \cdot (\frac{1}{|\mathcal{D}|} \sum\limits_{i = 1}^{|\mathcal{D}|} (R^2))^2}
     %
 \end{IEEEeqnarray}
-and we adapt the stopping condition to RFS by setting $\epsilon = CI + CI_{old}$ 
+and we adapt the stopping condition of RFS by setting $\epsilon = CI + CI_{old}$ 
 (where the suffix $old$ has the same meaning as in Algorithm \ref{alg:IFS}) so
 that the condition becomes $R^2 - CI < R^2_{old} - CI_{old}$.
-We also multiply $\epsilon$ by a \textit{significance} factor $s$ in order to
+We also multiply $\epsilon$ by a \textit{significance} factor $\xi$ in order to
 control the amount of variance that a feature must explain in order to be added 
-to the selection: higher values of $s$ means that the selection will yield a 
+to the selection: higher values of $\xi$ means that the selection will yield a 
 smaller subset composed exclusively of very informative features (even if the 
 overall amount of variance explained is not necessarily the whole possible 
 amount).
@@ -292,7 +298,7 @@ The hyperparameters used for RFS are reported in Table \ref{t:RFS}.
 	Parameter & Value \\ 
 	\hline 
 	$K$ (for $K$-fold cross-validation) & $3$ \\
-	$s$ (significance) &  0.5 \\
+	$\xi$ (significance) &  0.5 \\
 	\hline
     \end{tabular}
     \caption{Parameters for RFS}
@@ -301,7 +307,7 @@ The hyperparameters used for RFS are reported in Table \ref{t:RFS}.
 %
 
 \section{Tree-based Fitted Q-Iteration}
-We use the FQI algorithm to learn an approximation of the $Q$ function form the
+We use the FQI algorithm to learn an approximation of the $Q$ function from the
 compressed and reduced state space extracted by the previous two modules. 
 For consistency with the feature selection algorithm, we use the Extra-Trees 
 learning method as function approximator for the action-value function.
@@ -349,19 +355,15 @@ Since the FQI procedure introduces a small bias to the action-value estimate at
 each iteration (due to approximation error and a similar over-estimation issue 
 to that described in Section \ref{SOA:value} for Q-learning), we implement an 
 \textit{early stopping} procedure based on the evaluation of the agent's 
-performance under an $\varepsilon$-greedy policy (with $\varepsilon = 0.05$) on 
-the current partial approximation $\hat{Q}_i$, where $i$ is the number of FQI 
-steps occurred so far. If the agent's performance does not improve for five 
-consecutive iterations, we stop the training and produce the best performing 
-estimation as output to the training phase.
-The evaluation procedure is executed after each fit of the Extra-Trees
-algorithm, by composing all the modules in the pipeline to obtain the full $Q$ 
-approximation defined in Equation \eqref{eq:final_output}. 
+performance.
+At each iteration $i$, we evaluate the performance of an $\varepsilon$-greedy 
+policy (with $\varepsilon = 0.05$) based on the current partial approximation 
+$\hat{Q}_i$, by composing all the modules in the pipeline to obtain the full $Q$ 
+as per Equation \eqref{eq:final_output}. 
+If the agent's performance does not improve for five consecutive iterations, we 
+stop the training and produce the best performing estimation as output to the training phase.
 The performance is evaluated by running the policy for five episodes and 
 averaging the clipped cumulative return of each evaluation episode. 
-We also consider the average number of steps per episode as indicator of the 
-agent performance for human assessment, but we never use it as part of the 
-algorithm. 
 
 Finally, we consider a discount factor $\gamma = 0.99$ for the MDP in order to 
 give importance to rewards in a sufficiently large time frame. 
@@ -382,7 +384,7 @@ and of correcting its behavior after an (albeit artificial) mistake.
 We let the agent experience $N$ separate episodes under the $\varepsilon$-greedy 
 policy, and for each episode we consider the cumulative clipped return and the
 number of steps occurred. The mean and variance of these two metrics across the 
-$N$ episodes provide us with insights on the agent's performance: a high mean 
+$N$ episodes provide us with insights on the agent's performance: a high average 
 return obviously means that the algorithm has produced a good policy, but at the
 same time a low variance in the number of steps could indicate that the agent is 
 stuck in some trivial policy (e.g. take always the same action) which causes the
@@ -390,10 +392,6 @@ episodes to be essentially identical, even accounting for the non-zero
 exploration rate. The latter aspect, while not negative in general, can help in 
 the initial steps of experiments to detect potential problems in the 
 implementation.
-
-Note that here too, similarly to what done for the collection of the training 
-sets, we force-start each episode by randomly selecting one of the initial 
-actions of the game. 
 
 Evaluation parameters are summarized in Table \ref{t:eval}.
 

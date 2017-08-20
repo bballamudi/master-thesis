@@ -4,26 +4,24 @@
 
 \vspace{0.5cm}
 
-As central argument of this thesis, we propose a DRL method which 
-combines the feature extraction capabilities of deep CNNs with the fast and 
-powerful batch RL approach of FQI. 
-Given a control problem with high-dimensional states in a pixel-like space and
-a mono-dimensional discrete action space, we use a deep convolutional 
-autoencoder to map the original state space to a compressed 
-\textit{feature space} which accounts for information on the state and the 
-nominal environment dynamics (i.e.\ those changes not directly influenced by the 
-agent). 
+As central contribution of this thesis, we propose a DRL algorithm which 
+combines the feature extraction capabilities of unsupervised deep CNNs with the 
+fast and powerful batch RL approach of FQI. 
+Given a control problem with high-dimensional states and a mono-dimensional 
+discrete action space, we use a deep convolutional autoencoder to map the 
+original state space to a compressed \textit{feature space} which accounts for 
+information on the states and the nominal dynamics of the environment (i.e.\ 
+those changes not directly influenced by the agent). 
 We reduce the representation further by applying the \textit{Recursive Feature
-Selection} (RFS) algorithm to the extracted state features to further reduce 
-the dimensionality of the state space, and this final compressed representation 
-is then used to run FQI. 
+Selection} (RFS) algorithm to the extracted state features, and this minimal 
+state space is then used to run the FQI algorithm. 
 We repeat this procedure iteratively in a \textit{semi-batch} approach to 
-bootstrap the algorithm's performance starting from a purely random exploration
-of the environment.
+bootstrap the algorithm, starting from a fully random exploration of the 
+environment.
 
 In this chapter we give a formal description of the method and its core 
-components. Technical details of implementation will be discussed in the next
-chapter.
+components, whereas technical details of implementation will be discussed in the 
+next chapter.
 
 \section{Motivation}
 The state-of-the-art DRL methods listed in the previous chapter are able to 
@@ -37,14 +35,26 @@ with this aspect, but nonetheless leave room for improvement (lowering at most
 by one order of magnitude the number of samples required).
 The method introduced by Lange and Riedmiller (2010) \cite{lange2010deep} is 
 similar to ours but their dense architecture predates the more modern 
-convolutional approaches in image processing and is less suited for complex
-tasks than our AE.
+convolutional approaches in image processing and is less suited than our AE for 
+complex tasks.
 
 The method that we propose tries to improve both aspects of information content
 of the compressed feature space and sample efficiency. We extract general 
-features from the environments and try to reach better or equivalent performance
-in up to two orders of magnitude less samples than DQN on comparable 
-environments.
+features from the environments in an unsupervised fashion, which forgoes the
+task-oriented representation of the current state-of-the-art methods in favor of
+a description which relates more closely to the original information content of 
+the states; because of the generality of this description, the compressed state 
+space can be used with a variety of RL algorithms in their default setting (like
+we show with FQI), without having to adapt the deep architecture to solve the 
+problem end-to-end like in deep Q-learning.
+Moreover, since deep features can be difficult to interpret in an abstract 
+way and in general there is no assurance against redundancy in the representation, 
+we use a feature selection technique on the extracted space in order to 
+really minimize the description while retaining all information required for 
+control.
+Finally, our sample-efficient methodology allows us to reach better or 
+equivalent performance in up to two orders of magnitude less samples than DQN on
+comparable environments.
 
 \section{Algorithm Description}
 The general structure of this algorithm is typical of DRL settings: we use a 
@@ -56,8 +66,8 @@ problem by using the \textit{Recursive Feature Selection} (RFS) algorithm
 \cite{castelletti2011tree}.
 
 We focus exclusively on environments with a discrete and mono-dimensional 
-action space $A$, where actions are assigned a unique integer identifier 
-starting from $0$ with no particular order. 
+action space $A = \{0, 1, ..., a\}$, where actions are assigned a unique integer 
+identifier starting from $0$ with no particular order. 
 We also assume to be operating in a three dimensional state space 
 ($channels \times height \times width$) for consistency with the experimental 
 setting on which we tested the algorithm (with pixel-level state spaces), 
@@ -72,13 +82,13 @@ function. The main components of the algorithm are:
     \item a deep convolutional autoencoder which we use to extract a 
     representation of the environment;
     the purpose of the AE is to map the original, pixel-level state space $S$ of
-    the environment into a strongly compressed feature space ${\tilde{S}}$ which
-    contains information of both the state space and part of the transition 
+    the environment into a strongly compressed feature space ${\tilde{S}}$, 
+    which contains information on both the states and part of the transition 
     model of the environment;
     \item the \textit{Recursive Feature Selection} (RFS) technique to further 
     reduce the state representation $\tilde{S}$ and keep only the truly 
     informative features extracted by the AE, effectively mapping the extracted 
-    state-space to a subspace $\hat{S}$.
+    feature space to a subspace $\hat{S}$.
     \item the \textit{tree-based} FQI learning algorithm which produces an 
     estimator for the action-value function, with $\hat{S}$ as domain. 
 \end{enumerate}
@@ -86,23 +96,35 @@ function. The main components of the algorithm are:
 The full procedure consists in alternating a training step and an evaluation 
 step, until the desired performance is reached.
 %
-\begin{figure}[h]
+\begin{figure}
 \includegraphics[width=\textwidth]{pictures/full_pipeline}
 \centering
 \caption[Schematic view of the three main modules]{Composition of the three main
 						   modules of the algorithm to
 						   produce the end-to-end 
 						   function 
-						   $Q: S \times A \rightarrow \mathbb{R}$}
+						   $Q: S \times A \rightarrow \mathbb{R}$.
+						   Pixel-level states are transformed by the
+						   encoder to the 1D feature space $\tilde{S}$,
+						   which in turn is filtered by RFS into space 
+						   $\hat{S}$. The final representation is 
+						   used to train FQI which outputs an 
+						   action-value function $\hat{Q}$ on 
+						   $\hat{S} \times A$. 
+						   The same preprocessing pipeline is then
+						   required to use $\hat{Q}$, and the full 
+						   composition of the three modules effectively
+						   consists in an action-value function on 
+						   the original space $S \times A$.}
 \label{f:full_pipeline}
-\end{figure}
+\end{figure},
 %
 
 A training step of the algorithm takes as input a training set $\mathcal{TS}$ of
-four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ and produces a new 
+four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ to produce an 
 approximation of the action-value function, and consists in sequentially 
-training the three components from scratch to produce the following 
-transformations respectively:
+training the three components from scratch to obtain the following 
+transformations, respectively:
 \begin{itemize}
     \item $ENC: S \rightarrow \tilde{S}$, from the pixel representation to a 
     compressed feature space;
@@ -154,7 +176,7 @@ A general description of the process is reported in Algorithm \ref{alg:FQI-DSDF}
 and details on the training phases and evaluation step are given in the 
 following sections. 
 %
-\begin{algorithm}[h]
+\begin{algorithm}
     \caption{Fitted Q-Iteration with Deep State Features}
     \label{alg:FQI-DSDF}
     \begin{algorithmic}
@@ -186,9 +208,9 @@ following sections.
     \end{algorithmic}
 \end{algorithm}
 %
-Note that in general the \textit{semi-batch} approach which starts from a 
+Note that in general the \textit{semi-batch} approach, which starts from a 
 training set collected under a fully random policy and sequentially collects new
-dataset as performance improves is not strictly necessary. It is also possible
+datasets as performance improves, is not strictly necessary. It is also possible
 to run a single training step in pure batch mode, using a dataset collected 
 under an expert policy (albeit with some degree of exploration required by FQI) 
 to produce an approximation of the optimal $Q$ function in one step. 
@@ -201,7 +223,7 @@ The AE used in our approach consists of two main components, namely an
 explicitly representing the encoding purpose of the AE, we keep a separate 
 notation of the two modules; we therefore refer to two different CNNs, namely 
 $ENC: S \rightarrow \tilde{S}$ that maps the original state space to the 
-compressed representation in $\tilde{S}$, and $DEC: \tilde{S} \rightarrow S$ 
+compressed representation $\tilde{S}$, and $DEC: \tilde{S} \rightarrow S$ 
 which performs the inverse transformation. The full AE is the composition of the
 two networks $AE: DEC \circ ENC: S \rightarrow S$ (Figure \ref{f:ae}). 
 Note that the composition is differentiable end-to-end, and basically consists 
@@ -210,7 +232,7 @@ Both components (in our specific implementation, discussed further in the next
 chapter) are convolutional neural networks specifically structured to reduce the
 representation down to an arbitrary number of features in the new space.
 %
-\begin{figure}[h]
+\begin{figure}
 \includegraphics[width=\textwidth]{pictures/conv_autoencoder}
 \centering
 \caption{Schematic view of the AE}
@@ -219,13 +241,14 @@ representation down to an arbitrary number of features in the new space.
 %
 
 We train the AE to reconstruct its input in an unsupervised fashion, using the 
-first column of (i.e.\ the first elements of each four-tuple in) a dataset 
-$\mathcal{TS}$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ 
+first column of\footnote{i.e.\ the first elements of each four-tuple in -} a 
+dataset $\mathcal{TS}$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ 
 collected with the $\varepsilon$-greedy policy. 
-The output of this training phase is the trained encoder 
-$ENC: S \rightarrow \tilde{S}$, which takes as input the three-dimensional 
-state space of the environment and produces a one-dimensional feature vector
-representing a high-level abstraction of the state space.
+The output of this phase is the trained encoder $ENC: S \rightarrow \tilde{S}$, 
+which takes as input the three-dimensional states of the environment and 
+produces a one-dimensional feature vector representing a high-level abstraction 
+of the state space.
+
 We refer to $\tilde{S}$ as a representation of both the state and the nominal 
 environment dynamics because we allow for the original state space $S$ to 
 contain both such types of information, accounting for changes in the 
@@ -234,9 +257,21 @@ An example of this is the \textit{MsPacman} environment in the Atari suite,
 implementation of the popular arcade game, in which the \textit{ghosts} are able
 to move autonomously, not necessarily influenced by the player; in such a 
 setting, the environment presents a non-trivial nominal dynamic which must be 
-taken into account in the extracted representation. Details on how we accomplish 
-this are provided in the following chapter when dealing with the specific 
-implementation of our experimental setting.
+taken into account in the extracted representation (Figure \ref{f:nominal_dyn}).
+Details on how we accomplish this are provided in the following chapter, when 
+dealing with the specific implementation of our experimental setting.
+%
+\begin{figure}
+\includegraphics[width=\textwidth]{pictures/nominal_dyn}
+\centering
+\caption[Example of non-trivial nominal dynamics]{Example of non-trivial nominal
+						  dynamics in the \textup{MsPacman}
+						  environment, with the ghosts 
+						  moving autonomously across the
+						  four consecutive observations}
+\label{f:nominal_dyn}
+\end{figure}
+%
 
 \section{Recursive Feature Selection}
 The \textit{Recursive Feature Selection} (RFS) \cite{castelletti2011tree} 
@@ -249,10 +284,10 @@ The core of the algorithm consists in recursively selecting the features which
 best explain the dynamics (i.e.\ the transition model) of the features already 
 selected, starting from the subset of features needed to explain the reward 
 model, using the \textit{Iterative Feature Selection} (IFS) 
-\cite{castelletti2013iter} algorithm in order to recursively build a dependency 
+\cite{castelletti2013iter} algorithm to recursively build a dependency 
 tree of features.
 %
-\begin{algorithm}[h]
+\begin{algorithm}
     \caption{Recursive Feature Selection ($RFS$)}
     \label{alg:RFS}
     \begin{algorithmic}
@@ -280,32 +315,76 @@ At the first step, the algorithm is usually run to identify the most important
 features to explain the reward $R$ by setting $F_0^0 = R$ and 
 $\mathcal{F}_{sel}^0 = \emptyset$, so that the final output of the procedure 
 will be a set of features which describe the dynamics of the reward and of the 
-environment itself.
+environment itself (a simple example of RFS is given in Figure \ref{f:rfs_grid}).
+%
+\begin{figure}
+\includegraphics[width=\textwidth]{pictures/rfs_grid}
+\centering
+\caption[RFS on \textit{Gridworld}]{In this simple example we show the output
+				    of RFS in a simple \textit{Gridworld} 
+				    environment with two state features, $x$
+				    and $y$, to represent the agent's position 
+				    and two action features, $a_x$
+				    and $a_y$ valued in $\{-1, 0, 1\}$, to 
+				    control the corresponding state features and
+				    move the agent on the discrete grid (the 
+				    movement is the sum of the two effects). We 
+				    use a setting with null reward everywhere
+				    except in the four goal states (green) which
+				    yield a positive reward, and a wall which cancels 
+				    the effect of action $a_x$ if the agent 
+				    tries to move through it.
+				    To the right we see the dependency tree 
+				    produced by RFS, which in this case selects
+				    both state features and both action features.
+				    Intuitively, the reward is explained 
+				    exclusively by the state feature $x$ and the
+				    action that controls it, $a_x$, because the 
+				    agent gets a positive reward in each of the 
+				    four cells to the far right, independently
+				    of its $y$ coordinate, whenever it reaches 
+				    one. At the same time, 
+				    feature $x$ is explained by its value and
+				    by the action feature $a_x$ (because
+				    the next value of $x$ is a function of both,
+				    namely $x' = x + a_x$), but also by feature 
+				    $y$, because given the $x$ coordinate of the 
+				    agent and a direction along $x$ we still 
+				    have to know whether the agent is next to 
+				    the wall in order to compute the following 
+				    value of $x$. Finally, feature $y$ is 
+				    explained by itself and its associated 
+				    action, without restrictions given by 
+				    the wall}
+\label{f:rfs_grid}
+\end{figure}
+%
 
-The IFS procedure called at each step of RFS is a feature selection procedure 
+The IFS procedure called at each step of RFS is a feature selection technique 
 based on a \textit{feature ranking} algorithm, but in general can be replaced by
-any feature selection technique which is able to account for non-linear 
+any feature selection method which is able to account for non-linear 
 dependencies and redundancy between features (as real-world control problems are
 usually characterized by non-linear dynamic models with multiple coupled 
 features). Here we use IFS for coherence with the paper by Castelletti et al., 
 and because it is a computationally efficient feature selection algorithm which
 works well with our semi-batch approach.
-IFS takes as input a dataset $\mathcal{D}$ of observed transitions 
-from the environment and the values of a target feature $F_0$ in $\mathcal{D}$.
-The algorithm starts by globally ranking the features in the feature space 
+IFS takes as input a dataset $\mathcal{D}$ of observed $(s, a, r, s')$ 
+transitions from the environment and the values of a target feature 
+$F_0$ in $\mathcal{D}$.
+The algorithm starts by globally ranking the features of the state space 
 according to a statistical level of significance provided by a feature ranking
 method $FR$, which takes as input the dataset and the target feature; 
 the most significant feature $F^*$ according to the ranking is added to the set 
 of selected features $\mathcal{F}_{sel}$. 
 A supervised model $\hat{f}$ is then trained to approximate the target feature 
-$F_0$ from $\mathcal{F}_{sel}$.
+$F_0$, taking $\mathcal{F}_{sel}$ as input.
 The algorithm then proceeds by repeating the ranking process using as new target
 feature for $FR$ the residual feature $\hat{F}_0 = F_0 - \hat{f}(\mathcal{F}_{sel})$ 
 (the difference between the target value and the approximation computed by 
  $\hat{f}$ for each sample in $\mathcal{D}$). 
-The procedure continues to perform these operations until the best variable in 
-the feature ranking is already in $\mathcal{F}_{sel}$ or the accuracy of the 
-model built upon the selected variables does not improve. 
+The procedure continues to perform these operations until either the best 
+variable in the feature ranking is already in $\mathcal{F}_{sel}$, or the 
+accuracy of the model built upon $\mathcal{F}_{sel}$ does not improve. 
 The accuracy of the model is computed with the coefficient of determination
 $R^2$ between the values of the target feature $F_0$ and the values
 $F_{pred} = \hat{f}(\mathcal{F}_{sel})$ predicted by the model: 
@@ -318,7 +397,7 @@ $F_{pred} = \hat{f}(\mathcal{F}_{sel})$ predicted by the model:
 %
 The full IFS procedure is summarized in Algorithm \ref{alg:IFS}.
 %
-\begin{algorithm}[h]
+\begin{algorithm}
     \caption{Iterative Feature Selection ($IFS$)}
     \label{alg:IFS}
     \begin{algorithmic}
@@ -341,15 +420,15 @@ The full IFS procedure is summarized in Algorithm \ref{alg:IFS}.
 \end{algorithm}
 %
 
-To the extent of our algorithm, we apply the RFS procedure to a dataset 
+To the extent of our algorithm, we run the RFS procedure on a dataset 
 $\mathcal{TS}_{ENC}$ of four-tuples 
 $(\tilde{s} \in \tilde{S}, a \in A, r \in \mathbb{R}, \tilde{s}' \in \tilde{S})$
 built by applying the transformation $ENC$ to the first and last column of 
 $\mathcal{TS}$.
-We let the algorithm run on all the state and action features, but since we 
-assume to be working in a mono-dimensional action space we force the action 
-feature to always be part of the representation, so that the RFS procedure is 
-effectively working only on the state space extracted by the AE.
+We run the algorithm on all the state and action features but, since we 
+assume to be working in a mono-dimensional action space, we force the action 
+feature to always be part of the representation, so that the procedure is 
+effectively working only on $\tilde{S}$.
 
 At the end of the procedure, we define a simple filtering operation 
 $RFS: \tilde{S} \rightarrow \hat{S}$ that consists in keeping only the features
@@ -372,8 +451,5 @@ the first dimension of the model's output, corresponding to the value of action
 0 in state $s$). 
 The output of this training phase is the transformation 
 $\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$, which is then combined with 
-$ENC$ and $RFS$ as per Equation \eqref{eq:final_output} to produce the next
+$ENC$ and $RFS$ as per Equation \eqref{eq:final_output} to produce the 
 approximation of $Q$. This phase also concludes the training step.
-
-% TODO: image of the full model AE + RFS + FQI
-
