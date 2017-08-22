@@ -1,8 +1,8 @@
-\contentsline {algorithm}{\numberline {1}{\ignorespaces SARSA\relax }}{23}
-\contentsline {algorithm}{\numberline {2}{\ignorespaces Q-Learning\relax }}{23}
-\contentsline {algorithm}{\numberline {3}{\ignorespaces Fitted Q-Iteration\relax }}{24}
-\contentsline {algorithm}{\numberline {4}{\ignorespaces Extra-Trees node splitting\relax }}{28}
-\contentsline {algorithm}{\numberline {5}{\ignorespaces Deep Q-Learning with Experience Replay\relax }}{31}
-\contentsline {algorithm}{\numberline {6}{\ignorespaces Fitted Q-Iteration with Deep State Features\relax }}{41}
-\contentsline {algorithm}{\numberline {7}{\ignorespaces Recursive Feature Selection ($RFS$)\relax }}{43}
-\contentsline {algorithm}{\numberline {8}{\ignorespaces Iterative Feature Selection ($IFS$)\relax }}{46}
+\contentsline {algorithm}{\numberline {1}{\ignorespaces SARSA\relax }}{21}
+\contentsline {algorithm}{\numberline {2}{\ignorespaces Q-Learning\relax }}{21}
+\contentsline {algorithm}{\numberline {3}{\ignorespaces Fitted Q-Iteration\relax }}{22}
+\contentsline {algorithm}{\numberline {4}{\ignorespaces Extra-Trees node splitting\relax }}{26}
+\contentsline {algorithm}{\numberline {5}{\ignorespaces Deep Q-Learning with Experience Replay\relax }}{29}
+\contentsline {algorithm}{\numberline {6}{\ignorespaces Fitted Q-Iteration with Deep State Features\relax }}{39}
+\contentsline {algorithm}{\numberline {7}{\ignorespaces Recursive Feature Selection ($RFS$)\relax }}{41}
+\contentsline {algorithm}{\numberline {8}{\ignorespaces Iterative Feature Selection ($IFS$)\relax }}{44}

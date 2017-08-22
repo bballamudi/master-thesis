@@ -1,15 +1,28 @@
 \chapter{Experimental Results}
-\label{ch6_exp}
+\label{chapter6_experiments}
 \thispagestyle{empty}
 
 \vspace{0.5cm}
 
-In this chapter we show some experimental results of our algorithm on some Atari
+In this chapter we show experimental results of our algorithm on some Atari
 games.
-We show that we are able to obtain better performance than the state-of-the-art
-approaches in the first five hundred thousand frames of experience starting 
-from a fully random policy, and that the agent is able to learn non-trivial 
-behaviors.
+We show that the generic representation of the state space that we extract with
+our pipeline is suitable for control tasks, and that our agent needs up to two 
+orders of magnitude less samples than DQN to reach equivalent performance with 
+FQI. 
+
+% Premise on computational complexity and limited resources
+
+\section{Quality of extracted features}
+% Test FQ
+% Score FQ
+
+\section{Pure batch training from expert policy}
+% Use DQN to collect, run 1 step of algorithm
+
+\section{Semi-batch training}
+% Run full algorithm
+
 
 
 
