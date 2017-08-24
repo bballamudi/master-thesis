@@ -35,7 +35,7 @@ proved the effectiveness of the method.
 \begin{figure}[h]
 \includegraphics[width=0.5\textwidth]{pictures/dqn}
 \centering
-\caption{Structure of the Deep Q-Network by Mnih et al.\ }
+\caption[Structure of the Deep Q-Network by Mnih et al.\ ]{Structure of the Deep Q-Network by Mnih et al..}
 \end{figure}
 %
 
@@ -93,7 +93,7 @@ proposed in the literature.
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{pictures/atari}
 \centering
-\caption{Some of the games available in the Atari environments}
+\caption[Some of the games available in the Atari environments]{Some of the games available in the Atari environments.}
 \end{figure}
 %
 Van Hasselt et al.\ (2016) proposed \textit{Double DQN} (DDQN) \cite{van2016deep} 
@@ -196,7 +196,7 @@ symbolic task cue).
 \includegraphics[width=\textwidth]{pictures/nec}
 \centering
 \caption[Architecture of NEC]{Architecture of NEC (image taken from 
-			      \cite{pritzel2017neural})}
+			      \cite{pritzel2017neural}).}
 \label{f:nec}
 \end{figure}
 %
@@ -236,7 +236,7 @@ game.} was too complex for exhaustive search methods.
 \caption[Neural network training pipeline of AlphaGo]{Neural network training 
 						      pipeline of AlphaGo
 						      (image taken from 
-						      \cite{silver2016mastering})}
+						      \cite{silver2016mastering}).}
 \label{f:alphago}
 \end{figure}
 %
@@ -263,16 +263,28 @@ selects actions with a lookahead search, by building a partial search tree using
 the estimates computed with each network.
 
 \subsection{Asynchronous Advantage Actor-Critic}
-\textit{Actor-critic} algorithms \cite{sutton1998reinforcement} are TD methods 
+\textit{Actor-critic} algorithms \cite{sutton1998reinforcement} are RL methods 
 that have a separate memory structure to explicitly represent the policy 
 independent of the value function. The policy structure is known as the actor, 
 because it is used to select actions, and the estimated value function is known 
-as the critic, because it criticizes the actions made by the actor.
+as the critic, because it criticizes the actions made by the actor. Learning is
+always on-policy, as the critic must learn about and critique whatever policy is
+currently being followed by the actor. The critique usually takes the form of a 
+TD error which is used to drive learning in both the actor and the critic, 
+evaluated as:
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    \delta_t = r_{t+1} + \gamma V(s_{t+1}) - V(s_t)
+    %
+\end{IEEEeqnarray}
+
+%
 %
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{pictures/a3c}
 \centering
-\caption{The asynchronous architecture of A3C}
+\caption[The asynchronous architecture of A3C]{The asynchronous architecture of A3C.}
 \label{f:a3c}
 \end{figure}
 %

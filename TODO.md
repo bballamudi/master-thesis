@@ -8,6 +8,7 @@
 
 * Chapter 3: State of the Art
     * Expand Related Work (3.3)...........................................[DONE]
+    * Section 3.2.3: Matteo's suggestion..................................[]
 
 * Chapter 4: Research Problem
     * Expand motivation Section...........................................[DONE]

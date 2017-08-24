@@ -52,9 +52,9 @@ way and in general there is no assurance against redundancy in the representatio
 we use a feature selection technique on the extracted space in order to 
 really minimize the description while retaining all information required for 
 control.
-Finally, our sample-efficient methodology allows us to reach better or 
-equivalent performance in up to two orders of magnitude less samples than DQN on
-comparable environments.
+Finally, our sample-efficient methodology allows our agent to learn non-trivial 
+policies using up to two orders of magnitude less samples than the state-of-the-art 
+approaches.
 
 \section{Algorithm Description}
 The general structure of this algorithm is typical of DRL settings: we use a 
@@ -192,10 +192,10 @@ following sections.
 	\STATE Initialize an $\varepsilon$-greedy policy $\pi_\varepsilon$ based on $\pi$ with $\varepsilon = 1$;
 	\REPEAT 
 	    \STATE Collect a set $\mathcal{TS}$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ using $\pi_\varepsilon$;
-	    \STATE Train the composition $DEC \circ ENC: S \rightarrow S$ using the first column of $\mathcal{TS}$ as input and target;
-	    \STATE Build a set $\mathcal{TS}_{ENC}$ of four-tuples $(\tilde{s} \in \tilde{S}, a \in A, r \in \mathbb{R}, \tilde{s}' \in \tilde{S})$ by applying the encoder to the first and last column of $\mathcal{TS}$ s.t. $\tilde{s} = ENC(s)$;
+	    \STATE Train the composition $DEC \circ ENC: S \rightarrow S$ using the state elements ($s \in S$) of $\mathcal{TS}$ as input and target;
+	    \STATE Build a set $\mathcal{TS}_{ENC}$ of four-tuples $(\tilde{s} \in \tilde{S}, a \in A, r \in \mathbb{R}, \tilde{s}' \in \tilde{S})$ by applying the encoder to the first and last elements of each four-tuple in $\mathcal{TS}$ s.t. $\tilde{s} = ENC(s)$;
 	    \STATE Call the RFS feature selection algorithm on $\mathcal{TS}_{ENC}$ to obtain a space reduction $RFS: \tilde{S} \rightarrow \hat{S}$;
-	    \STATE Build a set $\mathcal{TS}_{RFS}$ of four-tuples $(\hat{s} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{s}' \in \hat{S})$ by applying $RFS$ to the first and last column of $\mathcal{TS}_{ENC}$ s.t. $\hat{s} = RFS(\tilde{s})$;
+	    \STATE Build a set $\mathcal{TS}_{RFS}$ of four-tuples $(\hat{s} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{s}' \in \hat{S})$ by applying $RFS$ to the first and last elements of each four-tuple in $\mathcal{TS}_{ENC}$ s.t. $\hat{s} = RFS(\tilde{s})$;
 	    \STATE Call FQI on $\mathcal{TS}_{RFS}$ to produce $\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$;
 	    \STATE Combine $\hat{Q}$, $RFS$ and $ENC$ to produce $Q: S \times A \rightarrow \mathbb{R}$:
 		\[
@@ -235,15 +235,15 @@ representation down to an arbitrary number of features in the new space.
 \begin{figure}
 \includegraphics[width=\textwidth]{pictures/conv_autoencoder}
 \centering
-\caption{Schematic view of the AE}
+\caption[Schematic view of the AE]{Schematic view of the AE.}
 \label{f:ae}
 \end{figure}
 %
 
-We train the AE to reconstruct its input in an unsupervised fashion, using the 
-first column of\footnote{i.e.\ the first elements of each four-tuple in -} a 
+We train the AE to reconstruct its input in an unsupervised fashion, using the a
 dataset $\mathcal{TS}$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ 
-collected with the $\varepsilon$-greedy policy. 
+collected with the $\varepsilon$-greedy policy and taking the first element ($s \in S$) 
+of each sample as input and target. 
 The output of this phase is the trained encoder $ENC: S \rightarrow \tilde{S}$, 
 which takes as input the three-dimensional states of the environment and 
 produces a one-dimensional feature vector representing a high-level abstraction 
@@ -268,7 +268,7 @@ dealing with the specific implementation of our experimental setting.
 						  dynamics in the \textup{MsPacman}
 						  environment, with the ghosts 
 						  moving autonomously across the
-						  four consecutive observations}
+						  four consecutive observations.}
 \label{f:nominal_dyn}
 \end{figure}
 %
@@ -355,7 +355,7 @@ environment itself (a simple example of RFS is given in Figure \ref{f:rfs_grid})
 				    value of $x$. Finally, feature $y$ is 
 				    explained by itself and its associated 
 				    action, without restrictions given by 
-				    the wall}
+				    the wall.}
 \label{f:rfs_grid}
 \end{figure}
 %
@@ -423,8 +423,8 @@ The full IFS procedure is summarized in Algorithm \ref{alg:IFS}.
 To the extent of our algorithm, we run the RFS procedure on a dataset 
 $\mathcal{TS}_{ENC}$ of four-tuples 
 $(\tilde{s} \in \tilde{S}, a \in A, r \in \mathbb{R}, \tilde{s}' \in \tilde{S})$
-built by applying the transformation $ENC$ to the first and last column of 
-$\mathcal{TS}$.
+built by applying the transformation $ENC$ to the first and last elements of 
+each four-tuple in $\mathcal{TS}$.
 We run the algorithm on all the state and action features but, since we 
 assume to be working in a mono-dimensional action space, we force the action 
 feature to always be part of the representation, so that the procedure is 
@@ -441,8 +441,8 @@ The last component of our training pipeline is the Fitted Q-Iteration algorithm
 (cf.\ Section \ref{s:FQI}).
 We provide as input to the procedure a new training set $\mathcal{TS}_{RFS}$
 of four-tuples $(\hat{s} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{s}' \in \hat{S})$, 
-obtained by applying the $RFS$ transformation to the first and last column of 
-$\mathcal{TS}_{ENC}$. 
+obtained by applying the $RFS$ transformation to the first and last elements of
+each four-tuple in $\mathcal{TS}_{ENC}$. 
 We train the model to output a multi-dimensional estimate of the action-value
 function on $\mathbb{R}^{|A|}$, with one value for each action that the agent 
 can take in the environment, and we restrict the output to a single value on 

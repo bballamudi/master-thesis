@@ -23,28 +23,6 @@
       publisher={University of Cambridge, Department of Engineering}
       }
 
-@Inbook{masci2011cae,
-	author="Masci, Jonathan
-	and Meier, Ueli
-	and Cire{\c{s}}an, Dan
-	and Schmidhuber, J{\"u}rgen",
-	editor="Honkela, Timo
-	and Duch, W{\l}odzis{\l}aw
-	and Girolami, Mark
-	and Kaski, Samuel",
-	title="Stacked Convolutional Auto-Encoders for Hierarchical Feature Extraction",
-	bookTitle="Artificial Neural Networks and Machine Learning -- ICANN 2011: 21st International Conference on Artificial Neural Networks, Espoo, Finland, June 14-17, 2011, Proceedings, Part I",
-	year="2011",
-	publisher="Springer Berlin Heidelberg",
-	address="Berlin, Heidelberg",
-	pages="52--59",
-	abstract="We present a novel convolutional auto-encoder (CAE) for unsupervised feature learning. A stack of CAEs forms a convolutional neural network (CNN). Each CAE is trained using conventional on-line gradient descent without additional regularization terms. A max-pooling layer is essential to learn biologically plausible features consistent with those found by previous approaches. Initializing a CNN with filters of a trained CAE stack yields superior performance on a digit (MNIST) and an object recognition (CIFAR10) benchmark.",
-	isbn="978-3-642-21735-7",
-	doi="10.1007/978-3-642-21735-7_7",
-	url="https://doi.org/10.1007/978-3-642-21735-7_7"
-	}
-
-
 @article{lecun2015deep,
 	 title={Deep learning},
 	 author={LeCun, Yann and Bengio, Yoshua and Hinton, Geoffrey},
@@ -58,13 +36,13 @@
 
 @article{wu2016google,
 	 title={Google's neural machine translation system: Bridging the gap between human and machine translation},
-	 author={Wu, Yonghui and Schuster, Mike and Chen, Zhifeng and Le, Quoc V and Norouzi, Mohammad and Macherey, Wolfgang and Krikun, Maxim and Cao, Yuan and Gao, Qin and Macherey, Klaus and others},
+	 author={Yonghui Wu and Mike Schuster and Zhifeng Chen and Quoc V. Le and Mohammad Norouzi and Wolfgang Macherey and Maxim Krikun and Yuan Cao and Qin Gao and Klaus Macherey and Jeff Klingner and Apurva Shah and Melvin Johnson and Xiaobing Liu and Lukasz Kaiser and Stephan Gouws and Yoshikiyo Kato and Taku Kudo and Hideto Kazawa and Keith Stevens and George Kurian and Nishant Patil and Wei Wang and Cliff Young and Jason Smith and Jason Riesa and Alex Rudnick and Oriol Vinyals and Greg Corrado and Macduff Hughes and Jeffrey Dean},
 	 year={2016}
 	 }
 
 @article{graves2016hybrid,
 	 title={Hybrid computing using a neural network with dynamic external memory},
-	 author={Graves, Alex and Wayne, Greg and Reynolds, Malcolm and Harley, Tim and Danihelka, Ivo and Grabska-Barwi{\'n}ska, Agnieszka and Colmenarejo, Sergio G{\'o}mez and Grefenstette, Edward and Ramalho, Tiago and Agapiou, John and others},
+	 author={Graves, Alex and Wayne, Greg and Reynolds, Malcolm and Harley, Tim and Danihelka, Ivo and Grabska-Barwi{\'n}ska, Agnieszka and Colmenarejo, Sergio G{\'o}mez and Grefenstette, Edward and Ramalho, Tiago and Agapiou, John and Badia, Adrià and Moritz Hermann, Karl and Zwols, Yori and Ostrovski, Georg and Cain, Adam and King, Helen and Summerfield, Christopher and Blunsom, Phil and Kavukcuoglu, Koray and Hassabis, Demis},
 	 journal={Nature},
 	 volume={538},
 	 number={7626},
@@ -74,8 +52,9 @@
 	 }
 
 @article{gravesneural,
-	 title={Neural Turing Machines},
-	 author={Graves, Alex and Wayne, Greg},
+	 title={Neural turing machines},
+	 author={Graves, Alex and Wayne, Greg and Danihelka, Ivo},
+	 journal={arXiv preprint arXiv:1410.5401},
 	 year={2014}
 	 }
 
@@ -87,7 +66,7 @@
 
 @article{silver2016mastering,
 	 title={Mastering the game of Go with deep neural networks and tree search},
-	 author={Silver, David and Huang, Aja and Maddison, Chris J and Guez, Arthur and Sifre, Laurent and Van Den Driessche, George and Schrittwieser, Julian and Antonoglou, Ioannis and Panneershelvam, Veda and Lanctot, Marc and others},
+	 author={Silver, David and Huang, Aja and Maddison, Chris J. and Guez, Arthur and Sifre, Laurent and van den Driessche, George and Schrittwieser, Julian and Antonoglou, Ioannis and Panneershelvam, Veda and Lanctot, Marc and Dieleman, Sander and Grewe, Dominik and Nham, John and Kalchbrenner, Nal and Sutskever, Ilya and Lillicrap, Timothy and Leach, Madeleine and Kavukcuoglu, Koray and Graepel, Thore and Hassabis, Demis},
 	 journal={Nature},
 	 volume={529},
 	 number={7587},
@@ -167,7 +146,7 @@
 
 @article{mnih2015human,
 	 title={Human-level control through deep reinforcement learning},
-	 author={Mnih, Volodymyr and Kavukcuoglu, Koray and Silver, David and Rusu, Andrei A. and Veness, Joel and Bellemare, Marc G. and Graves, Alex and Riedmiller, Martin and Fidjeland, Andreas K. and Ostrovski, Georg and others},
+	 author={Mnih, Volodymyr and Kavukcuoglu, Koray and Silver, David and Rusu, Andrei A. and Veness, Joel and Bellemare, Marc G. and Graves, Alex and Riedmiller, Martin and Fidjeland, Andreas K. and Ostrovski, Georg and Petersen, Stig and Beattie, Charles and Sadik, Amir and Antonoglou, Ioannis and King, Helen and Kumaran, Dharshan and Wiestra, Dan and Legg, Shane and Hassabis, Demis},
 	 journal={Nature},
 	 volume={518},
 	 number={7540},
@@ -206,11 +185,6 @@
 	 pages={69--97},
 	 year={1992},
 	 publisher={Springer}
-	 }
-
-@article{anschelaveraged,
-	 title={Averaged-DQN: Variance Reduction and Stabilization for Deep Reinforcement Learning},
-	 author={Anschel, Oron and Baram, Nir and Shimkin, Nahum}
 	 }
 
 @article{wold1987principal,
@@ -263,6 +237,21 @@
 	 pages={4295--4310},
 	 year={2013}
 	 }
+
+@inproceedings{masci2011cae,
+	       title="Stacked Convolutional Auto-Encoders for Hierarchical Feature Extraction",
+	       author="Masci, Jonathan
+	       and Meier, Ueli
+	       and Cire{\c{s}}an, Dan
+	       and Schmidhuber, J{\"u}rgen",
+	       booktitle="Artificial Neural Networks and Machine Learning -- ICANN 2011: 21st International Conference on Artificial Neural Networks, Espoo, Finland, June 14-17, 2011, Proceedings, Part I",
+	       pages="52--59",
+	       year="2011",
+	       abstract="We present a novel convolutional auto-encoder (CAE) for unsupervised feature learning. A stack of CAEs forms a convolutional neural network (CNN). Each CAE is trained using conventional on-line gradient descent without additional regularization terms. A max-pooling layer is essential to learn biologically plausible features consistent with those found by previous approaches. Initializing a CNN with filters of a trained CAE stack yields superior performance on a digit (MNIST) and an object recognition (CIFAR10) benchmark.",
+	       isbn="978-3-642-21735-7",
+	       doi="10.1007/978-3-642-21735-7_7",
+	       url="https://doi.org/10.1007/978-3-642-21735-7_7"
+	       }
 
 @inproceedings{szegedy2015going,
 	       title={Going deeper with convolutions},
@@ -410,6 +399,14 @@
 	       pages={62--69},
 	       year={2011},
 	       organization={IEEE}
+	       }
+
+@inproceedings{anschelaveraged,
+	       title={Averaged-DQN: Variance Reduction and Stabilization for Deep Reinforcement Learning},
+	       author={Anschel, Oron and Baram, Nir and Shimkin, Nahum},
+	       booktitle={International Conference on Machine Learning},
+	       pages={176--185},
+	       year={2017}
 	       }
 
 @online{alphago,
