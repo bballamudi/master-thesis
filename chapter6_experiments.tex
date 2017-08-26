@@ -4,24 +4,94 @@
 
 \vspace{0.5cm}
 
-% In this chapter we show experimental results of our algorithm on some Atari
-% games.
-% We show that the generic representation of the state space that we extract with
-% our pipeline is suitable for control tasks, and that our agent needs up to two 
-% orders of magnitude less samples than DQN to reach equivalent performance with 
-% FQI. 
-% 
-% % Premise on computational complexity and limited resources
-% 
-% \section{Quality of extracted features}
-% % Test FQ
-% % Score FQ
-% 
-% \section{Pure batch training from expert policy}
-% % Use DQN to collect, run 1 step of algorithm
-% 
-% \section{Semi-batch training}
-% % Run full algorithm
+In this chapter we show experimental results of our algorithm on some Atari
+games.
+We show that the representation of the states learned by our feature extraction 
+pipeline is suitable for the semi-batch control approach with FQI, and that 
+our agent is able to learn non-trivial policies with good sample efficiency on 
+different Atari games.
+
+\section{Premise}
+Our algorithm is based on optimizing sample efficiency, but does not account for
+the computational complexity of training and evaluating the full pipeline. 
+All three main components of the algorithm benefit a great deal from parallel 
+computing, to the point where the hardware itself is a key component in 
+making the algorithm treatable at all. 
+We were thus strongly limited in our experimental phase by our access to 
+hardware for heavy parallel computing, with even costs for renting servers on 
+cloud providers like \textit{Amazon AWS} quickly surpassing the hundreds of 
+Euros per experiment. We therefore had to be extremely selective in what 
+experiments to run, each of which took days at a time, and well balanced between
+exploring new possibilities (hyperparameters, network architectures, 
+environments) and evaluating current configurations. 
+In this chapter we report the best findings across all our experiments and we 
+try to outline the thought process that led us to favor some choices over others.
+The hardware configurations of the three servers that we used for experiments is
+reported in Table \ref{t:servers}. 
+%
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c c c c} 
+	\hline
+	Server ID & vCPU count & GPU & RAM (GB) \\ 
+	\hline 
+	\#$1$ & $64$ & None & 252 \\
+	\#$2$ & $8$ & 1 x Nvidia Tesla K40C & 32 \\
+	\#$3$ & $4$ & 1 x Nvidia Tesla K40C & 32 \\
+	\hline
+    \end{tabular}
+    \caption{Server configurations for experiments}
+    \label{t:servers}
+\end{table}
+%
+
+The code implementation of the algorithm was based on Python 2.7 and its 
+standard libraries for general machine learning, GPU-based deep learning, and
+linear algebra. 
+We trained and used the AE on an \textit{Nvidia Tesla K40C} GPU, using the 
+\textit{Keras 2.0.6} API as interface to the \textit{Tensorflow 1.3.0} library 
+for deep learning, whereas the training and evaluation of Extra-Trees 
+for RFS and FQI was run on CPU using the \textit{Scikit-Learn 0.19.0} library.
+We used the implementations of FQI and RFS provided in the open source 
+\textit{IFQI} library by Matteo Pirotta.
+Finally data manipulation and any other algebraic operations were done with 
+\textit{Numpy 1.13.1}.
+
+% Baseline
+    % Breakout, Pong, Space Invaders, Other (with info on specific envs?)
+    % Baseline with DQN
+	% BO.........................................................[GOT][]
+	% P..........................................................[GOT][]
+	% SI.........................................................[GOT][]
+	% Other......................................................[][]
+
+% AE
+    % Reconstructions + Feature maps plots
+	% BO.........................................................[][]
+	% P..........................................................[][]
+	% SI.........................................................[][]
+	% Other......................................................[][]
+    % FQ Test + FQ Score
+	% BO.........................................................[][]
+	% P..........................................................[][]
+	% SI.........................................................[][]
+	% Other......................................................[][]
+
+% RFS
+    % Whatever envs you have
+    % Whatever feature analysis you want
+    % Mention NZV selection to speed up training
+	% BO.........................................................[][]
+	% P..........................................................[][]
+	% SI.........................................................[][]
+	% Other......................................................[][]
+
+% FQI
+    % BO.............................................................[][]
+    % P..............................................................[][]
+    % SI.............................................................[][]
+    % Other..........................................................[][]
+    
 
 
 
