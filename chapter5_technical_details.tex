@@ -9,7 +9,7 @@ used to perform experiments. We try to provide a complete description of the
 parametrization of the components and of the training procedure to ensure 
 reproducibility of the experimental results.
 
-\section{Atari Environments}
+\section{Atari Environments}\label{s:atari_envs}
 The \textit{Arcade Learning Environment} (ALE) \cite{bellemare2013arcade} is an 
 evaluation platform for RL agents.
 ALE offers a programmatic interface to hundreds of game environments for the 
@@ -26,7 +26,7 @@ for four consecutive frames of the game and then provides another observation,
 effectively lowering the frame rate from $60$ FPS to $15$ FPS and making the 
 effects of actions more evident (Figure \ref{f:sampling}). 
 %
-\begin{figure}[h]
+\begin{figure}
 \includegraphics[width=\textwidth]{pictures/sampling}
 \centering
 \caption[Sampling frames at a frequency of $\frac{1}{4}$ in \textit{Breakout}]{Sampling frames at a frequency of $\frac{1}{4}$ in \textit{Breakout}.}
@@ -37,7 +37,7 @@ We perform a preprocessing operation on the states similar to that performed
 by Mnih et al.\ in DQN \cite{mnih2015human}, in order to include all necessary 
 information about the environment and its nominal dynamics in the new state 
 representation.
-First we convert each RGB observation to a single-channel greyscale 
+First we convert each RGB observation to a single-channel grayscale 
 representation in the discrete 8-bit interval $[0, 255]$ using the 
 \textit{ITU-R 601-2 luma transform}:
 %
@@ -63,7 +63,7 @@ state space to a $4 \times 108 \times 84$ vector space (Figure \ref{f:state}).
 The initial state for an episode is artificially set as a repetition of the 
 first observation provided by the simulator. 
 %
-\begin{figure}[h]
+\begin{figure}
 \includegraphics[width=\textwidth]{pictures/state}
 \centering
 \caption[Two consecutive states in \textit{Pong}]{Two consecutive states 
@@ -92,11 +92,11 @@ Finally, for those games in which the agent has a lives count, we monitor the
 number of remaining lives provided by the simulator in the \textit{ale.lives}
 parameter. For those $(s, a, r, s')$ transitions in which the agent loses a life, 
 we consider $s'$ as a terminal state, so that the FQI update will only 
-propagate the reward rather than the full value. 
+use the reward rather than the full value. 
 
-\section{Autoencoder}
+\section{Autoencoder}\label{s:ae_training_details}
 %
-\begin{table}[h]
+\begin{table}
     \centering
     \begin{tabular}{l c c c c c c} 
 	\hline
@@ -116,7 +116,7 @@ propagate the reward rather than the full value.
 	Deconv. & $32 \times 108 \times 84$ & $4 \times 108 \times 84$ & $4$ & $1 \times 1$ & $1 \times 1$ & Sigmoid \\
 	\hline
     \end{tabular}
-    \caption{Layers of the autoencoder with key parameters}
+    \caption{Layers of the autoencoder with key parameters.}
     \label{t:AE_structure}
 \end{table}
 %
@@ -159,12 +159,12 @@ back to the original four, without changing the width and height of the frames
 (i.e.\ using unitary filters and strides). 
 All layers in the AE use the \textit{Rectified Linear Unit} (ReLU) 
 \cite{nair2010rectified, krizhevsky2012imagenet} nonlinearity as activation 
-function, except for the last layer which uses \textit{sigmoids} to limit the 
+function, except for the last layer that uses \textit{sigmoids} to limit the 
 activations values in the same $[0, 1]$ interval of the input (Figure 
 \ref{f:relu_sigmoid}).
 Details of the AE layers are summarized in Table \ref{t:AE_structure}.
 %
-\begin{figure}[h]
+\begin{figure}
 \includegraphics[width=\textwidth]{pictures/relu_sigmoid}
 \centering
 \caption[The ReLU and Sigmoid activation functions for the AE]{The ReLU and Sigmoid activation functions for the AE.}
@@ -174,7 +174,7 @@ Details of the AE layers are summarized in Table \ref{t:AE_structure}.
 
 We train the AE with the Adam optimization algorithm \cite{kingma2014adam} 
 (see Table \ref{t:adam_params} for details on the hyperparameters) set to 
-minimize the \textit{binary crossentropy} loss defined as:
+minimize the \textit{binary cross entropy} loss defined as:
 %
 \begin{IEEEeqnarray}{rCl}
     %
@@ -188,7 +188,7 @@ collected for the whole learning procedure described in Algorithm
 \ref{alg:FQI-DSDF}, namely the first elements of the four-tuples $(s, a, r, s') 
 \in \mathcal{TS}$ (which are used as input and targets).
 %
-\begin{table}[h]
+\begin{table}
     \centering
     \begin{tabular}{l c} 
 	\hline
@@ -201,12 +201,12 @@ collected for the whole learning procedure described in Algorithm
 	Fuzz factor ($\varepsilon$) & $10^{-8}$ \\
 	\hline
     \end{tabular}
-    \caption{Optimization hyperparameters for Adam}
+    \caption{Optimization hyperparameters for Adam.}
     \label{t:adam_params}
 \end{table}
 %
 We prevent \textit{overfitting} of the training set by monitoring the 
-performance of the AE on a held-out set of validation samples which amounts to
+performance of the AE on a held-out set of validation samples that amounts to
 roughly $10\%$ of the training data, and stopping the procedure when the 
 validation loss does not improve by at least $10^{-5}$ for five consecutive 
 training epochs. 
@@ -240,7 +240,7 @@ number of samples required to split an internal node or a leaf.} and
 to build the ensemble and the Extra-Trees algorithm itself (cf.\ Section 
 \ref{s:extra-trees}).
 %
-\begin{table}[h]	
+\begin{table}	
     \centering
     \begin{tabular}{l c} 
 	\hline
@@ -252,12 +252,12 @@ to build the ensemble and the Extra-Trees algorithm itself (cf.\ Section
 	$n_{min}$ (leaf) & $2$ \\
 	\hline
     \end{tabular}
-    \caption{Parameters for base estimators in Extra-Trees (RFS)}
+    \caption{Parameters for base estimators in Extra-Trees (RFS).}
     \label{t:RFS_tree_params}
 \end{table}
 %
 %
-\begin{table}[h]
+\begin{table}
     \centering
     \begin{tabular}{l c} 
 	\hline
@@ -267,7 +267,7 @@ to build the ensemble and the Extra-Trees algorithm itself (cf.\ Section
 	$K$ (Number of randomly selected attributes) &  All available attributes \\
 	\hline
     \end{tabular}
-    \caption{Parameters for Extra-Trees (RFS)}
+    \caption{Parameters for Extra-Trees (RFS).}
     \label{t:RFS_extra_params}
 \end{table}
 %
@@ -291,7 +291,7 @@ overall amount of variance explained is not necessarily the whole possible
 amount).
 The hyperparameters used for RFS are reported in Table \ref{t:RFS}.
 %
-\begin{table}[h]
+\begin{table}
     \centering
     \begin{tabular}{l c} 
 	\hline
@@ -301,7 +301,7 @@ The hyperparameters used for RFS are reported in Table \ref{t:RFS}.
 	$\xi$ (significance) &  0.5 \\
 	\hline
     \end{tabular}
-    \caption{Parameters for RFS}
+    \caption{Parameters for RFS.}
     \label{t:RFS}
 \end{table}
 %
@@ -319,7 +319,7 @@ The parametrization of the decision trees built for the ensemble is reported in
 Table \ref{t:FQI_tree_params} and the parametrization specific to Extra-Trees 
 is reported in Table \ref{t:FQI_extra_params} (cf.\ Section \ref{s:extra-trees}).
 %
-\begin{table}[h]	
+\begin{table}	
     \centering
     \begin{tabular}{l c} 
 	\hline
@@ -331,12 +331,12 @@ is reported in Table \ref{t:FQI_extra_params} (cf.\ Section \ref{s:extra-trees})
 	$n_{min}$ (leaf) & $1$ \\
 	\hline
     \end{tabular}
-    \caption{Parameters for base estimators in Extra-Trees (FQI)}
+    \caption{Parameters for base estimators in Extra-Trees (FQI).}
     \label{t:FQI_tree_params}
 \end{table}
 %
 %
-\begin{table}[h]
+\begin{table}
     \centering
     \begin{tabular}{l c} 
 	\hline
@@ -346,22 +346,21 @@ is reported in Table \ref{t:FQI_extra_params} (cf.\ Section \ref{s:extra-trees})
 	$K$ (Number of randomly selected attributes) &  All available attributes \\
 	\hline
     \end{tabular}
-    \caption{Parameters for Extra-Trees (FQI)}
+    \caption{Parameters for Extra-Trees (FQI).}
     \label{t:FQI_extra_params}
 \end{table}
 %
 
 Since the FQI procedure introduces a small bias to the action-value estimate at 
-each iteration (due to approximation error and a similar over-estimation issue 
-to that described in Section \ref{SOA:value} for Q-learning), we implement an 
-\textit{early stopping} procedure based on the evaluation of the agent's 
-performance.
-At each iteration $i$, we evaluate the performance of an $\varepsilon$-greedy 
-policy (with $\varepsilon = 0.05$) based on the current partial approximation 
-$\hat{Q}_i$, by composing all the modules in the pipeline to obtain the full $Q$ 
-as per Equation \eqref{eq:final_output}. 
-If the agent's performance does not improve for five consecutive iterations, we 
-stop the training and produce the best performing estimation as output to the training phase.
+each iteration (due to approximation errors), we implement an \textit{early 
+stopping} procedure based on the evaluation of the agent's performance.
+Every fixed number of iterations we evaluate the performance of an 
+$\varepsilon$-greedy policy (with $\varepsilon = 0.05$) based on the current 
+partial approximation $\hat{Q}_i$, by composing all the modules in the pipeline 
+to obtain the full $Q$ as per Equation \eqref{eq:final_output}. 
+If the agent's performance does not improve for five consecutive evaluations, we 
+stop the training and produce the best performing estimation as output to the 
+training phase.
 The performance is evaluated by running the policy for five episodes and 
 averaging the clipped cumulative return of each evaluation episode. 
 
@@ -394,7 +393,6 @@ the initial steps of experiments to detect potential problems in the
 implementation.
 
 Evaluation parameters are summarized in Table \ref{t:eval}.
-
 %
 \begin{table}[h]
     \centering
@@ -406,8 +404,7 @@ Evaluation parameters are summarized in Table \ref{t:eval}.
 	$N$ &  $10$ \\
 	\hline
     \end{tabular}
-    \caption{Parameters for evaluation}
+    \caption{Parameters for evaluation.}
     \label{t:eval}
 \end{table}
 %
-
