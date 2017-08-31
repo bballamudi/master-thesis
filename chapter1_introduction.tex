@@ -3,6 +3,111 @@
 \thispagestyle{empty}
 
 \vspace{0.5cm}
+ 
+Human behavior sprouts from a complex mix of elements. We are subject to 
+well defined biological and social forces, but at the same time our actions are 
+deliberate, our thinking is abstract, and our objectives can be irrational; 
+our brains are extremely complex interconnections, but of extremely simple 
+building blocks; we are crafted by ages of random evolution, but at the same time 
+of precise optimization. 
+When we set out to describe the inner workings of human cognition, we must 
+consider all of these colliding aspects and account for them in our work, 
+without overcomplicating what is simple or approximating what is complex.
+Artificial intelligence is a broad field, which looks at the variegate spectrum 
+of human behavior to replicate our complexity in a formal or algorithmic way. 
+Among the techniques of AI, one family of algorithms called \textit{machine
+learning} is designed to give computers the ability to \textit{learn} to carry 
+out a task without being explicitly programmed to do so. The focus on different
+types of task is what defines the many subfields of machine learning.
+For instance, the use of machine learning algorithms to take decisions for a 
+\textit{sequential decision-making problem} in an \textit{environment} is 
+called \textit{reinforcement learning}, whereas \textit{deep learning} is a 
+family of machine learning techniques to learn a representation of some vector
+space (most often images).
+
+Teaching machines to behave like human beings is a complex and inspiring problem
+on its own; however, an even more complex task is not to simply teach computers 
+to mimic humans, but to do so with the same learning \textit{efficiency} of the 
+biological brain, which is able to solve problems by experiencing them very few 
+times (sometimes even imagining a problem is enough to solve it, by comparing it 
+with other similar known situations). 
+The purpose of this thesis is to make a step in this direction by
+combining powerful machine learning techniques with efficient ones, in order
+to tackle complex control problems without needing many examples to learn
+from.
+More specifically, we propose a reinforcement learning agent that extracts an 
+abstract description of the environment starting from its visual 
+characteristics, and then leverages this description to learn a complex behavior
+using a small collection of training examples.
+We devise a combination of different machine learning techniques. We use 
+\textit{unsupervised} deep learning to extract a representation of the visual 
+characteristics of the environment, as well as a \textit{feature selection}
+procedure to reduce this representation while keeping all the necessary information
+for control, and a \textit{batch} reinforcement learning algorithm which exploits
+this filtered representation to learn a behavior \textit{policy}.
+The result is a reinforcement learning procedure that requires a small amount
+of experience in order to learn, and which produces an essential and 
+general representation of the environment as well as a well-performing control 
+policy for it.
+
+The source of inspiration for this work comes from the recent progress in 
+reinforcement learning associated to \textit{deep reinforcement learning} 
+techniques. 
+Among these, we cite \textit{Deep Q-Learning} by Mnih et al.\ \cite{mnih2015human},
+the \textit{Asynchronous Advantage Actor-Critic} algorithm also by Mnih et al.\ \cite{mnih2016asynchronous},
+and the \textit{Neural Episodic Control} algorithm by Pritzel et al.\ \cite{pritzel2017neural}.
+All these algorithms (which were all the state of the art at the time of
+their respective publication), are based on deep learning to extract 
+the visual characteristics of an environment, and then using those characteristics
+to learn a policy with well-known reinforcement learning 
+techniques. A major drawback of these approaches, however, is that all require
+an enormous amount of experience to converge, which may prove unfeasible in 
+real-world problems where the collection of examples is expensive.
+The main purpose of this work is to explore the limits of this apparent 
+requirement, and to propose an algorithm that is able to perform well even under 
+such scarcity conditions.
+
+We test our algorithm on the environments of the \textit{Atari games}, which are
+the \textit{de facto} standard test bench of deep reinforcement learning. We 
+also perform an experimental validation of all the components in our training 
+pipeline in order to ensure the quality of our approach.
+We test the suitability of the extracted representation to both describe the 
+environment and provide all the information necessary for control, as well as 
+we gain useful knowledge on some environments by looking at the feature 
+selection.
+We find that our agent is able to learn non-trivial policies faster than the
+state-of-the-art approaches on the same environments, but that the learning 
+procedure is not able to converge to a comparable performance. 
+This is probably due to a mix of poor quality of the feature extraction on some 
+environments, as well as a possible inadequacy of the reinforcement learning 
+algorithm that we used. We obtain comparable performances irrespectively of
+the number of training samples that we collect, indicating that the partial
+failure of our approach is not due to this aspect, and that the main goal of 
+this work is (at least partially) satisfied.
+
+The thesis is structured as follows. 
+
+In Chapter \ref{chapter2_background} we provide the theoretical framework on
+which our algorithm is based, and we give an overview of the most important 
+concepts and techniques in the fields of deep learning and reinforcement 
+learning.
+
+In Chapter \ref{chapter3_state_of_the_art} we summarize the state-of-the-art 
+results in the field of deep reinforcement learning.
+
+In Chapter \ref{chapter4_research_problem} we introduce our deep reinforcement 
+learning algorithm, and provide a formal description of its components and 
+their behavior.
+
+In Chapter \ref{chapter5_technical_details} we describe in detail the specific 
+implementation of each module in the algorithm, with architectural choices, 
+model hyperparameters, and training configurations.
+
+In Chapter \ref{chapter6_experiments} we show experimental results from running
+the algorithm on different environments.
+
+In Chapter \ref{chapter7_conclusions} we summarize our work and discuss possible
+future developments and improvements.
 
 % \noindent L'introduzione deve essere atomica, quindi non deve contenere n\`e 
 % sottosezioni n\`e paragrafi n\`e altro. Il titolo, il sommario e l'introduzione 
@@ -33,27 +138,5 @@
 % affrontati e si ripete lo scopo della tesi. Questa parte deve essere piena (ma 
 % non grondante come la sezione due) di citazioni bibliografiche e deve essere 
 % lunga circa 4 facciate.
-% 
-% 
-% \section{Struttura della tesi}
-% La terza parte contiene la descrizione della struttura della tesi ed \`e 
-% organizzata nel modo seguente.
-% ``La tesi \`e strutturata nel modo seguente.
-% 
-% Nella sezione due si mostra \dots
-% 
-% Nella sez. tre si illustra \dots
-% 
-% Nella sez. quattro si descrive \dots
-% 
-% Nelle conclusioni si riassumono gli scopi, le valutazioni di questi e le 
-% prospettive future \dots
-% 
-% Nell'appendice A si riporta \dots (Dopo ogni sezione o appendice ci vuole un 
-% punto).''
-% 
-% I titoli delle sezioni da 2 a M-1 sono indicativi, ma bisogna cercare di 
-% mantenere un significato equipollente nel caso si vogliano cambiare. Queste 
-% sezioni possono contenere eventuali sottosezioni.
 
 
