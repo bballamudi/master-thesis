@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper,twoside,openright]{report}
+\documentclass[11pt, a4paper, twoside, openright]{report}
 
 \usepackage[]{graphicx}
 \usepackage{tabularx}
@@ -24,13 +24,6 @@
 \addtolength{\oddsidemargin} {-0.4 cm}
 \addtolength{\evensidemargin} {-0.4 cm}
 \addtolength{\textwidth}{2 cm}
-% \setlength{\paperwidth}{16cm}
-% \setlength{\paperheight}{24cm}
-% \setlength{\oddsidemargin} {2. cm}
-% \setlength{\evensidemargin} {2. cm}
-% \addtolength{\oddsidemargin} {-0.4 cm}
-% \addtolength{\evensidemargin} {-0.4 cm}
-
 \linespread{1.1}
 
 \usepackage[english]{babel}
@@ -45,10 +38,10 @@
 \thispagestyle{empty} \normalfont \cleardoublepage
 
 % ---- Dedication ----
-% \include{chapter0_1_dedication}
-% \thispagestyle{empty}  \cleardoublepage
-% 
-% \pagenumbering{Roman}
+\include{chapter0_1_dedication}
+\thispagestyle{empty}  \cleardoublepage
+
+\pagenumbering{Roman}
 
 % ---- TOC ----
 \tableofcontents
@@ -57,12 +50,13 @@
 \listofalgorithms
 
 % ---- Summary ----
-% \include{chapter0_2_summary}
-% \thispagestyle{empty} \vspace*{.75truecm} \cleardoublepage
+\include{chapter0_2_summary}
+\include{chapter0_3_riassunto}
+\thispagestyle{empty} \vspace*{.75truecm} \cleardoublepage
 
 % ---- Acknowledgments ----
-% \include{chapter0_3_acknowledgments}
-% \thispagestyle{empty} \vspace*{.75truecm} \normalfont \cleardoublepage
+\include{chapter0_4_acknowledgments}
+\thispagestyle{empty} \vspace*{.75truecm} \normalfont \cleardoublepage
 
 % ---- Style setup for main body ----
 \pagestyle{plain}\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}} 
@@ -89,27 +83,6 @@
 \addcontentsline{toc}{chapter}{References}
 \bibliographystyle{plain}
 \bibliography{bibliography}
-%\nocite{*}
-
-% ---- Appendices ----
-% \appendix
-% 
-% \pagestyle{fancy} 
-% \fancyfoot{}                                               
-% \renewcommand{\chaptermark}[1]{\markboth{\appendixname\ \thechapter.\ #1}{}} 
-% \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}         
-% \fancyhead[LE,RO]{\bfseries\thepage}    
-%                                         
-% \fancyhead[RE]{\bfseries\leftmark}    
-% \fancyhead[LO]{\bfseries\rightmark}     
-% \renewcommand{\headrulewidth}{0.3pt} 
-
-%\include{appendixA}
-%\include{appendixB}
-%\include{appendixC}
-%\include{appendixD}
-%\include{appendixE}
-%\include{appendixF}
 
 \end{document}
 
