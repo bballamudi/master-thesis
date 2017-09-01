@@ -63,8 +63,8 @@ To evaluate the results of our approach with respect to other algorithms, we
 compared our agent's performance with that of DQN and of a fully random policy. 
 For DQN, we used an open source implementation of the paper by Mnih et al.\ \cite{mnih2015human} 
 with the same exact parametrization, and run the algorithm with a total of $50$ 
-million online training samples on the \textit{Breakout, Pong}, and \textit{Space 
-Invaders} environments from the Atari games (reported in Table \ref{t:envs_used}).
+million online training samples on the \textit{Breakout, Pong}, and 
+\textit{Space Invaders} environments from the Atari games (reported in Table \ref{t:envs_used}).
 To remain loyal to the original DQN methodology, we run an evaluation phase 
 of $125000$ steps every $250000$ collected training samples. A similar 
 evaluation was also run once on the fully random policy.
@@ -107,9 +107,9 @@ and Figures \ref{f:BO_baseline}, \ref{f:P_baseline} and \ref{f:SI_baseline}.
 \begin{figure}
     \includegraphics[width=\textwidth]{pictures/experiments/baseline_breakout}
     \centering
-    \caption[Average performance of DQN in Breakout]{Average evaluation reward of 
-	    DQN in Breakout, with the moving average of 50 consecutive evaluations 
-	    highlighted to show the trend.}
+    \caption[Average performance of DQN in Breakout]{Average evaluation reward 
+	    of DQN in Breakout, with the moving average of 50 consecutive 
+	    evaluations highlighted to show the trend.}
     \label{f:BO_baseline}
 \end{figure}
 %
@@ -117,9 +117,9 @@ and Figures \ref{f:BO_baseline}, \ref{f:P_baseline} and \ref{f:SI_baseline}.
 \begin{figure}
     \includegraphics[width=\textwidth]{pictures/experiments/baseline_pong}
     \centering
-    \caption[Average performance of DQN in Pong]{Average evaluation reward of DQN in
-	    Pong, with the moving average of 50 consecutive evaluations highlighted
-	    to show the trend.}
+    \caption[Average performance of DQN in Pong]{Average evaluation reward of 
+	    DQN in Pong, with the moving average of 50 consecutive evaluations 
+	    highlighted to show the trend.}
     \label{f:P_baseline}
 \end{figure}
 %
@@ -127,9 +127,9 @@ and Figures \ref{f:BO_baseline}, \ref{f:P_baseline} and \ref{f:SI_baseline}.
 \begin{figure}
     \includegraphics[width=\textwidth]{pictures/experiments/baseline_space_invaders}
     \centering
-    \caption[Average performance of DQN in Space Invaders]{Average evaluation reward
-	    of DQN in Space Invaders, with the moving average of 50 consecutive 
-	    evaluations highlighted to show the trend.}
+    \caption[Average performance of DQN in Space Invaders]{Average evaluation 
+	    reward of DQN in Space Invaders, with the moving average of 50 
+	    consecutive evaluations highlighted to show the trend.}
     \label{f:SI_baseline}
 \end{figure}
 %
@@ -154,14 +154,14 @@ we kept it fixed for all the following experiments.
     \includegraphics[width=\textwidth]{pictures/experiments/reconstr_breakout}
     \centering
     \caption[AE reconstruction and feature maps on Breakout]{AE reconstruction 
-    and feature maps on Breakout. 
-    Each pair in the top row shows a frame of a $4$-channel state $s$ given as input 
-    to the AE, with its associated 
-    reconstructed channel. The bottom two rows show the relative activation values 
-    of the innermost feature maps before the flatten layer, after encoding $s$: 
-    colors represent a heatmap from black ($0$) to white (map-wise maximum 
-    activation value). The same applies to Figures \ref{f:P_reconstr} and 
-    \ref{f:BO_reconstr}.}
+	    and feature maps on Breakout. 
+	    Each pair in the top row shows a frame of a $4$-channel state $s$ 
+	    given as input to the AE, with its associated reconstructed channel. 
+	    The bottom two rows show the relative activation values of the 
+	    innermost feature maps before the flatten layer, after encoding $s$: 
+	    colors represent a \textit{heatmap} from black ($0$) to white 
+	    (map-wise maximum activation value). The same applies to Figures 
+	    \ref{f:P_reconstr} and \ref{f:BO_reconstr}.}
     \label{f:BO_reconstr}
 \end{figure}
 %
@@ -170,7 +170,7 @@ we kept it fixed for all the following experiments.
     \includegraphics[width=\textwidth]{pictures/experiments/reconstr_pong}
     \centering
     \caption[AE reconstruction and feature maps on Pong]{AE reconstruction 
-    and feature maps on Pong.}
+	    and feature maps on Pong.}
     \label{f:P_reconstr}
 \end{figure}
 %
@@ -178,10 +178,11 @@ we kept it fixed for all the following experiments.
 \begin{figure}
     \includegraphics[width=\textwidth]{pictures/experiments/reconstr_space_invaders}
     \centering
-    \caption[AE reconstruction and feature maps on Space Invaders]{AE reconstruction 
-    and feature maps on Space Invaders. Note that the lower accuracy here translates
-    to a poor definition in reconstructing moving elements like the player's
-    character and projectiles.}
+    \caption[AE reconstruction and feature maps on Space Invaders]{AE 
+	    reconstruction and feature maps on Space Invaders. Note that the 
+	    lower accuracy here translates to a poor definition in 
+	    reconstructing moving elements like the player's character and 
+	    projectiles.}
     \label{f:SI_reconstr}
 \end{figure}
 %
@@ -214,9 +215,9 @@ Less formally, a visual inspection of the reconstruction helped us in the early
 experimental phases and highlighted how even a small change in accuracy (in the
 order of $10^{-3}$) could result in an incredibly noisy output.
 At the same time, we also inspected the values and behaviors of the features 
-maps produced by the encoder before flattening, by creating short animations (See
-Figures \ref{f:BO_reconstr}, \ref{f:P_reconstr}, and \ref{f:SI_reconstr}) of 
-how the activation values changed in a sequence of about a hundred states. 
+maps produced by the encoder before flattening, by creating short animations 
+(See Figures \ref{f:BO_reconstr}, \ref{f:P_reconstr}, and \ref{f:SI_reconstr}) 
+of how the activation values changed in a sequence of about a hundred states. 
 This was done to make sure that the extracted features maps contained abstract
 enough information (without excessive spatial correlation between the features),
 but didn't give important insights.
@@ -250,9 +251,9 @@ $5\%$ of the training samples.
 We report the results of these tests, run on datasets collected with different
 values of $\varepsilon$ at different iterations of our full algorithm, in 
 Table \ref{t:FQ_tests}.
-As seen in figure \ref{f:FQ_test_all_three}, the extracted features are suitable for 
-describing the $Q$ function learned by DQN with a good degree if precision, and 
-constitute an adequate base for our whole approach. 
+As seen in figure \ref{f:FQ_test_all_three}, the extracted features are suitable
+for describing the $Q$ function learned by DQN with a good degree if precision, 
+and constitute an adequate base for our whole approach. 
 %
 \begin{table}
     \centering
@@ -276,10 +277,10 @@ constitute an adequate base for our whole approach.
     \includegraphics[width=\textwidth]{pictures/experiments/FQ_test_pong}
     \centering
     \caption[Predictions of $\tilde{S}$-$Q$ mapping experiment]{Values predicted 
-	     by the supervised model in the $\tilde{S}$-$Q$ test vs.\ real values
-	     predicted by DQN. Note that the $|A|$-dimensional estimate is 
-	     flattened and treated as a sequence of $|A|$ predictions in order to
-	     plot it.}
+	     by the supervised model in the $\tilde{S}$-$Q$ test vs.\ real 
+	     values predicted by DQN. Note that the $|A|$-dimensional estimate 
+	     is flattened and treated as a sequence of $|A|$ predictions in 
+	     order to plot it.}
     \label{f:FQ_test_breakout}
 \end{figure}
 %
@@ -288,10 +289,10 @@ constitute an adequate base for our whole approach.
     \includegraphics[width=\textwidth]{pictures/experiments/FQ_test_pong}
     \centering
     \caption[Predictions of $\tilde{S}$-$Q$ mapping experiment]{Values predicted 
-	     by the supervised model in the $\tilde{S}$-$Q$ test vs.\ real values
-	     predicted by DQN. Note that the $|A|$-dimensional estimate is 
-	     flattened and treated as a sequence of $|A|$ predictions in order to
-	     plot it.}
+	     by the supervised model in the $\tilde{S}$-$Q$ test vs.\ real 
+	     values predicted by DQN. Note that the $|A|$-dimensional estimate 
+	     is flattened and treated as a sequence of $|A|$ predictions in 
+	     order to plot it.}
     \label{f:FQ_test_pong}
 \end{figure}
 %
@@ -300,10 +301,10 @@ constitute an adequate base for our whole approach.
     \includegraphics[width=\textwidth]{pictures/experiments/FQ_test_pong}
     \centering
     \caption[Predictions of $\tilde{S}$-$Q$ mapping experiment]{Values predicted 
-	     by the supervised model in the $\tilde{S}$-$Q$ test vs.\ real values
-	     predicted by DQN. Note that the $|A|$-dimensional estimate is 
-	     flattened and treated as a sequence of $|A|$ predictions in order to
-	     plot it.}
+	     by the supervised model in the $\tilde{S}$-$Q$ test vs.\ real 
+	     values predicted by DQN. Note that the $|A|$-dimensional estimate 
+	     is flattened and treated as a sequence of $|A|$ predictions in 
+	     order to plot it.}
     \label{f:FQ_test_space_invaders}
 \end{figure}
 %

@@ -34,10 +34,11 @@ games without the need for \textit{hyperparameter tuning}, which proved the
 effectiveness of the method.
 %
 \begin{figure}[h]
-\includegraphics[width=0.5\textwidth]{pictures/dqn}
-\centering
-\caption[Structure of the Deep Q-Network by Mnih et al.\ ]{Structure of the Deep Q-Network by Mnih et al..}
-\label{f:dqn_mnih}
+    \includegraphics[width=0.5\textwidth]{pictures/dqn}
+    \centering
+    \caption[Structure of the Deep Q-Network by Mnih et al.\ ]{Structure of the 
+	    Deep Q-Network by Mnih et al..}
+    \label{f:dqn_mnih}
 \end{figure}
 %
 
@@ -93,10 +94,11 @@ From this work (which we could call introductory), many improvements have been
 proposed in the literature.
 %
 \begin{figure}
-\includegraphics[width=\textwidth]{pictures/atari}
-\centering
-\caption[Some of the games available in the Atari environments]{Some of the games available in the Atari environments.}
-\label{f:atari_example}
+    \includegraphics[width=\textwidth]{pictures/atari}
+    \centering
+    \caption[Some of the games available in the Atari environments]{Some of the 
+	    games available in the Atari environments.}
+    \label{f:atari_example}
 \end{figure}
 %
 Van Hasselt et al.\ (2016) proposed \textit{Double DQN} (DDQN) \cite{van2016deep} 
@@ -160,11 +162,11 @@ For simplicity in the notation, here we report the estimates computed by the
 network with the same notation as the estimated functions (i.e.\ the network 
 which approximates $V^\pi$ is indicated as $V^\pi$, and so on...).}:
 %
-    \begin{IEEEeqnarray}{rCl}
+\begin{IEEEeqnarray}{rCl}
     %
     Q^\pi(s, a) = V^\pi(s) + (A^\pi(s, a) - \max_{a'}A^\pi(s, a'))
     %
-    \end{IEEEeqnarray}
+\end{IEEEeqnarray}
 %
 Several other extensions of the DQN algorithm have been proposed in recent years. 
 Among these, we cite Osband et al.\ (2016) \cite{osband2016deep} who proposed 
@@ -182,10 +184,10 @@ propagation and convergence.
 
 
 \section{Other approaches}
-In this section we present some approaches proposed in DRL literature as alternative
-to value-based DRL, characterized by unconventional architectures (e.g.\ \textit{memory}
-modules in Section \ref{s:memory}) or designed for a specific environment 
-(e.g.\ the game of \textit{Go} in Section \ref{s:alphago}).
+In this section we present some approaches proposed in DRL literature as 
+alternative to value-based DRL, characterized by unconventional architectures 
+(e.g.\ \textit{memory} modules in Section \ref{s:memory}) or designed for a 
+specific environment (e.g.\ the game of \textit{Go} in Section \ref{s:alphago}).
 
 
 \subsection{Memory architectures} \label{s:memory}
@@ -202,10 +204,10 @@ goal is satisfied (a set-up that resembles an animal training protocol with a
 symbolic task cue).
 %
 \begin{figure}
-\includegraphics[width=\textwidth]{pictures/nec}
-\centering
-\caption[Architecture of NEC]{Architecture of NEC (image taken from 
-			      \cite{pritzel2017neural}).}
+    \includegraphics[width=\textwidth]{pictures/nec}
+    \centering
+    \caption[Architecture of NEC]{Architecture of NEC (image taken from 
+				\cite{pritzel2017neural}).}
 \label{f:nec}
 \end{figure}
 %
@@ -240,13 +242,11 @@ moves\footnote{Number of legal moves per position elevated to the length of the
 game.} was too complex for exhaustive search methods.
 %
 \begin{figure}
-\includegraphics[width=\textwidth]{pictures/alphago}
-\centering
-\caption[Neural network training pipeline of AlphaGo]{Neural network training 
-						      pipeline of AlphaGo
-						      (image taken from 
-						      \cite{silver2016mastering}).}
-\label{f:alphago}
+    \includegraphics[width=\textwidth]{pictures/alphago}
+    \centering
+    \caption[Neural network training pipeline of AlphaGo]{Neural network 
+	    training pipeline of AlphaGo (image taken from \cite{silver2016mastering}).}
+    \label{f:alphago}
 \end{figure}
 %
 
@@ -290,10 +290,11 @@ evaluated as:
 %
 %
 \begin{figure}
-\includegraphics[width=\textwidth]{pictures/a3c}
-\centering
-\caption[The asynchronous architecture of A3C]{The asynchronous architecture of A3C.}
-\label{f:a3c}
+    \includegraphics[width=\textwidth]{pictures/a3c}
+    \centering
+    \caption[The asynchronous architecture of A3C]{The asynchronous architecture
+	    of A3C.}
+    \label{f:a3c}
 \end{figure}
 %
 Mnih et al.\ (2016) \cite{mnih2016asynchronous} presented a deep variation of 
@@ -326,11 +327,6 @@ The authors applied DFQ to a simple \textit{Gridworld} environment with fixed
 size and goal state, and were able to outperform other image-based feature
 extraction methods (like \textit{Principal Components Analysis} 
 \cite{wold1987principal}) with good sample efficiency.
-
-% Another work which has common aspects with our method is the one by Anderson et
-% al.\ (2015) \cite{anderson2015faster}, who improved convergence of DRL on 
-% simple problems (e.g.\ \textit{Cart-pole} and \textit{Dynamic cart}) by 
-% pre-training the Q-network to predict state dynamics.
 
 
 

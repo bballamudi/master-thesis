@@ -27,10 +27,11 @@ effectively lowering the frame rate from $60$ FPS to $15$ FPS and making the
 effects of actions more evident (Figure \ref{f:sampling}). 
 %
 \begin{figure}
-\includegraphics[width=\textwidth]{pictures/sampling}
-\centering
-\caption[Sampling frames at a frequency of $\frac{1}{4}$ in \textit{Breakout}]{Sampling frames at a frequency of $\frac{1}{4}$ in \textit{Breakout}.}
-\label{f:sampling}
+    \includegraphics[width=\textwidth]{pictures/sampling}
+    \centering
+    \caption[Sampling frames at a frequency of $\frac{1}{4}$ in \textit{Breakout}]{
+	    Sampling frames at a frequency of $\frac{1}{4}$ in \textit{Breakout}.}
+    \label{f:sampling}
 \end{figure}
 %
 We perform a preprocessing operation on the states similar to that performed
@@ -64,16 +65,16 @@ The initial state for an episode is artificially set as a repetition of the
 first observation provided by the simulator. 
 %
 \begin{figure}
-\includegraphics[width=\textwidth]{pictures/state}
-\centering
-\caption[Two consecutive states in \textit{Pong}]{Two consecutive states 
-	$s, s'$ in \textit{Pong}, after the preprocessing operation. Each 
-	binary image in a sequence of four is an observation of $108 \times 84$
-	pixels, and the full $4 \times 108 \times 84$ tensor is given as input
-	and target to the AE. Notice that between the two consecutive states 
-	there are three frames in common, with the newest observation appended
-	as last frame in $s'$ and the oldest being pushed out.}
-\label{f:state}
+    \includegraphics[width=\textwidth]{pictures/state}
+    \centering
+    \caption[Two consecutive states in \textit{Pong}]{Two consecutive states 
+	    $s, s'$ in \textit{Pong}, after the preprocessing operation. Each 
+	    binary image in a sequence of four is an observation of $108 \times 84$
+	    pixels, and the full $4 \times 108 \times 84$ tensor is given as 
+	    input and target to the AE. Notice that between the two consecutive 
+	    states there are three frames in common, with the newest observation
+	    appended as last frame in $s'$ and the oldest being pushed out.}
+    \label{f:state}
 \end{figure}
 %
     
@@ -165,10 +166,11 @@ activations values in the same $[0, 1]$ interval of the input (Figure
 Details of the AE layers are summarized in Table \ref{t:AE_structure}.
 %
 \begin{figure}
-\includegraphics[width=\textwidth]{pictures/relu_sigmoid}
-\centering
-\caption[The ReLU and Sigmoid activation functions for the AE]{The ReLU and Sigmoid activation functions for the AE.}
-\label{f:relu_sigmoid}
+    \includegraphics[width=\textwidth]{pictures/relu_sigmoid}
+    \centering
+    \caption[The ReLU and Sigmoid activation functions for the AE]{The ReLU and 
+	    Sigmoid activation functions for the AE.}
+    \label{f:relu_sigmoid}
 \end{figure}
 %
 

@@ -8,8 +8,8 @@ Human behavior is a complex mix of elements. We are subject to
 well defined biological and social forces, but at the same time our actions are 
 deliberate, our thinking is abstract, and our objectives can be irrational; 
 our brains are extremely complex interconnections, but of extremely simple 
-building blocks; we are crafted by ages of random evolution, but at the same time 
-of precise optimization. 
+building blocks; we are crafted by ages of random evolution, but at the same 
+time of precise optimization. 
 When we set out to describe the inner workings of human cognition, we must 
 consider all of these colliding aspects and account for them in our work, 
 without overcomplicating what is simple or approximating what is complex.
@@ -17,8 +17,9 @@ Artificial intelligence is a broad field, which looks at the variegate spectrum
 of human behavior to replicate our complexity in a formal or algorithmic way. 
 Among the techniques of AI, one family of algorithms called \textit{machine
 learning} is designed to give computers the ability to \textit{learn} to carry 
-out a task without being explicitly programmed to do so. The focus on different
-types of task is what defines the many subfields of machine learning.
+out a task without being explicitly programmed to do so. 
+The focus on different types of task is what defines the many subfields of 
+machine learning.
 For instance, the use of machine learning algorithms to take decisions in a 
 \textit{sequential decision-making problem} is called \textit{reinforcement 
 learning}, whereas \textit{deep learning} is a family of techniques to learn a 
@@ -41,9 +42,9 @@ using a small collection of training examples.
 We devise a combination of different machine learning techniques. We use 
 \textit{unsupervised} deep learning to extract a representation of the visual 
 characteristics of the environment, as well as a \textit{feature selection}
-procedure to reduce this representation while keeping all the necessary information
-for control, and a \textit{batch} reinforcement learning algorithm which exploits
-this filtered representation to learn a behavior \textit{policy}.
+procedure to reduce this representation while keeping all the necessary 
+information for control, and a \textit{batch} reinforcement learning algorithm 
+which exploits this filtered representation to learn a behavior \textit{policy}.
 The result is a reinforcement learning procedure that requires a small amount
 of experience in order to learn, and which produces an essential and 
 general representation of the environment as well as a well-performing control 
@@ -53,15 +54,16 @@ The source of inspiration for this work comes from the recent progress in
 reinforcement learning associated to \textit{deep reinforcement learning} 
 techniques. 
 Among these, we cite \textit{Deep Q-Learning} by Mnih et al.\ \cite{mnih2015human},
-the \textit{Asynchronous Advantage Actor-Critic} algorithm also by Mnih et al.\ \cite{mnih2016asynchronous},
-and the \textit{Neural Episodic Control} algorithm by Pritzel et al.\ \cite{pritzel2017neural}.
+the \textit{Asynchronous Advantage Actor-Critic} algorithm also by Mnih et 
+al.\ \cite{mnih2016asynchronous}, and the \textit{Neural Episodic Control} 
+algorithm by Pritzel et al.\ \cite{pritzel2017neural}.
 All these algorithms (which were all the state of the art at the time of
 their respective publication), are based on deep learning to extract 
-the visual characteristics of an environment, and then using those characteristics
-to learn a policy with well-known reinforcement learning 
-techniques. A major drawback of these approaches, however, is that all require
-an enormous amount of experience to converge, which may prove unfeasible in 
-real-world problems where the collection of examples is expensive.
+the visual characteristics of an environment, and then using those 
+characteristics to learn a policy with well-known reinforcement learning 
+techniques. A major drawback of these approaches, however, is that they all 
+require an enormous amount of experience to converge, which may prove unfeasible
+in real-world problems where the collection of examples is expensive.
 The main purpose of this work is to explore the limits of this apparent 
 requirement, and to propose an algorithm that is able to perform well even under 
 such scarcity conditions.
@@ -107,35 +109,5 @@ the algorithm on different environments.
 
 In Chapter \ref{chapter7_conclusions} we summarize our work and discuss possible
 future developments and improvements.
-
-% \noindent L'introduzione deve essere atomica, quindi non deve contenere n\`e 
-% sottosezioni n\`e paragrafi n\`e altro. Il titolo, il sommario e l'introduzione 
-% devono sembrare delle scatole cinesi, nel senso che lette in quest'ordine devono 
-% progressivamente svelare informazioni sul contenuto per incatenare l'attenzione 
-% del lettore e indurlo a leggere l'opera fino in fondo. L'introduzione deve 
-% essere tripartita, non graficamente ma logicamente:
-% 
-% 
-% \section{Inquadramento generale}
-% La prima parte contiene una frase che spiega l'area generale dove si svolge il 
-% lavoro; una che spiega la sottoarea pi\`u specifica dove si svolge il lavoro e 
-% la terza, che dovrebbe cominciare con le seguenti parole ``lo scopo della tesi 
-% \`e \dots'', illustra l'obbiettivo del lavoro. Poi vi devono essere una o due 
-% frasi che contengano una breve spiegazione di cosa e come \`e stato fatto, delle 
-% attivit\`a  sperimentali, dei risultati ottenuti con una valutazione e degli 
-% sviluppi futuri. La prima parte deve essere circa una facciata e mezza o due
-% 
-% 
-% \section{Breve descrizione del lavoro}
-% La seconda parte deve essere una esplosione della prima e deve quindi mostrare 
-% in maniera pi\`u esplicita l'area dove si svolge il lavoro, le fonti 
-% bibliografiche pi\`u importanti su cui si fonda il lavoro in maniera sintetica 
-% (una pagina) evidenziando i lavori in letteratura che presentano attinenza con 
-% il lavoro affrontato in modo da mostrare da dove e perch\'e \`e sorta la 
-% tematica di studio. Poi si mostrano esplicitamente le realizzazioni, le 
-% direttive future di ricerca, quali sono i problemi aperti e quali quelli 
-% affrontati e si ripete lo scopo della tesi. Questa parte deve essere piena (ma 
-% non grondante come la sezione due) di citazioni bibliografiche e deve essere 
-% lunga circa 4 facciate.
 
 

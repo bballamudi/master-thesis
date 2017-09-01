@@ -48,11 +48,12 @@ space can be used with a variety of RL algorithms in their default setting (like
 we show with FQI), without having to adapt the deep architecture to solve the 
 problem end-to-end like in deep Q-learning.
 Moreover, since deep features can be difficult to interpret in an abstract 
-way and in general there is no assurance against redundancy in the representation, 
-we use a feature selection technique on the extracted space in order to 
-really minimize the description while retaining all information required for 
-control. This additional step does not have a substantial impact on the learning
-phase, nor on the learned policies (since we do not extract features aimed at
+way and in general there is no assurance against redundancy in the 
+representation, we use a feature selection technique on the extracted space in 
+order to really minimize the description while retaining all information 
+required for control. 
+This additional step does not have a substantial impact on the learning phase, 
+nor on the learned policies (since we do not extract features aimed at 
 controlling, there is no direct correlation between features and performance, in
 general), but by providing an essential representation of the states it allows
 the feature extraction method to be stripped of all the useless parameters, 
@@ -104,26 +105,19 @@ The full procedure consists in alternating a training step and an evaluation
 step, until the desired performance is reached.
 %
 \begin{figure}
-\includegraphics[width=\textwidth]{pictures/full_pipeline}
-\centering
-\caption[Schematic view of the three main modules]{Composition of the three main
-						   modules of the algorithm to
-						   produce the end-to-end 
-						   function 
-						   $Q: S \times A \rightarrow \mathbb{R}$.
-						   Pixel-level states are transformed by the
-						   encoder to the 1D feature space $\tilde{S}$,
-						   which in turn is filtered by RFS into space 
-						   $\hat{S}$. The final representation is 
-						   used to train FQI, which outputs an 
-						   action-value function $\hat{Q}$ on 
-						   $\hat{S} \times A$. 
-						   The same preprocessing pipeline is then
-						   required to use $\hat{Q}$, and the full 
-						   composition of the three modules effectively
-						   consists in an action-value function on 
-						   the original space $S \times A$.}
-\label{f:full_pipeline}
+    \includegraphics[width=\textwidth]{pictures/full_pipeline}
+    \centering
+    \caption[Schematic view of the three main modules]{Composition of the three 
+	    main modules of the algorithm to produce the end-to-end function 
+	    $Q: S \times A \rightarrow \mathbb{R}$. Pixel-level states are 
+	    transformed by the encoder to the 1D feature space $\tilde{S}$, 
+	    which in turn is filtered by RFS into space $\hat{S}$. The final 
+	    representation is used to train FQI, which outputs an action-value 
+	    function $\hat{Q}$ on $\hat{S} \times A$. 
+	    The same preprocessing pipeline is then required to use $\hat{Q}$, 
+	    and the full composition of the three modules effectively consists 
+	    in an action-value function on the original space $S \times A$.}
+    \label{f:full_pipeline}
 \end{figure}
 %
 
@@ -135,8 +129,8 @@ transformations, respectively:
 \begin{itemize}
     \item $ENC: S \rightarrow \tilde{S}$, from the pixel representation to a 
     compressed feature space;
-    \item $RFS: \tilde{S} \rightarrow \hat{S}$, from the compressed feature space
-    to a minimal subspace with the most informative features;
+    \item $RFS: \tilde{S} \rightarrow \hat{S}$, from the compressed feature 
+    space to a minimal subspace with the most informative features;
     \item $\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$, an approximation
     of the optimal action-value function on $\hat{S}$.
 \end{itemize}
@@ -239,10 +233,10 @@ reduce the representation down to an arbitrary number of features in the new
 space.
 %
 \begin{figure}
-\includegraphics[width=\textwidth]{pictures/conv_autoencoder}
-\centering
-\caption[Schematic view of the AE]{Schematic view of the AE.}
-\label{f:ae}
+    \includegraphics[width=\textwidth]{pictures/conv_autoencoder}
+    \centering
+    \caption[Schematic view of the AE]{Schematic view of the AE.}
+    \label{f:ae}
 \end{figure}
 %
 We train the AE to reconstruct its input in an unsupervised fashion, using the a
@@ -266,14 +260,12 @@ Details on how we accomplish this are provided in the following chapter, when
 dealing with the specific implementation of our experimental setting.
 %
 \begin{figure}
-\includegraphics[width=\textwidth]{pictures/nominal_dyn}
-\centering
-\caption[Example of non-trivial nominal dynamics]{Example of non-trivial nominal
-						  dynamics in the \textup{MsPacman}
-						  environment, with the ghosts 
-						  moving autonomously across the
-						  four consecutive observations.}
-\label{f:nominal_dyn}
+    \includegraphics[width=\textwidth]{pictures/nominal_dyn}
+    \centering
+    \caption[Example of non-trivial nominal dynamics]{Example of non-trivial 
+	    nominal dynamics in the \textup{MsPacman} environment, with the 
+	    ghosts moving autonomously across the four consecutive observations.}
+    \label{f:nominal_dyn}
 \end{figure}
 %
 
@@ -322,45 +314,32 @@ will be a set of features that describe the dynamics of the reward and of the
 environment itself (a simple example of RFS is given in Figure \ref{f:rfs_grid}).
 %
 \begin{figure}
-\includegraphics[width=\textwidth]{pictures/rfs_grid}
-\centering
-\caption[RFS on \textit{Gridworld}]{In this simple example we show the output
-				    of RFS in a simple \textit{Gridworld} 
-				    environment with two state features, $x$
-				    and $y$, to represent the agent's position 
-				    and two action features, $a_x$
-				    and $a_y$ valued in $\{-1, 0, 1\}$, to 
-				    control the corresponding state features and
-				    move the agent on the discrete grid (the 
-				    movement is the sum of the two effects). We 
-				    use a setting with null reward everywhere
-				    except in the four goal states (green) which
-				    yield a positive reward, and a wall that cancels 
-				    the effect of action $a_x$ if the agent 
-				    tries to move through it.
-				    To the right we see the dependency tree 
-				    produced by RFS, which in this case selects
-				    both state features and both action features.
-				    Intuitively, the reward is explained 
-				    exclusively by the state feature $x$ and the
-				    action that controls it, $a_x$, because the 
-				    agent gets a positive reward in each of the 
-				    four cells to the far right, independently
-				    of its $y$ coordinate, whenever it reaches 
-				    one. At the same time, 
-				    feature $x$ is explained by its value and
-				    by the action feature $a_x$ (because
-				    the next value of $x$ is a function of both,
-				    namely $x' = x + a_x$), but also by feature 
-				    $y$, because given the $x$ coordinate of the 
-				    agent and a direction along $x$ we still 
-				    have to know whether the agent is next to 
-				    the wall in order to compute the following 
-				    value of $x$. Finally, feature $y$ is 
-				    explained by itself and its associated 
-				    action, without restrictions given by 
-				    the wall.}
-\label{f:rfs_grid}
+    \includegraphics[width=\textwidth]{pictures/rfs_grid}
+    \centering
+    \caption[RFS on \textit{Gridworld}]{In this simple example we show the 
+	    output of RFS in a simple \textit{Gridworld} environment with two 
+	    state features, $x$ and $y$, to represent the agent's position and 
+	    two action features, $a_x$ and $a_y$ valued in $\{-1, 0, 1\}$, to 
+	    control the corresponding state features and move the agent on the 
+	    discrete grid (the movement is the sum of the two effects). We use 
+	    a setting with null reward everywhere except in the four goal states
+	    (green) which yield a positive reward, and a wall that cancels the 
+	    effect of action $a_x$ if the agent tries to move through it.
+	    To the right we see the dependency tree produced by RFS, which in 
+	    this case selects both state features and both action features. 
+	    Intuitively, the reward is explained exclusively by the state 
+	    feature $x$ and the action that controls it, $a_x$, because the 
+	    agent gets a positive reward in each of the four cells to the far 
+	    right, independently of its $y$ coordinate, whenever it reaches one. 
+	    At the same time, feature $x$ is explained by its value and by the 
+	    action feature $a_x$ (because the next value of $x$ is a function of
+	    both, namely $x' = x + a_x$), but also by feature $y$, because 
+	    given the $x$ coordinate of the agent and a direction along $x$ we 
+	    still have to know whether the agent is next to the wall in order to 
+	    compute the following value of $x$. Finally, feature $y$ is 
+	    explained by itself and its associated action, without restrictions 
+	    given by the wall.}
+    \label{f:rfs_grid}
 \end{figure}
 %
 
@@ -378,8 +357,8 @@ $F_0$ in $\mathcal{D}$.
 The algorithm starts by globally ranking the features of the state space 
 according to a statistical level of significance provided by a feature ranking
 method $FR$, which takes as input the dataset and the target feature; 
-the most significant feature according to the ranking, $F^*$, is added to the set 
-of selected features $\mathcal{F}_{sel}$. 
+the most significant feature according to the ranking, $F^*$, is added to the 
+set of selected features $\mathcal{F}_{sel}$. 
 A supervised model $\hat{f}$ is then trained to approximate the target feature 
 $F_0$, taking $\mathcal{F}_{sel}$ as input.
 The algorithm then proceeds by repeating the ranking process using as new target
