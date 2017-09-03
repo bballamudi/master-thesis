@@ -85,21 +85,7 @@ evaluation was also run once on the fully random policy.
     \label{t:envs_used}
 \end{table}
 %
-We therefore defined three main indicators that we used for comparison, and for 
-each environment we considered namely:
-\begin{enumerate}
-    \item the performance of the fully random policy during $125000$ evaluation
-    steps, in order to determine the base learning threshold;
-    \item the performance of DQN during $125000$ evaluation steps under an 
-    $\varepsilon$-greedy policy with $\varepsilon = 0.05$;
-    \item the number of training samples collected by DQN in order to reach the
-    best performance.
-\end{enumerate}
-We used these performance indicators to define the score range in which our 
-agent should be, and to compare the order of magnitudes of the numbers of 
-samples required by our algorithm and DQN (which requires samples in the order 
-of $10^7$ for all environments). 
-To evaluate the performance of our baselines, we simply considered the average 
+To evaluate the performance of these baselines, we simply considered the average 
 non-clipped cumulative reward across all evaluation episodes. 
 The performance of the baseline algorithms is reported in Table \ref{t:envs_used} 
 and Figures \ref{f:BO_baseline}, \ref{f:P_baseline} and \ref{f:SI_baseline}.
@@ -145,10 +131,10 @@ and a forward pass of Extra-Trees (which due to an internal inefficiency in
 and the almost intractable runtime of RFS\footnote{Which can take more than a 
 week to complete, on our most performing server.}, we had to formally assess the 
 suitability of the extracted features for control problems before moving on to 
-train the other components in the pipeline. 
+training the other components in the pipeline. 
 To do so, we run a series of tests devised to highlight different aspects of
-the feature extraction. Once a training configuration was deemed satisfactory, 
-we kept it fixed for all the following experiments.
+success in the feature extraction. Once a training configuration was deemed 
+satisfactory, we kept it fixed for all the following experiments.
 %
 \begin{figure}
     \includegraphics[width=\textwidth]{pictures/experiments/reconstr_breakout}
@@ -188,22 +174,40 @@ we kept it fixed for all the following experiments.
 %
 
 The most simple test that we run consisted in assessing the reconstruction loss
-and accuracy on a held-out validation set (cf.\ Section \ref{s:ae_training_details}). 
+and accuracy of the AE on a held-out validation set (cf.\ Section \ref{s:ae_training_details}). 
 We were able to achieve very high reconstruction accuracy in all environments, 
 with no sensible differences between training sets collected under different 
 exploration rates. In Table \ref{t:ae_training_precision} we report validation 
-performance of the AE on fully random datasets of $\approx50000$ samples (see
-also Figures \ref{f:BO_reconstr}, \ref{f:P_reconstr}, and \ref{f:SI_reconstr}).
+performance of the AE on datasets of $\approx50000$ samples collected with 
+different values of $\varepsilon$ (see also Figures \ref{f:BO_reconstr}, 
+\ref{f:P_reconstr}, and \ref{f:SI_reconstr}). 
+In some environments, the AE is able to better reconstruct the input with a 
+higher exploration rate, which is intuitively due to the fact that more random 
+policies are less effective and can only reach a few states, so that the AE has
+to learn a simpler representation (e.g.\ there is no point in learning to 
+reconstruct the higher layers of the wall in Breakout if the agent never breaks 
+them).
+This does not apply to environments like Pong in which the agent has no effect 
+on the fixed elements of the game, and for which we see an almost constant
+reconstruction accuracy with all exploration rates. 
 %
 \begin{table}
     \centering
-    \begin{tabular}{l c c} 
+    \begin{tabular}{l c c c} 
 	\hline
-	Environment    & Val. loss        & Val. accuracy \\ 
+	Environment                     & $\varepsilon$ & Val. loss        & Val. accuracy \\ 
 	\hline 
-	Breakout       & $\approx10^{-5}$ & $1.0$ \\
-	Pong           & $\approx10^{-9}$ & $1.0$ \\
-	Space Invaders & $\approx10^{-3}$ & $0.9987$ \\
+	\multirow{3}{*}{Breakout}       & $1.0$         & $\approx10^{-5}$ & $1.0$  \\
+	                                & $0.55$        & $\approx10^{-4}$ & $0.99$ \\
+	                                & $0.1$         & $\approx10^{-4}$ & $0.99$ \\
+	\hline
+	\multirow{3}{*}{Pong}           & $1.0$         & $\approx10^{-9}$ & $1.0$  \\ 
+	                                & $0.55$        & $\approx10^{-9}$ & $1.0$  \\
+	                                & $0.1$         & $\approx10^{-9}$ & $1.0$ \\
+	\hline
+	\multirow{3}{*}{Space Invaders} & $1.0$         & $0.0040$         & $0.9987$ \\
+	                                & $0.55$        & $0.0041$         & $0.9985$ \\
+	                                & $0.1$         & $ $              & $ $ \\
 	\hline
     \end{tabular}
     \caption[AE validation performance]{Validation performance of our AE on
@@ -220,12 +224,12 @@ maps produced by the encoder before flattening, by creating short animations
 of how the activation values changed in a sequence of about a hundred states. 
 This was done to make sure that the extracted features maps contained abstract
 enough information (without excessive spatial correlation between the features),
-but didn't give important insights.
+but the experiment itself didn't give other important insights.
 
 In order to truly assess the compatibility of the extracted features 
 with control problems, we trained a supervised model to learn the $Q$ 
-approximation produced by DQN, using the extracted features (we call this 
-a \textit{$\tilde{S}$-$Q$ test}). 
+approximation produced by DQN using the extracted features (we call this 
+an \textit{$\tilde{S}$-$Q$ test}). 
 We used a training set composed of tuples $(ENC(s), q)$, where $s$ is a 
 state from the environment, after the preprocessing described in Section 
 \ref{s:atari_envs}, and $q$ is the $|A|$-dimensional estimate produced by DQN 
@@ -237,7 +241,7 @@ the slight different preprocessing, we computed $q$ before applying the
 transformations which are unique to our preprocessing, namely the binarization 
 and cropping. 
 For each environment, we used the best performing DQN described in Section 
-\ref{s:exp_baseline} to produce the targets, and we sample $\approx50000$ states
+\ref{s:exp_baseline} to produce the targets, and we sampled $\approx50000$ states
 from the same dataset on which the AE was trained.
 To learn the $Q$ approximation, we used the same Extra-Trees model and 
 hyperparameters that we use for FQI (See Tables \ref{t:FQI_tree_params} and
@@ -252,18 +256,26 @@ We report the results of these tests, run on datasets collected with different
 values of $\varepsilon$ at different iterations of our full algorithm, in 
 Table \ref{t:FQ_tests}.
 As seen in figure \ref{f:FQ_test_all_three}, the extracted features are suitable
-for describing the $Q$ function learned by DQN with a good degree if precision, 
+for describing the $Q$ function learned by DQN with a good degree of precision, 
 and constitute an adequate base for our whole approach. 
 %
 \begin{table}
     \centering
     \begin{tabular}{l c c c} 
 	\hline
-	Environment    & $\varepsilon$ & $R^2$   & MSE \\ 
+	Environment                     & $\varepsilon$ & $R^2$   & MSE \\ 
 	\hline 
-	Breakout       & $1.0$         & $ $     & $ $ \\
-	Pong 	       & $1.0$         & $0.945$ & $0.0167$ \\
-	Space Invaders & $ $           & $ $     & $ $ \\
+	\multirow{3}{*}{Breakout}       & $1.0$         & $0,863$ & $0.0761$ \\
+	                                & $0.55$        & $0.854$ & $0.0761$  \\
+	                                & $0.1$         & $ $     & $ $ \\
+	\hline
+	\multirow{3}{*}{Pong}           & $1.0$         & $0.945$ & $0.0167$ \\
+	                                & $0.55$        & $ $     & $ $ \\
+	                                & $0.1$         & $ $     & $ $ \\
+	\hline
+	\multirow{3}{*}{Space Invaders} & $1.0$         & $ $     & $ $ \\
+	                                & $0.55$        & $ $     & $ $ \\
+	                                & $0.1$         & $ $     & $ $ \\
 	\hline
     \end{tabular}
     \caption[Results of $\tilde{S}$-$Q$ mapping experiment]{Results of the 
@@ -279,33 +291,9 @@ and constitute an adequate base for our whole approach.
     \caption[Predictions of $\tilde{S}$-$Q$ mapping experiment]{Values predicted 
 	     by the supervised model in the $\tilde{S}$-$Q$ test vs.\ real 
 	     values predicted by DQN. Note that the $|A|$-dimensional estimate 
-	     is flattened and treated as a sequence of $|A|$ predictions in 
-	     order to plot it.}
-    \label{f:FQ_test_breakout}
-\end{figure}
-%
-%
-\begin{figure}
-    \includegraphics[width=\textwidth]{pictures/experiments/FQ_test_pong}
-    \centering
-    \caption[Predictions of $\tilde{S}$-$Q$ mapping experiment]{Values predicted 
-	     by the supervised model in the $\tilde{S}$-$Q$ test vs.\ real 
-	     values predicted by DQN. Note that the $|A|$-dimensional estimate 
-	     is flattened and treated as a sequence of $|A|$ predictions in 
-	     order to plot it.}
-    \label{f:FQ_test_pong}
-\end{figure}
-%
-%
-\begin{figure}
-    \includegraphics[width=\textwidth]{pictures/experiments/FQ_test_pong}
-    \centering
-    \caption[Predictions of $\tilde{S}$-$Q$ mapping experiment]{Values predicted 
-	     by the supervised model in the $\tilde{S}$-$Q$ test vs.\ real 
-	     values predicted by DQN. Note that the $|A|$-dimensional estimate 
-	     is flattened and treated as a sequence of $|A|$ predictions in 
-	     order to plot it.}
-    \label{f:FQ_test_space_invaders}
+	     of the $Q$ function is flattened and treated as a sequence of 
+	     $|A|$ predictions in order to plot it.}
+    \label{f:FQ_test_all_three}
 \end{figure}
 %
 
@@ -330,16 +318,23 @@ can be ignored for control purposes.
 In Figures \ref{f:rfs_tree_breakout}, \ref{f:rfs_tree_pong} and 
 \ref{f:rfs_tree_space_invaders} we show the graphical representation of the 
 feature selection as dependency trees.
+Note how in Breakout RFS only selects four state features and does not select
+the action. Rather than blindly trusting the AE to have extracted incredibly 
+informative features that do not even need the action to be explained, we 
+simply conclude that in this case the AE has learned a representation of the 
+environment which does not properly describe the reward and its dynamics. 
+As we will show in the following section, however, this does not prevent the 
+agent from learning a good policy using the representation.
 %
 \begin{table}
     \centering
-    \begin{tabular}{l c c c} 
+    \begin{tabular}{l c c c c} 
 	\hline
-	Environment    & Original & NZV   & RFS \\ 
+	Environment    & Original & NZV   & RFS   & Action selected (RFS) \\ 
 	\hline 
-	Breakout       & $640$    & $599$ & $ $ \\
-	Pong           & $640$    & $585$ & $245$ \\
-	Space Invaders & $640$    & $320$ & $ $ \\
+	Breakout       & $640$    & $599$ & $4$   & No\\
+	Pong           & $640$    & $585$ & $245$ & Yes\\
+	Space Invaders & $640$    & $320$ & $ $   & \\
 	\hline
     \end{tabular}
     \caption[Feature selection results]{Number of features kept by the two 
@@ -351,10 +346,14 @@ feature selection as dependency trees.
 %
 %
 \begin{figure}
-    \includegraphics[width=\textwidth]{pictures/experiments/rfs_tree_top_pong}
+    \includegraphics[width=0.4\textwidth]{pictures/experiments/rfs_tree_breakout}
     \centering
-    \caption[RFS dependency tree in Breakout]{RFS dependency tree in Breakout 
-	     (showing only topmost nodes).}
+    \caption[RFS dependency tree in Breakout]{RFS dependency tree in Breakout.
+	    Note how the procedure in this case is not able to correctly 
+	    understand the dynamics of the environment and only keeps four 
+	    state features without even keeping the action, indicating that in 
+	    this case the features extracted by the AE are not suitable for 
+	    control-oriented selection.}
     \label{f:rfs_tree_breakout}
 \end{figure}
 %
@@ -376,43 +375,131 @@ feature selection as dependency trees.
     \label{f:rfs_tree_space_invaders}
 \end{figure}
 %
+
 \section{Fitted Q-Iteration}
+The final part of our experimental methodology consisted in running the full
+learning pipeline as described in Algorithm \ref{alg:FQI-DSDF}, and evaluating
+the performance of our algorithm in terms of average reward as we did for DQN
+and the random policy in Section \ref{s:exp_baseline}. 
+As we mentioned in the previous section, due to the excessively long 
+computational times of RFS we chose to remove the module entirely from the 
+pipeline, resorting to simply keeping those features with nonzero variance 
+across the dataset. 
+At the same time, we also had to deal with the long runtime for the evaluation 
+of the policy during training of FQI, due to a general computational complexity 
+of our $Q$ approximation itself, and to an internal inefficiency in the 
+software library that we used for Extra-Trees.
+We tried to address this issue by training FQI for $50$ iterations at a time
+before evaluating the current policy, for a total of $20$ overall evaluations
+across a total of $1000$ training iterations. 
+This resulted in a noisy evaluation performance, but no more noisy than when we
+tested the policy at each iteration. 
+We also had to face computational complexity when deciding how many steps
+of the main algorithm to run. 
+We decided to use a custom $\varphi$ function to reduce $\varepsilon$ (cf.\ 
+Section \ref{s:main_alg}) dependent on the total number of steps, so that 
+$\varepsilon$ would reach $\varepsilon_{min}$ at the last iteration and 
+at each step would decrease by a fixed quantity as follows:
+%
+\begin{IEEEeqnarray}{rCl}
+    %
+    \varphi(\varepsilon) = \varepsilon - \frac{1 - \varepsilon_{min}}{I}
+    %
+\end{IEEEeqnarray}
+%
+where $I$ is the total number of iterations (note that the rule only 
+applies if $\varepsilon$ is greater that $\varepsilon_{min}$). 
+We run a comparison of different values of $\varepsilon$ at 
+different steps of the procedure, and we eventually decided to settle for 
+running three iterations ($I = 3$) with $\varepsilon_{min} = 0.1$, so that we 
+used the values $\varepsilon = 1$, $\varepsilon = 0.55$ and 
+$\varepsilon = 0.1$ in sequence. 
+This resulted in a tractable runtime for the full algorithm (however 
+still in the order of days) and an overall good variety in exploration. 
 
-% Baseline
-    % Breakout, Pong, Space Invaders, Other (with info on specific envs?)
-    % Baseline with DQN
-	% BO.........................................................[GOT][DONE]
-	% P..........................................................[GOT][DONE]
-	% SI.........................................................[GOT][DONE]
-	% Other......................................................[][]
+Moving on to the main results of the FQI training, we report in Tables 
+\ref{t:avg_performance_only_ours}, \ref{t:avg_performance_main}, and 
+\ref{t:sample_efficiency_main} the performance of our algorithm.
+In Table \ref{t:avg_performance_only_ours}, we show the best average evaluation 
+score achieved by our agent during the main training procedure.
+We note that FQI benefits a great deal by a high exploration rate, with peak 
+performance typically reached at $\varepsilon\approx0.5$ (this result was often
+observed during experiments, even with different configurations for the AE and
+FQI). Despite being an expected result, due to the fact that FQI requires
+a high rate of exploration in order to also learn the value of poor states, 
+this also meant that we only reached peak performance with our agent at the 
+second main step, with $\varepsilon = 0.55$, because any exploration rate 
+higher or lower than $\approx 0.5$ would yield a worse performance. 
+We found that this result was consistent throughout our tests, and we also 
+partly attribute to this aspect the inferior performance of our methodology with
+respect to the state of the art, because we could never properly exploit the 
+learned knowledge to explore the environment to the required degree.
+However, our agent could consistently achieve a non-trivial performance on all
+environments, as reported in Table \ref{t:avg_performance_main}.
+Despite these poor general results, we observed that the main objective that 
+we had set for our procedure at the beginning of this work, sample efficiency, 
+is at least partly reached. 
+Our agent was consistently able to outperform DQN when 
+considering the amount of samples collected by our procedure to reach its best 
+performance. In Table \ref{t:sample_efficiency_main}, we show how the 
+performance of our algorithm at its best is up to $8.5$ times better than DQN 
+after collecting the same amount of samples (roughly $100000$).
+At the same time, our best scores amounted to roughly $40\%$ of DQN's score
+in some environments, but were achieved with as little as $3\%$ of the 
+collected samples (cf.\ Table \ref{t:envs_used}).
 
-% AE
-    % Reconstructions + Feature maps plots
-	% BO.........................................................[GOT][DONE]
-	% P..........................................................[GOT][DONE] (Missing .gif for slides)
-	% SI.........................................................[GOT][DONE]
-	% Other......................................................[][]
-    % FQ Test + FQ Score
-	% BO.........................................................[][]
-	% P..........................................................[][]
-	% SI.........................................................[][]
-	% Other......................................................[][]
-
-% RFS
-    % Whatever envs you have
-    % Whatever feature analysis you want
-    % Mention NZV selection to speed up training
-	% BO.........................................................[][]
-	% P..........................................................[GOT][]
-	% SI.........................................................[][]
-	% Other......................................................[][]
-
-% FQI
-    % Comparison with DQN at same number of frames...................[][]
-    % BO.............................................................[][]
-    % P..............................................................[][]
-    % SI.............................................................[][]
-    % Other..........................................................[][]
+%
+\begin{table}
+    \centering
+    \begin{tabular}{l c c c c} 
+	\hline
+	Environment    & Score    & Step       & $\varepsilon$ & FQI epoch  \\ 
+	\hline 
+	Breakout       & $17$     & $2$ of $3$ & $0.55$        & $400$     \\
+	Pong           & $-9$     & $2$ of $3$ & $0.55$        & $350$     \\
+	Space Invaders & $460$    & $2$ of $3$ & $0.55$        & $450$     \\
+	\hline
+    \end{tabular}
+    \caption[Performance of our algorithm]{Best average performance reached by 
+	    our agent on different environments.}
+    \label{t:avg_performance_only_ours}
+\end{table}
+%
+%
+\begin{table}
+    \centering
+    \begin{tabular}{l c c c} 
+	\hline
+	Environment    & Random   & Our best & Best DQN  \\ 
+	\hline 
+	Breakout       & $1$      & $17$     & \textbf{319}     \\
+	Pong           & $-20$    & $-9$     & \textbf{19}      \\
+	Space Invaders & $174$    & $460$    & \textbf{1125}    \\
+	\hline
+    \end{tabular}
+    \caption[Performance of our algorithm w.r.t. the baselines]{Best average 
+	     performance of our algorithm compared to the baseline algorithms.}
+    \label{t:avg_performance_main}
+\end{table}
+%
+%
+\begin{table}
+    \centering
+    \begin{tabular}{l c c c} 
+	\hline
+	Environment    & Samples  & Our best      & DQN      \\
+	\hline 
+	Breakout       & $100000$ & \textbf{17}   & $2$    \\
+	Pong           & $100000$ & \textbf{-9}   & $-20$ \\
+	Space Invaders & $100000$ & \textbf{460}  & $145 $ \\
+	\hline
+    \end{tabular}
+    \caption[Sample efficiency of our algorithm]{Best average performance 
+	    reached by our algorithm compared with the best average performance
+	    of DQN using the same number of collected samples.}
+    \label{t:sample_efficiency_main}
+\end{table}
+%
     
 
 
