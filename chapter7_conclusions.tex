@@ -4,11 +4,95 @@
 
 \vspace{0.5cm}
 
-% \noindent Si mostrano le prospettive future di ricerca nell'area dove si \`e 
-% svolto il lavoro. Talvolta questa sezione pu\`o essere l'ultima sottosezione 
-% della precedente. Nelle conclusioni si deve richiamare l'area, lo scopo della 
-% tesi, cosa \`e stato fatto,come si valuta quello che si \`e fatto e si 
-% enfatizzano le prospettive future per mostrare come andare avanti nell'area di 
-% studio.
-% 
-% \section{Future Developments}
+In this work we presented a modular deep reinforcement learning procedure 
+with the objective of improving the sample efficiency of this class of 
+algorithms.
+The main reason to explore the potential of our approach is to apply control
+algorithms to those problem with a big state space, and from which it is 
+difficult or expensive to collect samples for learning. 
+We combined the feature extraction capabilities of unsupervised deep learning, 
+the control-oriented feature selection of RFS, and the batch reinforcement 
+learning approach of FQI, in order to reduce the pixel-level state
+space of Atari games down to a more tractable feature space of essential 
+information about the environment, from which we then learned a control policy.
+Our autoencoder was able to achieve good reconstruction accuracy on all the
+environments, and we manged to extract a representation of the environments 
+which proved to be suitable for control.
+Due to a limit of the computational power that we had available during the 
+experimental phase, we were not able to explore the capabilities of RFS fully, 
+and we had to remove it from the pipeline without being able to compare the 
+performance of our algorithm before and after reducing the feature space. 
+The only experiments that we were able to run on RFS provided us with mixed
+information, reducing the state space as expected on some environments but 
+failing completely on others. 
+The training of FQI on the feature space resulted in a sub-optimal
+performance, and highlighted an intrinsic inefficiency in our semi-batch 
+approach.
+Our algorithm proved to be less powerful than DQN in learning an optimal control
+policy on the environments we tested, as our agent was never able to surpass the
+scores of DeepMind's algorithms.
+However, we were able to obtain a good sample efficiency which allowed our agent 
+to learn good policies using as little as $50000$ samples, surpassing the 
+performance of DQN by more than eight times when comparing the two methods 
+using the same amount of samples that our agent required to get to its best
+performance.
+Moreover, when considering the ratio between the performance of the two 
+algorithms, and the ratio of the samples collected by both algorithms to 
+achieve their top performance, we showed that the difference in performance 
+is smaller by an order of magnitude than the difference in collected samples. 
+Despite this observation being of secondary importance, it shows that our 
+methodology has good potential that needs to be explored more. 
+
+\section{Future Developments}
+We extended the work by Lange and Riedmiller \cite{lange2010deep} to cover 
+more complex environments, and we tried to deviate as little as possible from 
+the methodology of Mnih et al.\ in DQN \cite{mnih2015human} in order to 
+facilitate comparison. However, we feel that our research is far from complete, 
+and in this section we propose some paths on which we would like to continue. 
+
+First of all, in the light of the recently published work by Higgins et al.\ \cite{higgins2017darla}
+on control-oriented feature extraction using autoencoders, we propose to apply
+\textit{$\beta$ Variational Autoencoders} ($\beta$-VAE) \cite{kingma2014auto, higgins2017beta} 
+instead of the purely convolutional AE presented in this work (more similar to 
+the DQN methodology), with the aim of extracting disentangled features that
+are associated almost one-to-one with specific elements in the environments.
+A second approach that we briefly explored during the writing of this thesis 
+consisted in training the AE in an almost supervised way, using the states of 
+the environment as input and the following states as output. 
+This would change the extracted feature space to account for the full dynamics 
+of the environment (rather than simply the nominal dynamics that we considered 
+by stacking consecutive frames from the environment), which would eventually 
+encode much more appropriate information to the end of approximating the $Q$ 
+function. 
+On a similar direction, we propose to combine the unsupervised feature 
+extraction with a supervised feature extraction aimed at representing some 
+specific information about the environment and its dynamics. 
+When researching the work presented in this thesis we tried to add some features 
+extracted by a CNN trained to approximate the reward function to the feature 
+space, but we only saw a small improvement in performance at the cost of almost 
+doubled runtimes for RFS and FQI. 
+Another example of this could be the pretraining of the encoder on the state 
+dynamics as presented by Anderson et al.\ (2015) \cite{anderson2015faster}.
+Moving on to the other components of out learning pipeline, we would also like 
+to expand the work on RFS and FQI. 
+
+As we said in Chapter \ref{chapter6_experiments}, due to computational 
+limitations we were not able to properly explore the capabilities of RFS.
+In order to complete the brief tests that we run for this work, we propose to
+directly compare the performance of the full algorithm using the feature space
+before and after the selection. 
+This comparison could be the base for a theoretical analysis on the
+effect of feature selection on deep features. Moreover, a systematic analysis
+of the actual importance of the features in the representation could lead
+to better insights on the feature extraction process. 
+
+Finally, we think that the batch approach based on FQI could be explored further. 
+Different models, parameters and features could impact greatly 
+on the performance of FQI, even if where were not able to highlight the 
+magnitude of this impact in our tests. 
+Another approach could also change the reinforcement learning component 
+altogether, by moving to a different algorithm like Q-learning while keeping
+the extraction and selection modules unchanged. A technique like experience 
+replay would also probably help in solving the issue of exploration highlighted 
+in Section \ref{s:exp_fqi}.
+

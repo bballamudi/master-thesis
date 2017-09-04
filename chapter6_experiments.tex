@@ -197,17 +197,17 @@ reconstruction accuracy with all exploration rates.
 	\hline
 	Environment                     & $\varepsilon$ & Val. loss        & Val. accuracy \\ 
 	\hline 
-	\multirow{3}{*}{Breakout}       & $1.0$         & $\approx10^{-5}$ & $1.0$  \\
-	                                & $0.55$        & $\approx10^{-4}$ & $0.99$ \\
-	                                & $0.1$         & $\approx10^{-4}$ & $0.99$ \\
+	\multirow{3}{*}{Breakout}       & $1.0$         & $\approx10^{-5}$ & $1.0$    \\
+	                                & $0.55$        & $\approx10^{-4}$ & $0.9999$ \\
+	                                & $0.1$         & $\approx10^{-4}$ & $0.9997$ \\
 	\hline
-	\multirow{3}{*}{Pong}           & $1.0$         & $\approx10^{-9}$ & $1.0$  \\ 
-	                                & $0.55$        & $\approx10^{-9}$ & $1.0$  \\
-	                                & $0.1$         & $\approx10^{-9}$ & $1.0$ \\
+	\multirow{3}{*}{Pong}           & $1.0$         & $\approx10^{-4}$ & $0.9999$ \\ 
+	                                & $0.55$        & $\approx10^{-4}$ & $0.9997$ \\
+	                                & $0.1$         & $\approx10^{-4}$ & $0.9993$    \\
 	\hline
-	\multirow{3}{*}{Space Invaders} & $1.0$         & $0.0040$         & $0.9987$ \\
-	                                & $0.55$        & $0.0041$         & $0.9985$ \\
-	                                & $0.1$         & $ $              & $ $ \\
+	\multirow{3}{*}{Space Invaders} & $1.0$         & $\approx10^{-3}$ & $0.9987$ \\
+	                                & $0.55$        & $\approx10^{-3}$ & $0.9985$ \\
+	                                & $0.1$         & $\approx10^{-3}$ & $0.9978$ \\
 	\hline
     \end{tabular}
     \caption[AE validation performance]{Validation performance of our AE on
@@ -267,7 +267,7 @@ and constitute an adequate base for our whole approach.
 	\hline 
 	\multirow{3}{*}{Breakout}       & $1.0$         & $0,863$ & $0.0761$ \\
 	                                & $0.55$        & $0.854$ & $0.0761$  \\
-	                                & $0.1$         & $ $     & $ $ \\
+	                                & $0.1$         & $0.855$ & $0.0748$ \\
 	\hline
 	\multirow{3}{*}{Pong}           & $1.0$         & $0.945$ & $0.0167$ \\
 	                                & $0.55$        & $ $     & $ $ \\
@@ -368,7 +368,7 @@ agent from learning a good policy using the representation.
 %
 %
 \begin{figure}
-    \includegraphics[width=\textwidth]{pictures/experiments/rfs_tree_top_pong}
+    % \includegraphics[width=\textwidth]{pictures/experiments/rfs_tree_top_pong}
     \centering
     \caption[RFS dependency tree in Space Invaders]{RFS dependency tree in Space 
 	     Invaders (showing only topmost nodes).}
@@ -376,7 +376,7 @@ agent from learning a good policy using the representation.
 \end{figure}
 %
 
-\section{Fitted Q-Iteration}
+\section{Fitted Q-Iteration} \label{s:exp_fqi}
 The final part of our experimental methodology consisted in running the full
 learning pipeline as described in Algorithm \ref{alg:FQI-DSDF}, and evaluating
 the performance of our algorithm in terms of average reward as we did for DQN
