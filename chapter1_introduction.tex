@@ -26,30 +26,17 @@ learning}, whereas \textit{deep learning} is a family of techniques to learn a
 representation of some vector space (most often images).
 
 Teaching machines to behave like human beings is a complex and inspiring problem
-on its own; however, an even more complex task is not to simply teach computers 
-to mimic humans, but to do so with the same learning \textit{efficiency} of the 
-biological brain, which is able to solve problems by experiencing them very few 
-times (sometimes even imagining a problem is enough to solve it, by comparing it 
-with other similar known situations). 
+on its own; however, an even more complex task is not to simply teach 
+computers to mimic humans, but to do so with the same learning 
+\textit{efficiency} of the biological brain, which is able to solve problems by
+experiencing them very few times (sometimes even imagining a problem is enough 
+to solve it, by comparing it with other similar known situations). 
 The purpose of this thesis is to make a step in this direction by
 combining powerful machine learning techniques with efficient ones, in order
 to tackle complex control problems without needing many examples to learn
 from.
-More specifically, we propose a reinforcement learning agent that extracts an 
-abstract description of the environment starting from its visual 
-characteristics, and then leverages this description to learn a complex behavior
-using a small collection of training examples.
-We devise a combination of different machine learning techniques. We use 
-\textit{unsupervised} deep learning to extract a representation of the visual 
-characteristics of the environment, as well as a \textit{feature selection}
-procedure to reduce this representation while keeping all the necessary 
-information for control, and a \textit{batch} reinforcement learning algorithm 
-which exploits this filtered representation to learn a behavior \textit{policy}.
-The result is a reinforcement learning procedure that requires a small amount
-of experience in order to learn, and which produces an essential and 
-general representation of the environment as well as a well-performing control 
-policy for it.
 
+\section{Goals and motivation}
 The source of inspiration for this work comes from the recent progress in 
 reinforcement learning associated to \textit{deep reinforcement learning} 
 techniques. 
@@ -68,6 +55,22 @@ The main purpose of this work is to explore the limits of this apparent
 requirement, and to propose an algorithm that is able to perform well even under 
 such scarcity conditions.
 
+\section{Proposed solution}
+We introduce a reinforcement learning agent that extracts an abstract 
+description of the environment starting from its visual characteristics, and 
+then leverages this description to learn a complex behavior using a small 
+collection of training examples.
+We devise a combination of different machine learning techniques. We use 
+\textit{unsupervised} deep learning to extract a representation of the visual 
+characteristics of the environment, as well as a \textit{feature selection}
+procedure to reduce this representation while keeping all the necessary 
+information for control, and a \textit{batch} reinforcement learning algorithm 
+which exploits this filtered representation to learn a \textit{policy}.
+The result is a reinforcement learning procedure that requires a small amount
+of experience in order to learn, and which produces an essential and 
+general representation of the environment as well as a well-performing control 
+policy for it.
+
 We test our algorithm on the environments of the \textit{Atari games}, which are
 the \textit{de facto} standard test bench of deep reinforcement learning. We 
 also perform an experimental validation of all the components in our learning 
@@ -76,16 +79,33 @@ We test the suitability of the extracted representation to both describe the
 environment and provide all the information necessary for control, as well as 
 we gain useful knowledge on some environments by looking at the feature 
 selection.
-We find that our agent is able to learn non-trivial policies faster than the
-state-of-the-art approaches on the same environments, but that the learning 
-procedure is not able to converge to a comparable performance. 
-This is probably due to a mix of poor quality of the feature extraction on some 
-environments, as well as a possible inadequacy of the reinforcement learning 
-algorithm that we used. We obtain comparable performances irrespectively of
-the number of training samples that we collect, indicating that the partial
-failure of our approach is not due to this aspect, and that the main goal of 
-this work is (at least partially) satisfied.
+We compare our results with the DQN algorithm by Mnih et al.\ \cite{mnih2015human}.
+We find that our agent is able to learn non-trivial policies on the tested 
+environments, but that it fails to converge to the same performance of DQN. 
+However, we show that the number of samples required by our procedure to reach 
+its maximum performance is up to two orders of magnitude smaller than that 
+required by DQN, and that our agent's performance is up to eight times higher 
+when limiting the training of the two methods to this small number of samples.
 
+\section{Original contributions}
+The use of unsupervised deep learning to extract a feature space for control 
+purposes was already proposed by Lange and Riedmiller \cite{lange2010deep} 
+before the field of deep reinforcement learning really took off in the early 
+2010s. 
+However, their approach used a different architecture for the feature extraction, 
+which would be inefficient for complex control problems like the ones we test
+in this work. 
+Moreover, to the best of our knowledge there is no work in the literature that
+applies a feature selection technique to deep features explicitly targeted 
+for control purposes. This additional step allows us to optimize our feature 
+extraction process for obtaining a generic description of the environment, 
+while improving the computational requirements of our agent by keeping
+only the essential information. 
+Finally, our algorithm makes a step toward a more sample-efficient deep 
+reinforcement learning and would be a better pick than DQN in situations 
+characterized by a lack of training samples and a big state space. 
+
+\section{Thesis structure}
 The thesis is structured as follows. 
 
 In Chapter \ref{chapter2_background} we provide the theoretical framework on

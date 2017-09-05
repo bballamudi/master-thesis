@@ -130,7 +130,8 @@ transformations, respectively:
     \item $ENC: S \rightarrow \tilde{S}$, from the pixel representation to a 
     compressed feature space;
     \item $RFS: \tilde{S} \rightarrow \hat{S}$, from the compressed feature 
-    space to a minimal subspace with the most informative features;
+    space to a minimal subspace with the most informative features for control
+    purposes;
     \item $\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$, an approximation
     of the optimal action-value function on $\hat{S}$.
 \end{itemize}
@@ -239,7 +240,7 @@ space.
     \label{f:ae}
 \end{figure}
 %
-We train the AE to reconstruct its input in an unsupervised fashion, using the a
+We train the AE to reconstruct its input in an unsupervised fashion, using a
 dataset $\mathcal{TS}$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ 
 collected with the $\varepsilon$-greedy policy and taking the first element ($s \in S$) 
 of each sample as input and target. 

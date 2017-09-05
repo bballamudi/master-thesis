@@ -380,9 +380,9 @@ of FQI, here we use an $\varepsilon$-greedy policy with $\varepsilon = 0.05$
 based on the full $Q$ composition of Equation \eqref{eq:final_output}.
 The reason for using a non-zero exploration rate during evaluation is that ALE
 provides a fully deterministic initial state for each episode, and by using a 
-deterministic policy we would always observe the same trajectories (thus leading
-to overfitting to the best policy from the initial state, rather than a generic
-good policy from any state). Using a non-zero exploration rate allows us to 
+deterministic policy we would always observe the same trajectories (thus making
+it impossible to evaluate the $Q$-value in those state-action pairs that
+the agent never explores). Using a non-zero exploration rate allows us to 
 assess the agent's capability of playing effectively in any state of the game, 
 and of correcting its behavior after an (albeit artificial) mistake.
 

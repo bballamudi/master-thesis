@@ -38,10 +38,14 @@ using the same amount of samples that our agent required to get to its best
 performance.
 Moreover, when considering the ratio between the performance of the two 
 algorithms, and the ratio of the samples collected by both algorithms to 
-achieve their top performance, we showed that the difference in performance 
-is smaller by an order of magnitude than the difference in collected samples. 
-Despite this observation being of secondary importance, it shows that our 
-methodology has good potential that needs to be explored more. 
+achieve their top performance, we showed that the relative difference in 
+performance is smaller by an order of magnitude than the relative difference in 
+collected samples.
+Our algorithm make a step towards a more sample-efficient DRL, and to the
+best of our knowledge would be a better pick than DQN is settings characterized 
+by a lack of training samples and a big state space. The sub-optimal performance
+reached by our agent only encourages us to explore the possibilities of our
+algorithm further.
 
 \section{Future Developments}
 We extended the work by Lange and Riedmiller \cite{lange2010deep} to cover 

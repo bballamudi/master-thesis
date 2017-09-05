@@ -9,11 +9,13 @@ def movingaverage(interval, window_size):
 game = 'pong'
 data = pd.read_csv('%s.csv' % game)
 x = data[data.phase == 'test'].average_reward.as_matrix()
-x_avg = movingaverage(x, 50)
+p = np.polyfit(range(len(x)), x, 5)
+z = np.poly1d(p)
+x_avg = z(range(len(x)))
 
 plt.figure(figsize=(1920/200., 1080/200.), dpi=200)
 plt.plot(x, label='Average reward')
-plt.plot(x_avg, label='Moving average reward (50 samples)')
+plt.plot(x_avg, label='Polynomial trendline')
 
 plt.xlabel('250k training steps')
 plt.ylabel('Reward')
