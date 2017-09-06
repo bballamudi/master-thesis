@@ -265,13 +265,13 @@ and constitute an adequate base for our whole approach.
 	\hline
 	Environment                     & $\varepsilon$ & $R^2$   & MSE \\ 
 	\hline 
-	\multirow{3}{*}{Breakout}       & $1.0$         & $0,863$ & $0.0761$ \\
+	\multirow{3}{*}{Breakout}       & $1.0$         & $0.937$ & $0.0272$ \\
 	                                & $0.55$        & $0.854$ & $0.0761$  \\
 	                                & $0.1$         & $0.855$ & $0.0748$ \\
 	\hline
 	\multirow{3}{*}{Pong}           & $1.0$         & $0.945$ & $0.0167$ \\
-	                                & $0.55$        & $ $     & $ $ \\
-	                                & $0.1$         & $ $     & $ $ \\
+	                                & $0.55$        & $0.849$ & $0.0334$ \\
+	                                & $0.1$         & $0.905$ & $0.0241$ \\
 	\hline
 	\multirow{3}{*}{Space Invaders} & $1.0$         & $ $     & $ $ \\
 	                                & $0.55$        & $ $     & $ $ \\
@@ -286,13 +286,13 @@ and constitute an adequate base for our whole approach.
 %
 %
 \begin{figure}
-    \includegraphics[width=\textwidth]{pictures/experiments/FQ_test_pong}
+    \includegraphics[width=\textwidth]{pictures/experiments/FQ_test_all_three}
     \centering
     \caption[Predictions of $\tilde{S}$-$Q$ mapping experiment]{Values predicted 
 	     by the supervised model in the $\tilde{S}$-$Q$ test vs.\ real 
 	     values predicted by DQN. Note that the $|A|$-dimensional estimate 
 	     of the $Q$ function is flattened and treated as a sequence of 
-	     $|A|$ predictions in order to plot it.}
+	     $|A|$ independent values in order to plot it.}
     \label{f:FQ_test_all_three}
 \end{figure}
 %

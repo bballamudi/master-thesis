@@ -3,7 +3,21 @@
 
 \addcontentsline{toc}{chapter}{Abstract}
 
-% Il sommario deve contenere 3 o 4 frasi tratte dall'introduzione di cui la prima inquadra l'area dove si svolge il lavoro (eventualmente la seconda inquadra la sottoarea pi\`u specifica del lavoro), la seconda o la terza frase dovrebbe iniziare con le parole ``Lo scopo della tesi \`e \dots'' e infine la terza o quarta frase riassume brevemente l'attivit\`a� svolta, i risultati ottenuti ed eventuali valutazioni di questi.
-% 
-% \vspace{0.5cm}
-% \noindent NB: se il relatore effettivo \`e interno al Politecnico di Milano nel frontesizo si scrive Relatore, se vi \`e la collaborazione di un altro studioso lo si riporta come Correlatore come sopra. Nel caso il relatore effettivo sia esterno si scrive Relatore esterno e poi bisogna inserire anche il Relatore interno. Nel caso il relatore sia un ricercatore allora il suo Nome COGNOME dovr\`a� essere preceduto da Ing. oppure Dott., a seconda dei casi.
+\vspace{0.5cm}
+
+Deep reinforcement learning (DRL) has been under the spotlight of artificial 
+intelligence research in recent years, enabling reinforcement learning agents 
+to solve control problems that were previously considered intractable. 
+The most effective DRL methods, however, require a great amount of training 
+samples (in the order of tens of millions) in order to learn good policies
+even on simple environments, making them a poor choice in real-world situations
+where the collection of samples is expensive.
+In this work, we propose a sample-efficient DRL algorithm that combines 
+unsupervised deep learning to extract a representation of the environment, and 
+batch reinforcement learning to learn a control policy using this representation.
+We also add an intermediate step of feature selection to the extracted 
+representation in order to reduce the computational requirements of our agent to 
+the minimum.
+We test our algorithm on the Atari games environments, and we show that even if
+the final performance of our agent does not match the state of the art, we are
+able to achieve good sample efficiency and a better relative performance.
