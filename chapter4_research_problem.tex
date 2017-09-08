@@ -34,7 +34,7 @@ online to reach optimal performance. Several publications successfully deal
 with this aspect, but nonetheless leave room for improvement (lowering at most
 by one order of magnitude the number of samples required).
 The method introduced by Lange and Riedmiller (2010) \cite{lange2010deep} is 
-similar to ours but their dense architecture predates the more modern 
+similar to ours, but their dense architecture predates the more modern 
 convolutional approaches in image processing and is less suited than our AE for 
 complex tasks.
 
@@ -66,7 +66,7 @@ online sample collection is difficult or expensive.
 
 \section{Algorithm Description} \label{s:main_alg}
 The general structure of this algorithm is typical of DRL settings: we use a 
-deep ANN to extract a representation of an environment, and use that 
+deep ANN to extract a representation of an environment, and then use that 
 representation to control an agent with standard RL algorithms. We also add an 
 additional step after the deep feature extraction to further reduce the 
 representation down to the essential bits of information required to solve the 
@@ -93,7 +93,7 @@ function. The main components of the algorithm are:
     the environment into a strongly compressed feature space ${\tilde{S}}$, 
     that contains information on both the states and part of the transition 
     model of the environment;
-    \item the \textit{Recursive Feature Selection} (RFS) technique to further 
+    \item the Recursive Feature Selection technique to further 
     reduce the state representation $\tilde{S}$ and keep only the truly 
     informative features extracted by the AE, effectively mapping the extracted 
     feature space to a subspace $\hat{S}$.

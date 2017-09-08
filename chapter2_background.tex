@@ -59,7 +59,7 @@ scalar value
 %
 where $x = (x_1, ..., x_n)$ is the $n$-dimensional input to the model, 
 $w  = (w_1, ..., w_n)$ is a set of weights associated to each component of the 
-input and $b$ is a bias term (in some notations the bias is embedded in the 
+input, and $b$ is a bias term (in some notations the bias is embedded in the 
 transformation by setting $x_0 = 1$ and $w_0 = b$).
 
 In ANNs, the simple model of the perceptron is used to create a layered 
@@ -239,7 +239,7 @@ the input, in a fashion that resembles how a signal is \textit{strided} across
 the other during convolution. 
 The result of this operation is a nonlinear transformation of 
 the input space into a new space (of compatible dimensions) that preserves
-the spatial information encoded in the input (e.g.\ form the $n \times m$ pixels
+the spatial information encoded in the input (e.g.\ from the $n \times m$ pixels
 of a grayscale image to a $j \times k$ matrix that represents subgroups of 
 pixels in which there is an edge).
 
@@ -457,7 +457,7 @@ Episodes are usually represented as sequences of tuples
 \[
     [(s_0, a_0, r_1, s_1), ..., (s_{n-1}, a_{n-1}, r_n, s_n)]
 \]
-called \textit{trajectories}, where $s_n \in S^T$, $s_0 \sim \mu$, and 
+called \textit{trajectories}, where $s_0 \sim \mu$, $s_n \in S^T$, and 
 $(s_i, a_i, r_{i+1}, s_{i+1})$ represents a transition of the agent to state 
 $s_{i+1}$ by taking action $a_i$ in $s_i$ and collecting a reward $r_{i+1}$.
 
@@ -479,7 +479,7 @@ when in a given state is said to be \textit{following} the policy.
 
 A common problem when defining policies is the \textit{exploration-exploitation}
 dilemma. An agent following a policy may end up observing the same trajectories 
-in all episodes (e.g.\, when following a deterministic policy in a deterministic 
+in all episodes (e.g., when following a deterministic policy in a deterministic 
 MDP), but there may be cases in which a better behavior could be had if the 
 agent \textit{explored} other states instead of simply \textit{exploiting} its 
 knowledge. 
@@ -495,7 +495,7 @@ exploration degree of the agent. Common techniques to control the
     reducing the number of times a suboptimal action is randomly selected. To do
     so, a probability distribution (commonly a \textit{Boltzmann distribution}) 
     dependent on the expected return from the successor states (something called
-    the \textit{value} of the states, which is introduced in the next Subsection)
+    the \textit{value} of the states, which we introduce in the next subsection)
     is used.
 \end{itemize}
 %
@@ -537,11 +537,11 @@ denoted $Q^{\pi}: S \times A \rightarrow \mathbb{R}$, and defined as:
 \end{IEEEeqnarray}
 %
 The majority of reinforcement learning algorithms is based on computing (or 
-estimating) value functions, which can then be used to control the behavior 
+estimating) the value functions, which can then be used to control the behavior 
 of the agent.
-We also note a fundamental property of value functions, which satisfy particular 
-recursive relationships like the following \textit{Bellman equation for 
-$V^{\pi}$}:
+We also note a fundamental property of the value functions, which satisfy 
+particular recursive relationships like the following \textit{Bellman equation 
+for $V^{\pi}$}:
 %
 \begin{IEEEeqnarray}{rCl}
     % Sutton, Barto
@@ -566,9 +566,10 @@ In general terms, \textit{solving} a reinforcement learning task consists in
 finding a policy that yields a sufficiently high expected return. In the case of
 MDPs with discrete state and actions sets\footnote{We make this clarification 
 for formality, but we do not expand the details further in this work. Refer to 
-\cite{sutton1998reinforcement} for more details on the subject of non-finite 
-MDPs.}, it is possible to define the concept of \textit{optimal policy} as the 
-policy that maximizes the expected return collected by the agent in an episode.
+Sutton and Barto \cite{sutton1998reinforcement} for more details on the subject 
+of continuous MDPs.}, it is possible to define the concept of \textit{optimal 
+policy} as the policy that maximizes the expected return collected by the agent 
+in an episode.
 
 We start by noticing that state-value functions define a partial ordering over 
 policies as follows: 
@@ -615,7 +616,7 @@ action that the agent can take in that state:
     V^*(s) & = & \max_a Q^*(s, a) \label{eq:BOEV}\\
     & = & \max_a E_{\pi^*}[R_t | s_t = s, a_t = a] \\
     & = & \max_a E_{\pi^*}[\sum\limits_{k=0}^{\infty} \gamma^k r_{t+k+1}| s_t = s, a_t = a] \\
-    & = & \max_a E_{\pi^*}[r_{t+1} + \gamma \sum\limits_{k=0}^{\infty} \gamma^k r_t+k+2 | s_t = s, a_t = a] \\
+    & = & \max_a E_{\pi^*}[r_{t+1} + \gamma \sum\limits_{k=0}^{\infty} \gamma^k r_{t+k+2} | s_t = s, a_t = a] \\
     & = & \max_a E_{\pi^*}[r_{t+1} + \gamma V^*(s_{t+1}) | s_t = s, a_t = a] \\
     & = & \max_a \sum\limits_{s' \in S} P(s, a, s') [ R(s, a) + \gamma V^*(s') ]
     %
@@ -659,7 +660,7 @@ From $V^*$ or $Q^*$, it is easy to determine an optimal, deterministic policy:
     %
 \end{itemize}
 
-In the following sections we will describe some of the most important 
+In the following sections, we will describe some of the most important 
 value-based approaches to RL, which will be useful in the following chapters of 
 this thesis. 
 We will not deal with equally popular methods like \textit{policy gradient} or 
@@ -814,7 +815,8 @@ In general, TD methods have several advantages over MC as they allow for an
 \textit{online} (i.e.\ they don't require full episode trajectories to work), 
 bootstrapped, \textit{model-free} estimate, which is more suitable for problems 
 with long or even infinite time horizons. Moreover, TD is less susceptible to 
-errors or exploratory actions and in general provides a more stable learning.
+errors and to the effects of exploratory actions, and in general provides a more
+stable learning.
 It must be noted, however, that both TD and MC are guaranteed to converge given 
 a sufficiently large amount of experience, and that there are problems for which 
 either of the two can converge faster to the solution.
@@ -874,10 +876,10 @@ number of times and the policy converges in the limit to the greedy policy (e.g.
 a time-dependent $\varepsilon$-greedy policy with $\varepsilon = 1/t$).
 
 \subsubsection{Q-learning}
-Introduced by Watkins in 1992 \cite{}, and considered by Sutton and Barto 
-\cite{sutton1998reinforcement} as one of the most important breakthroughs in 
-reinforcement learning, \textit{Q-learning} is an \textit{off-policy} temporal 
-difference method that approximates the optimal action-value function 
+Introduced by Watkins in 1992 \cite{watkins1992q}, and considered by Sutton and 
+Barto \cite{sutton1998reinforcement} as one of the most important breakthroughs 
+in reinforcement learning, \textit{Q-learning} is an \textit{off-policy} 
+temporal difference method that approximates the optimal action-value function 
 independently of the policy being used to collect experiences. 
 This simple, yet powerful idea guarantees convergence to the optimal 
 value function as long as all state-action pairs are continuously visited (i.e.\ 
@@ -914,7 +916,7 @@ provided in Algorithm \ref{alq:q_learning}.
 
 \subsection{Fitted Q-Iteration} \label{s:FQI}
 Having introduced a more classic set of traditional RL algorithms in the 
-previous sections, we now present a more modern algorithm to solve MDPs with the 
+previous sections, we now present a more modern technique to solve MDPs with the 
 use of supervised learning algorithms to estimate the value functions.
 
 As we will see later in this thesis, the general idea of estimating the value 
@@ -963,8 +965,8 @@ supervised learning problem. The process is described in Algorithm \ref{alg:FQI}
 %
 
 Note that at the first iteration of the algorithm the action-value function is
-initialized as a $0$ constant, and therefore the first approximation done by the 
-algorithm is that of the reward function.
+initialized as a null constant, and therefore the first approximation done by 
+the algorithm is that of the reward function.
 Subsequent iterations use the previously estimated function to compute the 
 target of a new supervised learning problem, and therefore each step is 
 independent from the previous one, except for the information of the environment 
@@ -1121,6 +1123,7 @@ in Algorithm \ref{alg:extra}.
 
 The procedure has three main parameters: 
 \begin{itemize}
+    \item $M$, the number of decision trees to build for the ensemble;
     \item $K$, the number of attributes randomly selected at each node;
     \item $n_{min}$, the minimum sample size for splitting a node. 
 \end{itemize}
