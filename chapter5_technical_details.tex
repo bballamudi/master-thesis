@@ -216,9 +216,6 @@ validation loss does not improve by at least $10^{-5}$ for five consecutive
 training epochs. 
 
 \section{Tree-based Recursive Feature Selection}
-% I/O (?)
-% Parametrization of trees
-% Significance
 We use the RFS algorithm to reduce the state space representation computed by 
 the AE down to the feature space $\hat{S}$.
 We base both the feature ranking method $FR$ and the model $\hat{f}$, used for
@@ -237,18 +234,22 @@ Note that in general $FR$ and $\hat{f}$ could be different algorithms with
 different parametrizations, but Castelletti et al.\ use the same regressor for 
 both tasks (as does the code implementation of RFS and IFS that we used for 
 experiments), and we therefore complied with this choice.
-The parametrization of Extra-Trees for $FR$ and $\hat{f}$ is reported in Tables
+The parametrization of Extra-Trees for $FR$ and $\hat{f}$ is reported in Table
 \ref{t:RFS_tree_params}\footnote{We use two different values for the minimum 
-number of samples required to split an internal node or a leaf.} and 
-\ref{t:RFS_extra_params}, respectively for the parameters of the base trees used
-to build the ensemble and the Extra-Trees algorithm itself (cf.\ Section 
-\ref{s:extra-trees}).
+number of samples required to split an internal node or a leaf.} 
+(cf.\ Section \ref{s:extra-trees}).
 %
 \begin{table}	
     \centering
     \begin{tabular}{l c} 
 	\hline
-	Parameter & Value \\ 
+	Parameter (Extra-Trees) & Value \\ 
+	\hline 
+	$M$ (Number of base estimators) & $50$ \\
+	$K$ (Number of randomly selected attributes) &  All available attributes \\
+	& \\
+	\hline
+	Parameter (Base estimator) & Value \\ 
 	\hline 
 	Scoring method &  Variance reduction \\
 	Max tree depth & None \\
@@ -256,26 +257,12 @@ to build the ensemble and the Extra-Trees algorithm itself (cf.\ Section
 	$n_{min}$ (leaf) & $2$ \\
 	\hline
     \end{tabular}
-    \caption[Parameters for base estimators in Extra-Trees (RFS)]{Parameters for
-	    base estimators in Extra-Trees (RFS).}
+    \caption[Parameters for Extra-Trees (RFS)]{Parameters for Extra-Trees and
+	    its base estimators (RFS).}
     \label{t:RFS_tree_params}
 \end{table}
 %
-%
-\begin{table}
-    \centering
-    \begin{tabular}{l c} 
-	\hline
-	Parameter & Value \\ 
-	\hline 
-	$M$ (Number of base estimators) & $50$ \\
-	$K$ (Number of randomly selected attributes) &  All available attributes \\
-	\hline
-    \end{tabular}
-    \caption[Parameters for Extra-Trees (RFS)]{Parameters for Extra-Trees (RFS).}
-    \label{t:RFS_extra_params}
-\end{table}
-%
+
 We use the $R^2$ metric defined in Equation \eqref{e:R2} to compute the ability
 of the selected features to describe the target, in $K$-fold cross validation 
 over the training set $\mathcal{D}$. We compute a confidence interval over the 
@@ -320,40 +307,30 @@ The model is trained to map the 1D compressed feature space $\hat{S}$ to the
 $|A|$-dimensional action-value space $\mathbb{R}^{|A|}$, and we use the action 
 identifiers to select the single output value of our approximated $\hat{Q}$ 
 function. 
-The parametrization of the decision trees built for the ensemble is reported in
-Table \ref{t:FQI_tree_params} and the parametrization specific to Extra-Trees 
-is reported in Table \ref{t:FQI_extra_params} (cf.\ Section \ref{s:extra-trees}).
+The parametrization for Extra-Trees is reported in Table \ref{t:FQI_tree_params}
+(cf.\ Section \ref{s:extra-trees}).
 %
 \begin{table}	
     \centering
     \begin{tabular}{l c} 
 	\hline
-	Parameter & Value \\ 
+	Parameter (Extra-Trees) & Value \\ 
 	\hline 
+	$M$ (Number of base estimators) & $100$ \\
+	$K$ (Number of randomly selected attributes) &  All available attributes \\
+	& \\
+	\hline
+	Parameter (Base estimator) & Value \\ 
+	\hline
 	Scoring method &  Variance reduction \\
 	Max tree depth & None \\
 	$n_{min}$ (node) & $2$\\
 	$n_{min}$ (leaf) & $1$ \\
 	\hline
     \end{tabular}
-    \caption[Parameters for base estimators in Extra-Trees (FQI)]{Parameters for
-	     base estimators in Extra-Trees (FQI).}
+    \caption[Parameters for Extra-Trees (FQI)]{Parameters for Extra-Trees and
+	    its base estimators (FQI).}
     \label{t:FQI_tree_params}
-\end{table}
-%
-%
-\begin{table}
-    \centering
-    \begin{tabular}{l c} 
-	\hline
-	Parameter & Value \\ 
-	\hline 
-	$M$ (Number of base estimators) & $100$ \\
-	$K$ (Number of randomly selected attributes) &  All available attributes \\
-	\hline
-    \end{tabular}
-    \caption[Parameters for Extra-Trees (FQI)]{Parameters for Extra-Trees (FQI).}
-    \label{t:FQI_extra_params}
 \end{table}
 %
 

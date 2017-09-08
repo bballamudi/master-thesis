@@ -10,14 +10,15 @@ algorithms.
 The main reason to explore the potential of our approach is to apply control
 algorithms to those problem with a big state space, and from which it is 
 difficult or expensive to collect samples for learning. 
-We combined the feature extraction capabilities of unsupervised deep learning, 
-the control-oriented feature selection of RFS, and the batch reinforcement 
-learning approach of FQI, in order to reduce the pixel-level state
-space of Atari games down to a more tractable feature space of essential 
-information about the environment, from which we then learned a control policy.
+
+We combined the feature extraction capabilities of unsupervised deep learning 
+and the control-oriented feature selection of RFS, in order to reduce the 
+pixel-level state space of Atari games down to a more tractable feature space of 
+essential information about the environment, from which we then learned a 
+control policy using the batch reinforcement learning FQI algorithm.
 Our autoencoder was able to achieve good reconstruction accuracy on all the
 environments, and we manged to extract a representation of the environments 
-which proved to be suitable for control.
+which proved to be suitable for approximating the optimal action-value function.
 Due to a limit of the computational power that we had available during the 
 experimental phase, we were not able to explore the capabilities of RFS fully, 
 and we had to remove it from the pipeline without being able to compare the 
@@ -27,22 +28,23 @@ information, reducing the state space as expected on some environments but
 failing completely on others. 
 The training of FQI on the feature space resulted in a sub-optimal
 performance, and highlighted an intrinsic inefficiency in our semi-batch 
-approach.
+approach, but we were nonetheless successful in reaching our objectives.
+
 Our algorithm proved to be less powerful than DQN in learning an optimal control
 policy on the environments we tested, as our agent was never able to surpass the
 scores of DeepMind's algorithms.
 However, we were able to obtain a good sample efficiency which allowed our agent 
 to learn good policies using as little as $50000$ samples, surpassing the 
-performance of DQN by more than eight times when comparing the two methods 
-using the same amount of samples that our agent required to get to its best
+performance of DQN by eight times on average when comparing the two methods 
+using the same amount of samples that our agent required to get to its best 
 performance.
 Moreover, when considering the ratio between the performance of the two 
 algorithms, and the ratio of the samples collected by both algorithms to 
 achieve their top performance, we showed that the relative difference in 
 performance is smaller by an order of magnitude than the relative difference in 
-collected samples.
+collected samples. 
 Our algorithm make a step towards a more sample-efficient DRL, and to the
-best of our knowledge would be a better pick than DQN is settings characterized 
+best of our knowledge would be a better pick than DQN in settings characterized 
 by a lack of training samples and a big state space. The sub-optimal performance
 reached by our agent only encourages us to explore the possibilities of our
 algorithm further.

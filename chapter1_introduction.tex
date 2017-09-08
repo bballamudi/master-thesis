@@ -13,17 +13,19 @@ time of precise optimization.
 When we set out to describe the inner workings of human cognition, we must 
 consider all of these colliding aspects and account for them in our work, 
 without overcomplicating what is simple or approximating what is complex.
+
 Artificial intelligence is a broad field, which looks at the variegate spectrum 
 of human behavior to replicate our complexity in a formal or algorithmic way. 
 Among the techniques of AI, one family of algorithms called \textit{machine
 learning} is designed to give computers the ability to \textit{learn} to carry 
 out a task without being explicitly programmed to do so. 
-The focus on different types of task is what defines the many subfields of 
+The focus on different types of tasks is what defines the many subfields of 
 machine learning.
 For instance, the use of machine learning algorithms to take decisions in a 
 \textit{sequential decision-making problem} is called \textit{reinforcement 
-learning}, whereas \textit{deep learning} is a family of techniques to learn a 
-representation of some vector space (most often images).
+learning}, whereas \textit{deep learning} is a family of techniques to learn an 
+abstract representation of a vector space (e.g.\, learning how to describe an
+image from the value of its pixels).
 
 Teaching machines to behave like human beings is a complex and inspiring problem
 on its own; however, an even more complex task is not to simply teach 
@@ -38,7 +40,7 @@ from.
 
 \section{Goals and motivation}
 The source of inspiration for this work comes from the recent progress in 
-reinforcement learning associated to \textit{deep reinforcement learning} 
+reinforcement learning associated to \textit{deep reinforcement learning} (DRL)
 techniques. 
 Among these, we cite \textit{Deep Q-Learning} by Mnih et al.\ \cite{mnih2015human},
 the \textit{Asynchronous Advantage Actor-Critic} algorithm also by Mnih et 
@@ -56,10 +58,11 @@ requirement, and to propose an algorithm that is able to perform well even under
 such scarcity conditions.
 
 \section{Proposed solution}
-We introduce a reinforcement learning agent that extracts an abstract 
+We introduce a deep reinforcement learning agent that extracts an abstract 
 description of the environment starting from its visual characteristics, and 
 then leverages this description to learn a complex behavior using a small 
 collection of training examples.
+
 We devise a combination of different machine learning techniques. We use 
 \textit{unsupervised} deep learning to extract a representation of the visual 
 characteristics of the environment, as well as a \textit{feature selection}
@@ -71,39 +74,44 @@ of experience in order to learn, and which produces an essential and
 general representation of the environment as well as a well-performing control 
 policy for it.
 
-We test our algorithm on the environments of the \textit{Atari games}, which are
-the \textit{de facto} standard test bench of deep reinforcement learning. We 
+We test our algorithm on the \textit{Atari games} environments, which are
+the \textit{de facto} standard test bench of deep reinforcement learning, and we 
 also perform an experimental validation of all the components in our learning 
 pipeline in order to ensure the quality of our approach.
 We test the suitability of the extracted representation to both describe the 
 environment and provide all the information necessary for control, as well as 
 we gain useful knowledge on some environments by looking at the feature 
 selection.
-We compare our results with the DQN algorithm by Mnih et al.\ \cite{mnih2015human}.
-We find that our agent is able to learn non-trivial policies on the tested 
+
+We compare our results with the DQN algorithm by Mnih et al.\ \cite{mnih2015human},
+and we find that our agent is able to learn non-trivial policies on the tested 
 environments, but that it fails to converge to the same performance of DQN. 
 However, we show that the number of samples required by our procedure to reach 
 its maximum performance is up to two orders of magnitude smaller than that 
-required by DQN, and that our agent's performance is up to eight times higher 
-when limiting the training of the two methods to this small number of samples.
+required by DQN, and that our agent's performance is on average eight times 
+higher when limiting the training of the two methods to this small number of 
+samples.
 
 \section{Original contributions}
 The use of unsupervised deep learning to extract a feature space for control 
-purposes was already proposed by Lange and Riedmiller \cite{lange2010deep} 
+purposes has already been proposed by Lange and Riedmiller \cite{lange2010deep} 
 before the field of deep reinforcement learning really took off in the early 
 2010s. 
 However, their approach used a different architecture for the feature extraction, 
 which would be inefficient for complex control problems like the ones we test
 in this work. 
+
 Moreover, to the best of our knowledge there is no work in the literature that
 applies a feature selection technique to deep features explicitly targeted 
-for control purposes. This additional step allows us to optimize our feature 
-extraction process for obtaining a generic description of the environment, 
-while improving the computational requirements of our agent by keeping
-only the essential information. 
-Finally, our algorithm makes a step toward a more sample-efficient deep 
-reinforcement learning and would be a better pick than DQN in situations 
-characterized by a lack of training samples and a big state space. 
+for control purposes. 
+This additional step allows us to optimize our feature extraction process for 
+obtaining a generic description of the environment rather than a task-specific 
+one, while at the same time improving the computational requirements of our 
+agent by keeping only the essential information. 
+
+Our algorithm makes a step towards a more sample-efficient deep reinforcement 
+learning, and would be a better pick than DQN in situations characterized by a 
+lack of training samples and a big state space. 
 
 \section{Thesis structure}
 The thesis is structured as follows. 
