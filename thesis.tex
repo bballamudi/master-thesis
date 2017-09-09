@@ -27,13 +27,14 @@
 \addtolength{\textwidth}{2 cm}
 \linespread{1.1}
 
-\usepackage[english]{babel}
+\usepackage[english, italian]{babel}
 \usepackage[latin1]{inputenc}
 \renewcommand{\captionfont}{\normalfont \sffamily \itshape \small}
 
 \pagestyle{empty}
 
 \begin{document}
+    \selectlanguage{english}
     % ---- Frontispiece ----
     \include{chapter0_0_frontispiece}
     \thispagestyle{empty} \normalfont \cleardoublepage
@@ -52,7 +53,9 @@
 
     % ---- Summary ----
     \include{chapter0_2_summary}
+    \selectlanguage{italian}
     \include{chapter0_3_riassunto}
+    \selectlanguage{english}
     \thispagestyle{empty} \vspace*{.75truecm} \cleardoublepage
 
     % ---- Acknowledgments ----
