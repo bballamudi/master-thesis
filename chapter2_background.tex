@@ -639,7 +639,7 @@ to solve the system of equations associated to the value functions (i.e.\ one
 equation for each state in $S$) and get an exact value for $V^*$ and $Q^*$ in 
 each state. 
 
-\subsection{Value-based optimization} \label{s:value_based_optimization}
+\subsection{Value-based Optimization} \label{s:value_based_optimization}
 One of the main algorithm classes for solving reinforcement learning problems
 is based on searching an optimal policy for the MDP by computing either 
 of the optimal value functions, and then deriving a policy based on them.
@@ -676,7 +676,7 @@ optimal policy or value function.
 In this class of algorithms, we identify two main approaches: \textit{policy 
 iteration} and \textit{value iteration}.
 
-\subsubsection{Policy iteration}
+\subsubsection{Policy Iteration}
 %
 \begin{figure}
     \includegraphics[width=0.5\textwidth]{pictures/policyiter}
@@ -731,7 +731,7 @@ does not change substantially after the update
 (\textit{$\varepsilon$-convergence}) or a certain threshold number of iterations
 has been reached.
 
-\subsubsection{Value iteration} \label{s:value_iteration}
+\subsubsection{Value Iteration} \label{s:value_iteration}
 Based on a similar idea, the \textit{value iteration} approach starts from
 an arbitrary value function, and then applies a contraction operator which 
 iterates over sequentially better value functions without actually computing 
