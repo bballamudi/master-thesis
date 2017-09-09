@@ -264,7 +264,7 @@ environments that we tested.
 %
 
 In order to truly assess the compatibility of the extracted features 
-with control problems, we trained a supervised model to learn the $Q$ 
+with control problems, we also trained a supervised model to learn the $Q$ 
 approximation produced by DQN using the extracted features (we call this 
 an \textit{$\tilde{S}$-$Q$ test}). 
 We used a training set composed of tuples $(ENC(s) \in \tilde{S}, q \in \mathbb{R}^{|A|})$, 
@@ -273,7 +273,7 @@ Section \ref{s:atari_envs}, and $q$ is the $|A|$-dimensional estimate produced
 by DQN when it receives $s$ as input. 
 Note that we could use the same input for both networks, because the 
 preprocessing that we perform on the observations before feeding a sample to the
-encoder (cf.\ Section \ref{s:atari_envs}) are basically the same that are 
+encoder (cf.\ Section \ref{s:atari_envs}) is basically the same that is 
 applied to the inputs for DQN. To account for the slight different preprocessing,
 we computed $q$ before applying the transformations which are unique to our 
 preprocessing, namely the binarization and cropping. 
@@ -323,11 +323,11 @@ propagation of the AE at control time, by keeping only the AE weights that are
 essential for the representation. 
 The runtime of RFS, however, is the longest amongst the three main components, 
 taking up to a week to complete and extending the runtime of the full algorithm
-to a point where it becomes unfeasible. We therefore had to ignore the RFS 
-part of the training steps during most of our experiments, resorting to only
-running it once per environment using a dataset collected under a fully random 
-policy and an AE trained on the same dataset (as if we were running the 
-selection at the first step of the main procedure). 
+to a point where it becomes unfeasible. We therefore had to ignore RFS 
+during most of our experiments, resorting to only running it once per 
+environment using a dataset collected under a fully random policy and an AE 
+trained on the same dataset (as if we were running the selection at the first 
+step of the main procedure). 
 At the same time, we found it appropriate to run another simple feature 
 selection technique which consisted in only keeping those features with nonzero 
 variance (NZV), in order to simplify our feature space without losing 
@@ -337,10 +337,10 @@ on Pong, which indicates that the AE does indeed extract a great deal of
 redundancy that can be ignored for control purposes. 
 However, we were not able to replicate this performance on the other two 
 environments.
-In Breakout, RFS only selects four state features and does not select the action. 
-On the other hand, however, this behavior is in inverted on Space Invaders, 
-where the procedure selects all state and action features (including those with
-zero variance removed by NZV) at the first step, when explaining the reward. 
+In Breakout, RFS only selected four state features and did not select the action. 
+On the other hand, this behavior was inverted on Space Invaders, where the 
+procedure selected all state and action features (including those with zero 
+variance removed by NZV) at the first step, when explaining the reward. 
 The reason for this inconsistent behavior by RFS is probably due to an 
 incompatibility between the RFS procedure itself and the dynamics of the 
 features extracted by the AE but, as we will show in the following sections,
@@ -401,19 +401,19 @@ computational times of RFS we chose to remove the module entirely from the
 pipeline, resorting to simply keeping those features with nonzero variance 
 across the dataset. 
 At the same time, we also had to deal with the long runtime for the evaluation 
-of the policy during training of FQI, due to a general computational complexity 
-of our $Q$ approximation itself, and to an internal inefficiency in the 
-software library that we used for Extra-Trees.
+of the policy during training of FQI (necessary for early stopping), due to a 
+general computational complexity of our $Q$ approximation itself, and to an 
+internal inefficiency in the software library that we used for Extra-Trees.
 We tried to address this issue by training FQI for $50$ iterations at a time
 before evaluating the current policy, for a total of $20$ overall evaluations
-across a total of $1000$ training iterations. 
+across $1000$ training iterations. 
 This resulted in a noisy evaluation performance, but no more noisy than when we
 tested the policy at each iteration. 
 We also had to face computational complexity when deciding how many steps
 of the main algorithm to run. 
 We decided to use a custom $\varphi$ function to reduce $\varepsilon$ (cf.\ 
 Section \ref{s:main_alg}) dependent on the total number of steps, so that 
-$\varepsilon$ would reach $\varepsilon_{min}$ at the last iteration and 
+$\varepsilon$ would reach $\varepsilon_{min}$ at the last iteration, and 
 at each step would decrease by a fixed quantity as follows:
 %
 \begin{IEEEeqnarray}{rCl}
@@ -452,7 +452,7 @@ respect to the state of the art, because we could never properly exploit the
 learned knowledge to explore the environment to the required degree.
 Our agent could consistently achieve a non-trivial performance on all
 environments nonetheless, as reported in Table \ref{t:avg_performance_main}, 
-achieving on average $25\%$ of DQN's score.
+reaching on average $25\%$ of DQN's score.
 
 However, despite these poor general results we were able to achieve our main
 objective of sample efficiency.
@@ -462,8 +462,8 @@ In Table \ref{t:sample_efficiency_main}, we show how the performance of our
 algorithm at its best is on average almost eight times better than DQN after 
 collecting the same amount of samples (roughly $100000$).
 At the same time, even if our best scores amounted to at best $40\%$ of DQN's 
-score, we were able to achieve them with as little as $3\%$ of the collected 
-samples (cf.\ Table \ref{t:envs_used}).
+score, we were able to achieve them with as little as $0.2\%$ of the collected 
+samples (cf.\ Table \ref{t:sample_efficiency_main}).
 
 %
 \begin{table}
@@ -487,7 +487,7 @@ samples (cf.\ Table \ref{t:envs_used}).
     \centering
     \begin{tabular}{l c c c c} 
 	\hline
-	Environment    & Random   & Our best & Best DQN      & Score ratio (ours v.\ DQN)  \\ 
+	Environment    & Random   & Our best & Best DQN      & Score ratio (ours v.\ DQN) \\ 
 	\hline 
 	Breakout       & $1$      & $17$     & \textbf{319}  & $0.05$                     \\
 	Pong           & $-20$    & $-9$     & \textbf{19}   & $0.3$                      \\
@@ -515,9 +515,11 @@ samples (cf.\ Table \ref{t:envs_used}).
     \end{tabular}
     \caption[Sample efficiency of our algorithm]{Best average performance 
 	    reached by our algorithm compared with the best average performance
-	    of DQN using the same number of collected samples. Note that the
-	    score in Pong is shifted to a $[0, 42]$ range to compute the
-	    score ratio.}
+	    of DQN using the same number of collected samples. 
+	    Sample ratio is computed using the number of samples required by DQN
+	    to reach its best performance as reported in Table \ref{t:envs_used}.
+	    Note that the score in Pong is shifted to a $[0, 42]$ range to 
+	    compute the score ratio.}
     \label{t:sample_efficiency_main}
 \end{table}
 %

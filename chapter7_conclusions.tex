@@ -17,7 +17,7 @@ pixel-level state space of Atari games down to a more tractable feature space of
 essential information about the environment, from which we then learned a 
 control policy using the batch reinforcement learning FQI algorithm.
 Our autoencoder was able to achieve good reconstruction accuracy on all the
-environments, and we manged to extract a representation of the environments 
+environments, and we manged to extract a representation of the state spaces
 which proved to be suitable for approximating the optimal action-value function.
 Due to a limit of the computational power that we had available during the 
 experimental phase, we were not able to explore the capabilities of RFS fully, 
@@ -41,9 +41,10 @@ performance.
 Moreover, when considering the ratio between the performance of the two 
 algorithms, and the ratio of the samples collected by both algorithms to 
 achieve their top performance, we showed that the relative difference in 
-performance is smaller by an order of magnitude than the relative difference in 
-collected samples. 
-Our algorithm make a step towards a more sample-efficient DRL, and to the
+performance is smaller by two orders of magnitude than the relative difference 
+in collected samples, as we were able to achieve on average $25\%$ of DQN's 
+score using as little as $0.2\%$ of the samples. 
+Our algorithm makes a step towards a more sample-efficient DRL, and to the
 best of our knowledge would be a better pick than DQN in settings characterized 
 by a lack of training samples and a big state space. The sub-optimal performance
 reached by our agent only encourages us to explore the possibilities of our
@@ -52,9 +53,9 @@ algorithm further.
 \section{Future Developments}
 We extended the work by Lange and Riedmiller \cite{lange2010deep} to cover 
 more complex environments, and we tried to deviate as little as possible from 
-the methodology of Mnih et al.\ in DQN \cite{mnih2015human} in order to 
-facilitate comparison. However, we feel that our research is far from complete, 
-and in this section we propose some paths on which we would like to continue. 
+the methodology of Mnih et al.\ in DQN in order to facilitate comparison. 
+However, we feel that our research is far from complete, and in this section we 
+propose some paths on which we would like to continue. 
 
 First of all, in the light of the recently published work by Higgins et al.\ \cite{higgins2017darla}
 on control-oriented feature extraction using autoencoders, we propose to apply
@@ -67,34 +68,34 @@ consisted in training the AE in an almost supervised way, using the states of
 the environment as input and the following states as output. 
 This would change the extracted feature space to account for the full dynamics 
 of the environment (rather than simply the nominal dynamics that we considered 
-by stacking consecutive frames from the environment), which would eventually 
+by stacking consecutive observations), which would eventually 
 encode much more appropriate information to the end of approximating the $Q$ 
 function. 
 On a similar direction, we propose to combine the unsupervised feature 
-extraction with a supervised feature extraction aimed at representing some 
+extraction with a supervised feature extraction, aimed at representing some 
 specific information about the environment and its dynamics. 
-When researching the work presented in this thesis we tried to add some features 
-extracted by a CNN trained to approximate the reward function to the feature 
-space, but we only saw a small improvement in performance at the cost of almost 
-doubled runtimes for RFS and FQI. 
+When researching the methodology presented in this thesis, we tried to add some 
+features extracted by a CNN trained to approximate the reward function to the 
+feature space, but we only saw a small improvement in performance at the cost of
+almost doubled runtimes for RFS and FQI. 
 Another example of this could be the pretraining of the encoder on the state 
 dynamics as presented by Anderson et al.\ (2015) \cite{anderson2015faster}.
-Moving on to the other components of out learning pipeline, we would also like 
+Moving on to the other components of our learning pipeline, we would also like 
 to expand the work on RFS and FQI. 
 
-As we said in Chapter \ref{chapter6_experiments}, due to computational 
-limitations we were not able to properly explore the capabilities of RFS.
+As we said in Chapter \ref{chapter6_experiments}, we were not able to properly 
+explore the capabilities of RFS due to computational limitations.
 In order to complete the brief tests that we run for this work, we propose to
 directly compare the performance of the full algorithm using the feature space
 before and after the selection. 
-This comparison could be the base for a theoretical analysis on the
+This comparison could be the base for a theoretical analysis of the
 effect of feature selection on deep features. Moreover, a systematic analysis
 of the actual importance of the features in the representation could lead
 to better insights on the feature extraction process. 
 
 Finally, we think that the batch approach based on FQI could be explored further. 
 Different models, parameters and features could impact greatly 
-on the performance of FQI, even if where were not able to highlight the 
+on the performance of FQI, even if we were not able to highlight the 
 magnitude of this impact in our tests. 
 Another approach could also change the reinforcement learning component 
 altogether, by moving to a different algorithm like Q-learning while keeping

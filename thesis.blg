@@ -1,0 +1,64 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: thesis.aux
+A level-1 auxiliary file: chapter0_0_frontispiece.aux
+A level-1 auxiliary file: chapter0_1_dedication.aux
+A level-1 auxiliary file: chapter0_2_summary.aux
+A level-1 auxiliary file: chapter0_3_riassunto.aux
+A level-1 auxiliary file: chapter0_4_acknowledgments.aux
+A level-1 auxiliary file: chapter1_introduction.aux
+A level-1 auxiliary file: chapter2_background.aux
+A level-1 auxiliary file: chapter3_state_of_the_art.aux
+A level-1 auxiliary file: chapter4_research_problem.aux
+A level-1 auxiliary file: chapter5_technical_details.aux
+A level-1 auxiliary file: chapter6_experiments.aux
+A level-1 auxiliary file: chapter7_conclusions.aux
+The style file: plain.bst
+Database file #1: bibliography.bib
+Warning--entry type for "alphago" isn't style-file defined
+--line 440 of file bibliography.bib
+Warning--can't use both volume and number fields in sutton1998reinforcement
+Warning--empty year in vanwavenet
+Warning--empty journal in wu2016google
+You've used 50 entries,
+            2118 wiz_defined-function locations,
+            769 strings with 14106 characters,
+and the built_in function-call counts, 22772 in all, are:
+= -- 2130
+> -- 1475
+< -- 21
++ -- 585
+- -- 532
+* -- 1765
+:= -- 3716
+add.period$ -- 156
+call.type$ -- 50
+change.case$ -- 413
+chr.to.int$ -- 0
+cite$ -- 53
+duplicate$ -- 778
+empty$ -- 1527
+format.name$ -- 532
+if$ -- 4705
+int.to.chr$ -- 0
+int.to.str$ -- 50
+missing$ -- 52
+newline$ -- 252
+num.names$ -- 100
+pop$ -- 475
+preamble$ -- 1
+purify$ -- 366
+quote$ -- 0
+skip$ -- 581
+stack$ -- 0
+substring$ -- 1217
+swap$ -- 239
+text.length$ -- 21
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 194
+warning$ -- 3
+while$ -- 187
+width$ -- 52
+write$ -- 544
+(There were 4 warnings)

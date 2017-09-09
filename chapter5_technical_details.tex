@@ -34,6 +34,7 @@ effects of actions more evident (Figure \ref{f:sampling}).
     \label{f:sampling}
 \end{figure}
 %
+
 We perform a preprocessing operation on the states similar to that performed
 by Mnih et al.\ in DQN \cite{mnih2015human}, in order to include all necessary 
 information about the environment and its nominal dynamics in the new state 
@@ -62,7 +63,10 @@ Finally, we concatenate the preprocessed observation to the last three
 preprocessed frames observed from the environment, effectively blowing up the
 state space to a $4 \times 108 \times 84$ vector space (Figure \ref{f:state}). 
 The initial state for an episode is artificially set as a repetition of the 
-first observation provided by the simulator. 
+first observation provided by the simulator.
+This operation is needed to include in the original state space of the 
+environment all necessary information about its nominal dynamics, so that the
+AE will be able to extract them in the representation.
 %
 \begin{figure}
     \includegraphics[width=\textwidth]{pictures/state}
@@ -101,20 +105,20 @@ use the reward rather than the full value.
     \centering
     \begin{tabular}{l c c c c c c} 
 	\hline
-	Type & Input & Output & \# Filters & Filter & Stride & Activation \\ 
+	Type    & Input                     & Output                    & \# Filters & Filter & Stride       & Activation \\ 
 	\hline 
-	Conv. & $4 \times 108 \times 84$ & $32 \times 26 \times 20$ & $32$ & $8 \times 8$ & $4 \times 4$ & ReLU \\ 
-	Conv. & $32 \times 26 \times 20$ & $64 \times 12 \times 9$ & $64$ & $4 \times 4$ & $2 \times 2$ & ReLU \\ 
-	Conv. & $64 \times 12 \times 9$ & $64 \times 10 \times 7$ & $64$ & $3 \times 3$ & $1 \times 1$ & ReLU \\ 
-	Conv. & $64 \times 10 \times 7$ & $16 \times 8 \times 5$ & $16$ & $3 \times 3$ & $1 \times 1$ & ReLU \\ 
-	Flatten	& $16 \times 8 \times 5$ & $640$ & - & - & - & - \\ 
+	Conv.   & $4 \times 108 \times 84$  & $32 \times 26 \times 20$  & $32$ & $8 \times 8$ & $4 \times 4$ & ReLU    \\ 
+	Conv.   & $32 \times 26 \times 20$  & $64 \times 12 \times 9$   & $64$ & $4 \times 4$ & $2 \times 2$ & ReLU    \\ 
+	Conv.   & $64 \times 12 \times 9$   & $64 \times 10 \times 7$   & $64$ & $3 \times 3$ & $1 \times 1$ & ReLU    \\ 
+	Conv.   & $64 \times 10 \times 7$   & $16 \times 8 \times 5$    & $16$ & $3 \times 3$ & $1 \times 1$ & ReLU    \\ 
+	Flatten	& $16 \times 8 \times 5$    & $640$                     & -    & -            & -            & -       \\ 
 	\hline
-	Reshape & $640$ & $16 \times 8 \times 5$ & - & - & - & - \\
-	Deconv. & $16 \times 8 \times 5$ & $16 \times 10 \times 7$ & $16$ & $3 \times 3$ & $1 \times 1$ & ReLU \\ 
-	Deconv. & $16 \times 10 \times 7$ & $64 \times 12 \times 9$ & $64$ & $3 \times 3$ & $1 \times 1$ & ReLU \\
-	Deconv. & $64 \times 12 \times 9$ & $64 \times 26 \times 20$ & $64$ & $4 \times 4$ & $2 \times 2$ & ReLU \\
-	Deconv. & $64 \times 26 \times 20$ & $32 \times 108 \times 84$ & $32$ & $8 \times 8$ & $4 \times 4$ & ReLU \\
-	Deconv. & $32 \times 108 \times 84$ & $4 \times 108 \times 84$ & $4$ & $1 \times 1$ & $1 \times 1$ & Sigmoid \\
+	Reshape & $640$                     & $16 \times 8 \times 5$    & -    & -            & -            & -       \\
+	Deconv. & $16 \times 8 \times 5$    & $16 \times 10 \times 7$   & $16$ & $3 \times 3$ & $1 \times 1$ & ReLU    \\ 
+	Deconv. & $16 \times 10 \times 7$   & $64 \times 12 \times 9$   & $64$ & $3 \times 3$ & $1 \times 1$ & ReLU    \\
+	Deconv. & $64 \times 12 \times 9$   & $64 \times 26 \times 20$  & $64$ & $4 \times 4$ & $2 \times 2$ & ReLU    \\
+	Deconv. & $64 \times 26 \times 20$  & $32 \times 108 \times 84$ & $32$ & $8 \times 8$ & $4 \times 4$ & ReLU    \\
+	Deconv. & $32 \times 108 \times 84$ & $4 \times 108 \times 84$  & $4$  & $1 \times 1$ & $1 \times 1$ & Sigmoid \\
 	\hline
     \end{tabular}
     \caption[Layers of the autoencoder with key parameters]{Layers of the 
@@ -147,7 +151,7 @@ A final \textit{Flatten} layer is added at the end of the encoder to provide a
 1D representation of the feature space, which is reversed before the beginning 
 of the decoder. 
 The decoder consists of deconvolutional layers with symmetrical filter sizes, 
-filter numbers and strides with respect to the encoder. Here the \textit{valid} 
+filter numbers, and strides with respect to the encoder. Here the \textit{valid} 
 padding algorithm is inversed to expand the representation with this formula:
 %
 \begin{IEEEeqnarray}{rCl}
@@ -186,22 +190,22 @@ minimize the \textit{binary cross entropy} loss defined as:
 \end{IEEEeqnarray}
 %
 where $y$ and $\hat y$ are vectors of $N$ target and predicted observations in 
-the state space. The dataset used for training is a subset of the dataset 
+the state space. The dataset used for training is built from the dataset 
 collected for the whole learning procedure described in Algorithm 
-\ref{alg:FQI-DSDF}, namely the first elements of the four-tuples $(s, a, r, s') 
+\ref{alg:FQI-DSDF}, taking only the first elements of the four-tuples $(s, a, r, s') 
 \in \mathcal{TS}$ (which are used as input and targets).
 %
 \begin{table}
     \centering
     \begin{tabular}{l c} 
 	\hline
-	Parameter & Value \\ 
+	Parameter                          & Value     \\ 
 	\hline 
-	Learning rate &  $0.001$ \\
-	Batch size & $32$ \\
-	Exponential decay rate ($\beta_1$) & $0.9$ \\
-	Exponential decay rate ($\beta_2$) & $0.999$ \\
-	Fuzz factor ($\varepsilon$) & $10^{-8}$ \\
+	Learning rate                      & $0.001$   \\
+	Batch size                         & $32$      \\
+	Exponential decay rate ($\beta_1$) & $0.9$     \\
+	Exponential decay rate ($\beta_2$) & $0.999$   \\
+	Fuzz factor ($\varepsilon$)        & $10^{-8}$ \\
 	\hline
     \end{tabular}
     \caption[Optimization hyperparameters for Adam]{Optimization hyperparameters
@@ -214,6 +218,27 @@ performance of the AE on a held-out set of validation samples that amounts to
 roughly $10\%$ of the training data, and stopping the procedure when the 
 validation loss does not improve by at least $10^{-5}$ for five consecutive 
 training epochs. 
+%
+\begin{table}	
+    \centering
+    \begin{tabular}{l c} 
+	\hline
+	Parameter                                    & Value                    \\ 
+	\hline 
+	$M$ (Number of base estimators)              & $50$                     \\
+	$K$ (Number of randomly selected attributes) & All available attributes \\
+	\hline 
+	Scoring method                               & Variance reduction       \\
+	Max tree depth                               & None                     \\
+	$n_{min}$ (node)                             & $5$                      \\
+	$n_{min}$ (leaf)                             & $2$                      \\
+	\hline
+    \end{tabular}
+    \caption[Parameters for Extra-Trees (RFS)]{Parameters for Extra-Trees and
+	    its base estimators in RFS.}
+    \label{t:RFS_tree_params}
+\end{table}
+%
 
 \section{Tree-based Recursive Feature Selection}
 We use the RFS algorithm to reduce the state space representation computed by 
@@ -235,33 +260,9 @@ different parametrizations, but Castelletti et al.\ use the same regressor for
 both tasks (as does the code implementation of RFS and IFS that we used for 
 experiments), and we therefore complied with this choice.
 The parametrization of Extra-Trees for $FR$ and $\hat{f}$ is reported in Table
-\ref{t:RFS_tree_params}\footnote{We use two different values for the minimum 
-number of samples required to split an internal node or a leaf.} 
+\ref{t:RFS_tree_params}\footnote{Note that we use two different values for the 
+minimum number of samples required to split an internal node or a leaf.} 
 (cf.\ Section \ref{s:extra-trees}).
-%
-\begin{table}	
-    \centering
-    \begin{tabular}{l c} 
-	\hline
-	Parameter (Extra-Trees) & Value \\ 
-	\hline 
-	$M$ (Number of base estimators) & $50$ \\
-	$K$ (Number of randomly selected attributes) &  All available attributes \\
-	& \\
-	\hline
-	Parameter (Base estimator) & Value \\ 
-	\hline 
-	Scoring method &  Variance reduction \\
-	Max tree depth & None \\
-	$n_{min}$ (node) & $5$\\
-	$n_{min}$ (leaf) & $2$ \\
-	\hline
-    \end{tabular}
-    \caption[Parameters for Extra-Trees (RFS)]{Parameters for Extra-Trees and
-	    its base estimators (RFS).}
-    \label{t:RFS_tree_params}
-\end{table}
-%
 
 We use the $R^2$ metric defined in Equation \eqref{e:R2} to compute the ability
 of the selected features to describe the target, in $K$-fold cross validation 
@@ -287,10 +288,10 @@ The hyperparameters used for RFS are reported in Table \ref{t:RFS}.
     \centering
     \begin{tabular}{l c} 
 	\hline
-	Parameter & Value \\ 
+	Parameter                           & Value  \\ 
 	\hline 
-	$K$ (for $K$-fold cross-validation) & $3$ \\
-	$\xi$ (significance) &  0.95 \\
+	$K$ (for $K$-fold cross-validation) & $3$    \\
+	$\xi$ (significance)                & $0.95$ \\
 	\hline
     \end{tabular}
     \caption[Parameters for RFS]{Parameters for RFS.}
@@ -314,22 +315,19 @@ The parametrization for Extra-Trees is reported in Table \ref{t:FQI_tree_params}
     \centering
     \begin{tabular}{l c} 
 	\hline
-	Parameter (Extra-Trees) & Value \\ 
+	Parameter                                    & Value                    \\ 
 	\hline 
-	$M$ (Number of base estimators) & $100$ \\
-	$K$ (Number of randomly selected attributes) &  All available attributes \\
-	& \\
+	$M$ (Number of base estimators)              & $100$                    \\
+	$K$ (Number of randomly selected attributes) & All available attributes \\
 	\hline
-	Parameter (Base estimator) & Value \\ 
-	\hline
-	Scoring method &  Variance reduction \\
-	Max tree depth & None \\
-	$n_{min}$ (node) & $2$\\
-	$n_{min}$ (leaf) & $1$ \\
+	Scoring method                               & Variance reduction       \\
+	Max tree depth                               & None                     \\
+	$n_{min}$ (node)                             & $2$                      \\
+	$n_{min}$ (leaf)                             & $1$                      \\
 	\hline
     \end{tabular}
     \caption[Parameters for Extra-Trees (FQI)]{Parameters for Extra-Trees and
-	    its base estimators (FQI).}
+	    its base estimators in FQI.}
     \label{t:FQI_tree_params}
 \end{table}
 %
@@ -381,10 +379,10 @@ Evaluation parameters are summarized in Table \ref{t:eval}.
     \centering
     \begin{tabular}{l c} 
 	\hline
-	Parameter & Value \\ 
+	Parameter                      & Value  \\ 
 	\hline 
 	Exploration rate $\varepsilon$ & $0.05$ \\
-	$N$ &  $10$ \\
+	$N$                            & $10$   \\
 	\hline
     \end{tabular}
     \caption[Parameters for evaluation]{Parameters for evaluation.}

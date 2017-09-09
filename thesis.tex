@@ -34,57 +34,57 @@
 \pagestyle{empty}
 
 \begin{document}
-% ---- Frontispiece ----
-\include{chapter0_0_frontispiece}
-\thispagestyle{empty} \normalfont \cleardoublepage
+    % ---- Frontispiece ----
+    \include{chapter0_0_frontispiece}
+    \thispagestyle{empty} \normalfont \cleardoublepage
 
-% ---- Dedication ----
-\include{chapter0_1_dedication}
-\thispagestyle{empty}  \cleardoublepage
+    % ---- Dedication ----
+    \include{chapter0_1_dedication}
+    \thispagestyle{empty}  \cleardoublepage
 
-\pagenumbering{Roman}
+    \pagenumbering{Roman}
 
-% ---- TOC ----
-\tableofcontents
-\listoffigures
-\listoftables
-\listofalgorithms
+    % ---- TOC ----
+    \tableofcontents
+    \listoffigures
+    \listoftables
+    \listofalgorithms
 
-% ---- Summary ----
-\include{chapter0_2_summary}
-\include{chapter0_3_riassunto}
-\thispagestyle{empty} \vspace*{.75truecm} \cleardoublepage
+    % ---- Summary ----
+    \include{chapter0_2_summary}
+    \include{chapter0_3_riassunto}
+    \thispagestyle{empty} \vspace*{.75truecm} \cleardoublepage
 
-% ---- Acknowledgments ----
-\include{chapter0_4_acknowledgments}
-\thispagestyle{empty} \vspace*{.75truecm} \normalfont \cleardoublepage
+    % ---- Acknowledgments ----
+    \include{chapter0_4_acknowledgments}
+    \thispagestyle{empty} \vspace*{.75truecm} \normalfont \cleardoublepage
 
-% ---- Style setup for main body ----
-\pagestyle{plain}\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}} 
-\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}         
-\fancyhead[LE,RO]{\bfseries\thepage}    
-                                        
-\fancyhead[RE]{\bfseries\leftmark}    
-\fancyhead[LO]{\bfseries\rightmark}     
-\renewcommand{\headrulewidth}{0.3pt} 
+    % ---- Style setup for main body ----
+    \pagestyle{plain}\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}} 
+    \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}         
+    \fancyhead[LE,RO]{\bfseries\thepage}    
+					    
+    \fancyhead[RE]{\bfseries\leftmark}    
+    \fancyhead[LO]{\bfseries\rightmark}     
+    \renewcommand{\headrulewidth}{0.3pt} 
 
-\pagenumbering{arabic}
+    \pagenumbering{arabic}
 
-% ---- Main body ----
-\include{chapter1_introduction}
-\include{chapter2_background}
-\include{chapter3_state_of_the_art}
-\include{chapter4_research_problem}
-\include{chapter5_technical_details}
-\include{chapter6_experiments}
-\include{chapter7_conclusions}
-\cleardoublepage
+    % ---- Main body ----
+    \include{chapter1_introduction}
+    \include{chapter2_background}
+    \include{chapter3_state_of_the_art}
+    \include{chapter4_research_problem}
+    \include{chapter5_technical_details}
+    \include{chapter6_experiments}
+    \include{chapter7_conclusions}
+    \cleardoublepage
 
-% ---- Bibliography ----
-\addcontentsline{toc}{chapter}{References}
-\bibliographystyle{plain}
-\bibliography{bibliography}
-
+    % ---- Bibliography ----
+    \addcontentsline{toc}{chapter}{References}
+    \bibliographystyle{plain}
+    \bibliography{bibliography}
+    %
 \end{document}
 
 

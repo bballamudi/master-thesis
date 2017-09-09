@@ -48,7 +48,7 @@ space can be used with a variety of RL algorithms in their default setting (like
 we show with FQI), without having to adapt the deep architecture to solve the 
 problem end-to-end like in deep Q-learning.
 Moreover, since deep features can be difficult to interpret in an abstract 
-way and in general there is no assurance against redundancy in the 
+way, and in general there is no assurance against redundancy in the 
 representation, we use a feature selection technique on the extracted space in 
 order to really minimize the description while retaining all information 
 required for control. 
@@ -70,8 +70,8 @@ deep ANN to extract a representation of an environment, and then use that
 representation to control an agent with standard RL algorithms. We also add an 
 additional step after the deep feature extraction to further reduce the 
 representation down to the essential bits of information required to solve the 
-problem, by using the \textit{Recursive Feature Selection} (RFS) algorithm 
-\cite{castelletti2011tree}.
+problem, by using the \textit{Recursive Feature Selection} (RFS) 
+\cite{castelletti2011tree} algorithm.
 
 We focus exclusively on environments with a discrete and mono-dimensional 
 action space $A = \{0, 1, ..., a\}$, where actions are assigned a unique integer 
@@ -97,7 +97,7 @@ function. The main components of the algorithm are:
     reduce the state representation $\tilde{S}$ and keep only the truly 
     informative features extracted by the AE, effectively mapping the extracted 
     feature space to a subspace $\hat{S}$.
-    \item the \textit{tree-based} FQI learning algorithm to produce an 
+    \item the Fitted Q-Iteration learning algorithm to produce an 
     estimator for the action-value function, with $\hat{S}$ as domain. 
 \end{enumerate}
 %
@@ -280,7 +280,7 @@ the dimensionality of both spaces by removing the less important features.
 The core of the algorithm consists in recursively selecting the features that 
 best explain the dynamics (i.e.\ the transition model) of the features already 
 selected, starting from the subset of features needed to explain the reward 
-model, using the \textit{Iterative Feature Selection} (IFS) 
+function, using the \textit{Iterative Feature Selection} (IFS) 
 \cite{castelletti2013iter} algorithm to recursively build a dependency 
 tree of features.
 %
@@ -348,7 +348,7 @@ The IFS procedure called at each step of RFS is a feature selection technique
 based on a \textit{feature ranking} algorithm, but in general can be replaced by
 any feature selection method that is able to account for nonlinear 
 dependencies and redundancy between features (as real-world control problems are
-usually characterized by nonlinear dynamic models with multiple coupled 
+usually characterized by nonlinear dynamics models with multiple coupled 
 features). Here we use IFS for coherence with the paper by Castelletti et al., 
 and because it is a computationally efficient feature selection algorithm that
 works well with our semi-batch approach.
