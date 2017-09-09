@@ -110,13 +110,14 @@ step, until the desired performance is reached.
     \caption[Schematic view of the three main modules]{Composition of the three 
 	    main modules of the algorithm to produce the end-to-end function 
 	    $Q: S \times A \rightarrow \mathbb{R}$. Pixel-level states are 
-	    transformed by the encoder to the 1D feature space $\tilde{S}$, 
+	    transformed by the encoder into the 1D feature space $\tilde{S}$, 
 	    which in turn is filtered by RFS into space $\hat{S}$. The final 
 	    representation is used to train FQI, which outputs an action-value 
 	    function $\hat{Q}$ on $\hat{S} \times A$. 
 	    The same preprocessing pipeline is then required to use $\hat{Q}$, 
 	    and the full composition of the three modules effectively consists 
-	    in an action-value function on the original space $S \times A$.}
+	    in an action-value function on the original state-action space 
+	    $S \times A$.}
     \label{f:full_pipeline}
 \end{figure}
 %
@@ -180,30 +181,30 @@ following sections.
     \caption{Fitted Q-Iteration with Deep State Features}
     \label{alg:FQI-DSDF}
     \begin{algorithmic}
-	\STATE Given: 
+	\STATE \textbf{Given}: 
 	    \begin{ALC@g}
-	        \STATE $\varepsilon_{min} \in (0, 1)$
-	        \STATE $\varphi: [\varepsilon_{min}, 1] \rightarrow [\varepsilon_{min}, 1)$ s.t.\ $\varphi(x) < x, \forall x \in (\varepsilon_{min}, 1]$ and $\varphi(\varepsilon_{min}) = \varepsilon_{min}$;
+	        \STATE $\varepsilon_{min} \in (0, 1)$;
+	        \STATE $\varphi: [\varepsilon_{min}, 1] \rightarrow [\varepsilon_{min}, 1)$ s.t.\ $\varphi(x) < x, \forall x \in (\varepsilon_{min}, 1]$ and $\varphi(\varepsilon_{min}) = \varepsilon_{min}$
 	    \end{ALC@g}
-	\STATE Initialize the encoder $ENC: S \rightarrow \tilde{S}$ arbitrarily;
-	\STATE Initialize the decoder $DEC: \tilde{S} \rightarrow S$ arbitrarily;
-	\STATE Initialize $Q$ arbitrarily;
-	\STATE Define $\pi(s) = \underset{a}{\arg\max} Q(s, a)$;
-	\STATE Initialize an $\varepsilon$-greedy policy $\pi_\varepsilon$ based on $\pi$ with $\varepsilon = 1$;
+	\STATE Initialize the encoder $ENC: S \rightarrow \tilde{S}$ arbitrarily
+	\STATE Initialize the decoder $DEC: \tilde{S} \rightarrow S$ arbitrarily
+	\STATE Initialize $Q$ arbitrarily
+	\STATE Define $\pi(s) = \underset{a}{\arg\max} Q(s, a)$
+	\STATE Initialize an $\varepsilon$-greedy policy $\pi_\varepsilon$ based on $\pi$ with $\varepsilon = 1$
 	\REPEAT 
-	    \STATE Collect a set $\mathcal{TS}$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ using $\pi_\varepsilon$;
-	    \STATE Train the composition $DEC \circ ENC: S \rightarrow S$ using the state elements ($s \in S$) of $\mathcal{TS}$ as input and target;
-	    \STATE Build a set $\mathcal{TS}_{ENC}$ of four-tuples $(\tilde{s} \in \tilde{S}, a \in A, r \in \mathbb{R}, \tilde{s}' \in \tilde{S})$ by applying the encoder to the first and last elements of each four-tuple in $\mathcal{TS}$ s.t. $\tilde{s} = ENC(s)$;
-	    \STATE Call the RFS feature selection algorithm on $\mathcal{TS}_{ENC}$ to obtain a space reduction $RFS: \tilde{S} \rightarrow \hat{S}$;
-	    \STATE Build a set $\mathcal{TS}_{RFS}$ of four-tuples $(\hat{s} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{s}' \in \hat{S})$ by applying $RFS$ to the first and last elements of each four-tuple in $\mathcal{TS}_{ENC}$ s.t. $\hat{s} = RFS(\tilde{s})$;
-	    \STATE Call FQI on $\mathcal{TS}_{RFS}$ to produce $\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$;
+	    \STATE Collect a set $\mathcal{TS}$ of four-tuples $(s \in S, a \in A, r \in \mathbb{R}, s' \in S)$ using $\pi_\varepsilon$
+	    \STATE Train the composition $DEC \circ ENC: S \rightarrow S$ using the state elements ($s \in S$) of $\mathcal{TS}$ as input and target
+	    \STATE Build a set $\mathcal{TS}_{ENC}$ of four-tuples $(\tilde{s} \in \tilde{S}, a \in A, r \in \mathbb{R}, \tilde{s}' \in \tilde{S})$ by applying the encoder to the first and last elements of each four-tuple in $\mathcal{TS}$ s.t. $\tilde{s} = ENC(s)$
+	    \STATE Call the RFS feature selection algorithm on $\mathcal{TS}_{ENC}$ to obtain a space reduction $RFS: \tilde{S} \rightarrow \hat{S}$
+	    \STATE Build a set $\mathcal{TS}_{RFS}$ of four-tuples $(\hat{s} \in \hat{S}, a \in A, r \in \mathbb{R}, \hat{s}' \in \hat{S})$ by applying $RFS$ to the first and last elements of each four-tuple in $\mathcal{TS}_{ENC}$ s.t. $\hat{s} = RFS(\tilde{s})$
+	    \STATE Call FQI on $\mathcal{TS}_{RFS}$ to produce $\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$
 	    \STATE Combine $\hat{Q}$, $RFS$ and $ENC$ to produce $Q: S \times A \rightarrow \mathbb{R}$:
 		\[
 		    Q(s, a) = \hat{Q}(RFS(ENC(s)), a)
 		\]
-	    \STATE Set $\varepsilon \leftarrow \varphi(\varepsilon)$;
-	    \STATE Evaluate $\pi$; 
-	\UNTIL{stopping condition on evaluation performance is met;}
+	    \STATE Set $\varepsilon \leftarrow \varphi(\varepsilon)$
+	    \STATE Evaluate $\pi$
+	\UNTIL{stopping condition on evaluation performance is met}
 	\STATE Return $Q$
     \end{algorithmic}
 \end{algorithm}
@@ -288,7 +289,7 @@ tree of features.
     \caption{Recursive Feature Selection ($RFS$)}
     \label{alg:RFS}
     \begin{algorithmic}
-	\STATE Given: a dataset $\mathcal{D} = {\langle s \in S, a \in A, s' \in S \rangle}$, a target feature $F_0^i$ from the set of features of $S \cup A$, a set $\mathcal{F}_{sel}^i$ of previously selected features;
+	\STATE \textbf{Given}: a dataset $\mathcal{D} = {\langle s \in S, a \in A, s' \in S \rangle}$; a target feature $F_0^i$ from the set of features of $S \cup A$; a set $\mathcal{F}_{sel}^i$ of previously selected features
 	\STATE $\mathcal{F}_{F_0}^i \leftarrow IFS(\mathcal{D}, F_0^i)$
 	\STATE $\mathcal{F}_{new}^i \leftarrow \mathcal{F}_{F_0}^i \setminus \mathcal{F}_{sel}^i$
 	\FORALL{$F_j^{i+1} \in \mathcal{F}_{new}^i$}
@@ -385,15 +386,15 @@ The full IFS procedure is summarized in Algorithm \ref{alg:IFS}.
     \caption{Iterative Feature Selection ($IFS$)}
     \label{alg:IFS}
     \begin{algorithmic}
-	\STATE Given: a dataset $\mathcal{D} = {\langle s \in S, a \in A, s' \in S \rangle}$, a target feature $F_0$ from the set of features of $S \cup A$;
+	\STATE \textbf{Given}: a dataset $\mathcal{D} = {\langle s \in S, a \in A, s' \in S \rangle}$; a target feature $F_0$ from the set of features of $S \cup A$
 	\STATE Initialize: $\mathcal{F}_{sel} \leftarrow \emptyset, \hat{F}_0 \leftarrow F_0, R^2_{old} \leftarrow 0$
 	\REPEAT
 	    \STATE $F^* \leftarrow \arg\max_F FR(\mathcal{D}, \hat{F}_0, F)$
 	    \IF{$F^* \in \mathcal{F}_{sel}$}
 		\RETURN $\mathcal{F}_{sel}$
 	    \ENDIF
-	    \STATE $\mathcal{F}_{sel} \leftarrow \mathcal{F}_{sel} \cup F^*$;
-	    \STATE Build a model $\hat{f}: \mathcal{F}_{sel} \rightarrow F_0$ using $\mathcal{D}$;
+	    \STATE $\mathcal{F}_{sel} \leftarrow \mathcal{F}_{sel} \cup F^*$
+	    \STATE Build a model $\hat{f}: \mathcal{F}_{sel} \rightarrow F_0$ using $\mathcal{D}$
 	    \STATE $F_{pred} = \hat{f}(\mathcal{F}_{sel})$
 	    \STATE $\hat{F}_0 \leftarrow F_0 - F_{pred}$
 	    \STATE $\Delta R^2 \leftarrow R^2(\mathcal{D}, F_0, F_{pred}) - R^2_{old}$

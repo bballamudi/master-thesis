@@ -16,22 +16,22 @@ A level-1 auxiliary file: chapter7_conclusions.aux
 The style file: plain.bst
 Database file #1: bibliography.bib
 Warning--entry type for "alphago" isn't style-file defined
---line 440 of file bibliography.bib
+--line 441 of file bibliography.bib
 Warning--can't use both volume and number fields in sutton1998reinforcement
 Warning--empty year in vanwavenet
 Warning--empty journal in wu2016google
 You've used 50 entries,
             2118 wiz_defined-function locations,
             769 strings with 14106 characters,
-and the built_in function-call counts, 22772 in all, are:
-= -- 2130
+and the built_in function-call counts, 22786 in all, are:
+= -- 2135
 > -- 1475
 < -- 21
 + -- 585
 - -- 532
-* -- 1765
-:= -- 3716
-add.period$ -- 156
+* -- 1766
+:= -- 3719
+add.period$ -- 157
 call.type$ -- 50
 change.case$ -- 413
 chr.to.int$ -- 0
@@ -39,7 +39,7 @@ cite$ -- 53
 duplicate$ -- 778
 empty$ -- 1527
 format.name$ -- 532
-if$ -- 4705
+if$ -- 4710
 int.to.chr$ -- 0
 int.to.str$ -- 50
 missing$ -- 52
@@ -49,7 +49,7 @@ pop$ -- 475
 preamble$ -- 1
 purify$ -- 366
 quote$ -- 0
-skip$ -- 581
+skip$ -- 579
 stack$ -- 0
 substring$ -- 1217
 swap$ -- 239
@@ -60,5 +60,5 @@ type$ -- 194
 warning$ -- 3
 while$ -- 187
 width$ -- 52
-write$ -- 544
+write$ -- 545
 (There were 4 warnings)

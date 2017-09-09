@@ -173,7 +173,7 @@ satisfactory, we kept it fixed for all the following experiments.
 	    innermost feature maps before the flatten layer, after encoding $s$: 
 	    colors represent a \textit{heatmap} from black ($0$) to white 
 	    (map-wise maximum activation value). The same applies to Figures 
-	    \ref{f:P_reconstr} and \ref{f:BO_reconstr}.}
+	    \ref{f:P_reconstr} and \ref{f:SI_reconstr}.}
     \label{f:BO_reconstr}
 \end{figure}
 %
@@ -438,9 +438,9 @@ Moving on to the main results of the FQI training, we report in Tables
 In Table \ref{t:avg_performance_only_ours}, we show the best average evaluation 
 score achieved by our agent during the main training procedure.
 We note that FQI benefits a great deal by a sufficiently high exploration rate, 
-with peak performance typically reached at $\varepsilon\approx0.5$ (this result was often
-observed during experiments, even with different configurations for the AE and
-FQI). 
+with peak performance typically reached at $\varepsilon\approx0.5$ (this result 
+was often observed during experiments, even with different configurations for 
+the AE and FQI). 
 Despite being an expected result due to the fact that FQI needs to learn at
 once both the value of good and poor states, unlike online neural algorithms 
 like DQN that can exploit an intrinsic memory of the architecture to store 

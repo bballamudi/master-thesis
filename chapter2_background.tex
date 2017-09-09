@@ -1088,8 +1088,7 @@ in Algorithm \ref{alg:extra}.
     \begin{algorithmic}
 	\STATE \textbf{Split\_node}($S$):
 	    \begin{ALC@g}
-		\STATE \textbf{Input}: the local learning subset $S$ corresponding to the node we want to split
-		\STATE \textbf{Output}: a split $[a < a_c]$ or nothing
+		\STATE \textbf{Given}: the local learning subset $S$ corresponding to the node we want to split
 		\IF{\textbf{Stop\_split(S)} is True}
 		    \STATE Return nothing
 		\ELSE{} 
@@ -1101,8 +1100,7 @@ in Algorithm \ref{alg:extra}.
 	\STATE
 	\STATE \textbf{Pick\_random\_split}(S, a):
 	    \begin{ALC@g}
-		\STATE \textbf{Input}: a subset $S$ and an attribute $a$
-		\STATE \textbf{Output}: a split
+		\STATE \textbf{Given}: a subset $S$ and an attribute $a$
 		\STATE Let $a_{max}^S$ and $a_{min}^S$ denote the maximal and minimal value of $a$ in $S$
 		\STATE Draw a random cut-point $a_c$ uniformly in $[a_{min}^S, a_{max}^S]$
 		\STATE Return the split $[a < a_c]$
@@ -1110,11 +1108,10 @@ in Algorithm \ref{alg:extra}.
 	\STATE
 	\STATE \textbf{Stop\_split}($S$):
 	    \begin{ALC@g}
-		\STATE \textbf{Input}: a subset $S$
-		\STATE \textbf{Output}: a boolean
-		\IF{$|S| < n_{min}$} \STATE return True \ENDIF
-		\IF{All attributes are constant in $S$} \STATE return True \ENDIF
-		\IF{The output is constant in $S$} \STATE return True \ENDIF
+		\STATE \textbf{Given}: a subset $S$
+		\IF{$|S| < n_{min}$} \STATE Return True \ENDIF
+		\IF{All attributes are constant in $S$} \STATE Return True \ENDIF
+		\IF{The output is constant in $S$} \STATE Return True \ENDIF
 		\STATE Return False
 	    \end{ALC@g}
     \end{algorithmic}
