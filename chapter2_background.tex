@@ -64,7 +64,7 @@ transformation by setting $x_0 = 1$ and $w_0 = b$).
 
 In ANNs, the simple model of the perceptron is used to create a layered 
 structure, in which each \textit{hidden} layer is composed by a given number 
-of perceptrons (called \textit{neurons}) which (see Figure \ref{f:ann}):
+of perceptrons (called \textit{neurons}) that (see Figure \ref{f:ann}):
 %
 \begin{enumerate}
     %
@@ -203,7 +203,7 @@ is too small (Figure \ref{f:sgd_overshooting}).
 \end{figure}
 %
 
-In order to improve the accuracy and speed of SGD, some additional tweaks are
+In order to improve the accuracy and speed of SGD, some particular tweaks are
 usually added to the optimization algorithm. Among these, we find the addition
 of a \textit{momentum} term to the update step of SGD, in order to avoid 
 oscillating in irrelevant directions by incorporating a fraction of the previous
@@ -290,7 +290,7 @@ input space (which effectively enlarges the output space of the layers), it is
 also necessary to force a reduction of the input in order to learn useful 
 representations. 
 For this reason, convolutional layers in CNNs are often paired with 
-\textit{pooling layers} which reduce the dimensionality of their input according
+\textit{pooling layers} that reduce the dimensionality of their input according
 to some criteria applied to subregions of the input neurons (e.g.\ for each two 
 by two square of input neurons, keep only the maximum activation value as 
 shown in Figure \ref{f:max-pooling}).
@@ -368,7 +368,7 @@ notice that image reconstruction with this type of layer is incredibly more
 accurate, down to pixel-level accuracy.
 
 \section{Reinforcement Learning} \label{s:RL}
-\textit{Reinforcement Learning} (RL) is an area of machine learning which
+\textit{Reinforcement Learning} (RL) is an area of machine learning that
 studies how to optimize the behavior of an agent in an environment,
 in order to maximize the cumulative sum of a scalar signal called 
 \textit{reward} in a setting of \textit{sequential decision making}.
@@ -472,8 +472,8 @@ current state and action.
 \subsubsection{Policy} \label{s:policies}
 The behavior of the agent in an MDP can be defined as a probability 
 distribution $\pi: S \times A \rightarrow [0,1]$ called a \textit{policy}, 
-which given $s \in S, a \in A$, represents the probability of selecting $a$ as 
-next action from $s$.
+which given $s \in S$ and $a \in A$, represents the probability of selecting $a$
+as next action from $s$.
 An agent that uses this probability distribution to select its next action 
 when in a given state is said to be \textit{following} the policy.
 
@@ -489,14 +489,15 @@ exploration degree of the agent. Common techniques to control the
 \textit{exploration-exploitation} trade-off are:
 %
 \begin{itemize}
-    \item $\varepsilon$-greedy policies: actions are selected using a given 
-    policy with probability $1-\varepsilon$, and randomly the rest of the time;
-    \item softmax action selection: improves on $\varepsilon$-greedy policies by 
-    reducing the number of times a suboptimal action is randomly selected. To do
-    so, a probability distribution (commonly a \textit{Boltzmann distribution}) 
-    dependent on the expected return from the successor states (something called
-    the \textit{value} of the states, which we introduce in the next subsection)
-    is used.
+    \item $\varepsilon$-greedy policies, in which actions are selected using a 
+    given policy with probability $1-\varepsilon$, and randomly the rest of the 
+    time;
+    \item softmax action selection, that improves on $\varepsilon$-greedy 
+    policies by reducing the number of times a suboptimal action is randomly 
+    selected. To do so, a probability distribution (commonly a \textit{Boltzmann
+    distribution}) dependent on the expected return from the successor states 
+    (something called the \textit{value} of the states, which we introduce in 
+     the next subsection) is used.
 \end{itemize}
 %
 \subsubsection{Value Functions}
@@ -751,7 +752,7 @@ according to some stopping condition.
 
 \subsection{Monte Carlo Methods}
 Dynamic programming approaches exploit the exact solution of a value function 
-which can be computed starting from a policy, but in general this requires to 
+that can be computed starting from a policy, but in general this requires to 
 have a perfect knowledge of the environment's dynamics and may also not be 
 tractable on sufficiently complex MDPs. 
 
@@ -784,20 +785,20 @@ repeated until convergence, with a new set of trajectories collected under each
 new policy.
 
 \subsection{Temporal Difference Learning}
-\textit{Temporal Difference} (TD) learning is an approach to RL which uses 
+\textit{Temporal Difference} (TD) learning is an approach to RL that uses 
 concepts from both dynamic programming and Monte Carlo techniques. 
-TD is a \textit{model-free} approach which uses experience (like in MC)
-to update an estimate of the value functions by using a previous estimate 
+TD is a \textit{model-free} approach that uses experience (like in MC)
+to update an estimate of the value function by using a previous estimate 
 (like in DP).
 Like MC, TD estimation uses the rewards following a visit to a state to compute
-the value functions, but with two core differences:
+the value function, but with two core differences:
 \begin{enumerate}
     %
     \item Instead of the average of all rewards following the visit, a single 
     time step is considered (this is true for the simplest TD approach, but note 
     that in general an arbitrary number of steps can be used; the more steps are
     considered, the more the estimate is similar to the MC estimate).
-    \item Estimates of the value functions are updated by using in part an 
+    \item Estimates of the value function are updated by using in part an 
     already computed estimate. For this reason, this approach is called a
     \textit{bootstrapping} method (like DP).
     Specifically, the iterative update step for the value function is:
@@ -893,7 +894,7 @@ The update rule for the TD step in Q-learning is the following:
     %
 \end{IEEEeqnarray}
 %
-As we did for SARSA, an algorithmic description of the Q-learning algorithm is
+As we did for SARSA, a procedural description of the Q-learning algorithm is
 provided in Algorithm \ref{alq:q_learning}.
 %
 \begin{algorithm}
@@ -924,7 +925,7 @@ functions with a supervised model is not an uncommon approach, and it has been
 often used in the literature to solve a wide range of environments with 
 high-dimensional state-action spaces.
 This is especially useful in problems for which the closed form solutions of DP,
-or the guarantees of visiting all state-action pairs required for MC and TD are 
+or the guarantees of visiting all state-action pairs required for MC and TD, are 
 not feasible.
 
 Here, we choose the \textit{Fitted Q-Iteration} (FQI) \cite{ernst2005tree} 
@@ -965,8 +966,8 @@ supervised learning problem. The process is described in Algorithm \ref{alg:FQI}
 %
 
 Note that at the first iteration of the algorithm the action-value function is
-initialized as a null constant, and therefore the first approximation done by 
-the algorithm is that of the reward function.
+initialized as a null constant, and therefore the first approximation computed 
+by the algorithm is that of the reward function.
 Subsequent iterations use the previously estimated function to compute the 
 target of a new supervised learning problem, and therefore each step is 
 independent from the previous one, except for the information of the environment 
@@ -979,7 +980,7 @@ further on the implementation details.
 
 \section{Additional Formalism} \label{s:addtional}
 In this section we briefly introduce some additional algorithms and concepts 
-which will be used in later chapters as secondary components of our approach. 
+that will be used in later chapters as secondary components of our approach. 
 
 \subsection{Decision Trees}
 \textit{Decision trees} are a non-parametric supervised learning method for
@@ -1070,7 +1071,7 @@ different criteria such as:
  
 \subsection{Extremely Randomized Trees}\label{s:extra-trees}
 \textit{Extremely Randomized Trees} (Extra-Trees) \cite{geurts2006extremely}
-is a tree-based ensemble method for supervised learning, which consists in 
+is a tree-based ensemble method for supervised learning that consists in 
 strongly randomizing both attribute and cut-point choice while splitting a 
 decision tree node. 
 The Extra-Trees algorithm builds an ensemble of $M$ unpruned decision trees 
@@ -1126,7 +1127,7 @@ The procedure has three main parameters:
 \end{itemize}
 In the prediction phase, the output of each tree in the ensemble is aggregated
 to compute the final prediction, with a majority voting in classification 
-problems and arithmetic average in regression problems.
+problems and an arithmetic average in regression problems.
 
 
 

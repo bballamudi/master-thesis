@@ -6,8 +6,8 @@
 
 In this chapter we show the implementation details of the architecture
 used to perform experiments. We try to provide a complete description of the 
-parametrization of the components and of the training procedure to ensure 
-reproducibility of the experimental results.
+parametrization of the components and of the training procedure, in order to 
+ensure reproducibility of the experimental results.
 
 \section{Atari Environments}\label{s:atari_envs}
 The \textit{Arcade Learning Environment} (ALE) \cite{bellemare2013arcade} is an 
@@ -64,8 +64,8 @@ preprocessed frames observed from the environment, effectively blowing up the
 state space to a $4 \times 108 \times 84$ vector space (Figure \ref{f:state}). 
 The initial state for an episode is artificially set as a repetition of the 
 first observation provided by the simulator.
-This operation is needed to include in the original state space of the 
-environment all necessary information about its nominal dynamics, so that the
+This operation is needed to include all necessary information about the 
+environment's nominal dynamics in the state space used for training, so that the
 AE will be able to extract them in the representation.
 %
 \begin{figure}
@@ -131,7 +131,7 @@ state space in an unsupervised fashion.
 We structure the AE to take as input the preprocessed observations from the
 environment and predict values on the same vector space.
 The first four convolutional layers make up the encoder and perform a 2D 
-convolution with the \textit{valid} padding algorithm such that the input of 
+convolution with the \textit{valid} padding algorithm, such that the input of 
 each layer (in the format $channels \times height \times width$) is reduced 
 automatically across the last two dimensions (height and width) according to the
 following formula: 
@@ -278,7 +278,7 @@ and we adapt the stopping condition of RFS by setting $\epsilon = CI + CI_{old}$
 that the condition becomes $R^2 - CI < R^2_{old} - CI_{old}$.
 We also multiply $\epsilon$ by a \textit{significance} factor $\xi$ in order to
 control the amount of variance that a feature must explain in order to be added 
-to the selection: higher values of $\xi$ means that the selection will yield a 
+to the selection: higher values of $\xi$ mean that the selection will yield a 
 smaller subset composed exclusively of very informative features (even if the 
 overall amount of variance explained is not necessarily the whole possible 
 amount).
@@ -335,7 +335,7 @@ The parametrization for Extra-Trees is reported in Table \ref{t:FQI_tree_params}
 Since the FQI procedure introduces a small bias to the action-value estimate at 
 each iteration (due to approximation errors), we implement an \textit{early 
 stopping} procedure based on the evaluation of the agent's performance.
-Every fixed number of iterations we evaluate the performance of an 
+Every fixed number of iterations, we evaluate the performance of an 
 $\varepsilon$-greedy policy (with $\varepsilon = 0.05$) based on the current 
 partial approximation $\hat{Q}_i$, by composing all the modules in the pipeline 
 to obtain the full $Q$ as per Equation \eqref{eq:final_output}. 
@@ -367,8 +367,8 @@ number of steps occurred. The mean and variance of these two metrics across the
 $N$ episodes provide us with insights on the agent's performance: a high average 
 return obviously means that the algorithm has produced a good policy, but at the
 same time a low variance in the number of steps could indicate that the agent is 
-stuck in some trivial policy (e.g. take always the same action) which causes the
-episodes to be essentially identical, even accounting for the non-zero 
+stuck in some trivial policy (e.g.\ to take always the same action) which causes 
+the episodes to be essentially identical, even accounting for the non-zero 
 exploration rate. The latter aspect, while not negative in general, can help in 
 the initial steps of experiments to detect potential problems in the 
 implementation.

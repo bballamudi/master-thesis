@@ -11,18 +11,18 @@ of RL algorithms, mostly using dense ANNs as approximators for the value
 functions from low-dimensional (or engineered) state spaces.
 However, the recent and exciting achievements of DL have caused a sort of RL 
 renaissance, with DRL algorithms outperforming classic RL techniques on 
-environments which were previously considered intractable. 
+environments that were previously considered intractable. 
 Much like the game of Chess was believed out of the reach of machines until 
 IBM's Deep Blue computer \cite{campbell2002deep} won against world champion 
 Garry Kasparov in 1997, DRL has paved the way to solve a wide spectrum of 
-complex tasks which have always been a stronghold of humanity. 
+complex tasks that have always been a stronghold of humanity. 
 
 In this chapter we present the most important and recent results of DRL research, 
 as well as some work related to the algorithm proposed in this thesis.
 
 \section{Value-based Deep Reinforcement Learning} \label{SOA:value}
 In 2013, Mnih et al.\ \cite{mnih2015human} introduced the \textit{deep 
-Q-learning} (DQN) algorithm which basically ignited the field of DRL.
+Q-learning} (DQN) algorithm, which basically ignited the field of DRL.
 The important contributions of DQN consisted in providing an end-to-end 
 framework to train an agent on the \textit{Atari} environments (Figure \ref{f:atari_example})
 starting from the pixel-level representation of the states, with a deep CNN 
@@ -131,7 +131,6 @@ the update targets:
     %
 \end{IEEEeqnarray}
 %    
-
 DDQN performed better (higher median and mean score) on the 49 Atari games used 
 as benchmark by Mnih et al.\ (2015), equaling or even surpassing humans on 
 several games.
@@ -215,11 +214,11 @@ symbolic task cue).
 
 Pritzel et al.\ (2017) \cite{pritzel2017neural} extended the concept of 
 differentiable memory to DQN with \textit{Neural Episodic Control} (NEC). 
-In this approach, the DRL agent consists of three components: a CNN which 
+In this approach, the DRL agent consists of three components: a CNN that 
 processes pixel images, a set of memory modules (one per action), and a dense 
-ANN which converts read-outs from the action memories into action-values. The 
+ANN that converts read-outs from the action memories into action-values. The 
 memory modules, called \textit{differentiable neural dictionaries} (DNDs), are 
-memory structures which resemble the dictionary data type found in computer 
+memory structures that resemble the dictionary data type found in computer 
 programs. DNDs are used in NEC to associate the state embeddings computed by the
 CNN to a corresponding $Q$ estimate, for each visited state: a read-out for a 
 key consists in a weighted sum of the values in the DND, with weights given by 
@@ -235,7 +234,7 @@ better results using less training samples.
 Traditional board games like chess, checkers, Othello and Go are classical 
 test benches for artificial intelligence. Since the set of rules that
 characterizes this type of games is fairly simple to represent in a program, the
-difficulty in solving these environments stems from the complexity of the 
+difficulty in solving these environments stems from the dimensionality of the 
 state space. Among the cited games, Go was one of the last board games in which 
 an algorithm had never beaten top human players, because its characteristic 
 $19 \times 19$ board, which allows for approximately $250^{150}$ sequences of
@@ -258,7 +257,7 @@ champion Lee Sedol 4 games to 1 in March 2016, and world champion Ke Jie 3 to 0
 in May 2017. After these results, Google DeepMind (the company behind 
 AlphaGo) decided to retire the program from official competitions and released a
 dataset containing 50 self-play games \cite{alphago}.
-AlphaGo is a complex architecture which combines deep CNNs, reinforcement 
+AlphaGo is a complex architecture that combines deep CNNs, reinforcement 
 learning, and Monte Carlo Tree Search (MCTS) \cite{browne2012survey, gelly2012grand}. 
 The process is divided in two phases: a neural network training pipeline and 
 MCTS. In the training pipeline, four different networks are trained: a 
@@ -313,7 +312,7 @@ a similar cumulative reward on the Atari games.
 
 \section{Related Work}
 Lange and Riedmiller (2010) \cite{lange2010deep} proposed the \textit{Deep 
-Fitted Q-iteration} (DFQ) algorithm, a batch RL method which used deep dense 
+Fitted Q-iteration} (DFQ) algorithm, a batch RL method that used deep dense 
 autoencoders to extract a state representation from pixel images. 
 In this algorithm, a training set of $(s, a, r, s')$ transitions is collected
 with a random exploration strategy, where $s, s'$ are pixel images of two 

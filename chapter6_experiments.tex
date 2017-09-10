@@ -52,7 +52,7 @@ deep learning, and linear algebra.
 We trained and used the AE on an \textit{Nvidia Tesla K40C} GPU, using the 
 \textit{Keras 2.0.6} API as interface to the \textit{Tensorflow 1.3.0} library 
 for deep learning, whereas the training and evaluation of Extra-Trees 
-for RFS and FQI was run on CPU using the \textit{Scikit-Learn 0.19.0} library.
+for RFS and FQI were run on CPU using the \textit{Scikit-Learn 0.19.0} library.
 We used the implementations of FQI and RFS provided in the open source 
 \textit{IFQI} library by Matteo Pirotta.
 Finally data manipulation and any other algebraic operations were done with 
@@ -71,7 +71,7 @@ of $125000$ steps every $250000$ collected training samples, and we considered
 the average cumulative non-clipped reward across the episodes completed in
 this period. A similar evaluation was also run once on the fully random policy.
 The best performance achieved by the baseline algorithms is reported in Table 
-\ref{t:envs_used} and we show the learning curve of DQN across the $50$ million
+\ref{t:envs_used}, and we show the learning curve of DQN across the $50$ million
 frames in Figures \ref{f:BO_baseline}, \ref{f:P_baseline} and \ref{f:SI_baseline}.
 %
 \begin{table}[b]
@@ -213,7 +213,7 @@ that more random policies are less effective and can only reach a few states, so
 that the AE has to learn a simpler representation of the environment (e.g.\ 
 there is no point in learning to reconstruct the higher layers of the wall in 
 Breakout if the agent never breaks them).
-This does not apply to environments like Pong in which the agent has no effect 
+This does not apply to environments like Pong, in which the agent has no effect 
 on the fixed elements of the game, and for which we see an almost constant
 reconstruction accuracy with all exploration rates. 
 Less formally, a visual inspection of the reconstruction helped us in the early 
@@ -292,7 +292,7 @@ $5\%$ of the training samples.
 As seen in Figure \ref{f:FQ_test_all_three}, the extracted features are suitable
 for describing the $Q$ function learned by DQN with a good degree of precision, 
 and constitute an adequate base for our whole approach. 
-We are able to obtain an average $R^2$ score of $0.88$, $0,90$, and $0.48$ on 
+We were able to obtain an average $R^2$ score of $0.88$, $0.90$, and $0.48$ on 
 all three tested environments respectively.
 Similarly to what we observed for the AE, in Space Invaders we have a drop in 
 performance probably due to a difficulty in representing all elements in 
@@ -431,6 +431,14 @@ used the values $\varepsilon = 1$, $\varepsilon = 0.55$ and
 $\varepsilon = 0.1$ in sequence. 
 This resulted in a tractable runtime for the full algorithm (however 
 still in the order of days) and an overall good variety in exploration. 
+
+Since the main focus of our work was to minimize the number of training samples,
+we empirically tried different sizes for the training sets collected at each
+step. We started from a conservative size of $1$ million samples, and gradually
+reduced this amount while monitoring the agent's top performance. 
+We were not able to notice a sensible difference between any dataset size above
+$50000$, so we eventually settled for this amount and kept it fixed during 
+experiments.
 
 Moving on to the main results of the FQI training, we report in Tables 
 \ref{t:avg_performance_only_ours}, \ref{t:avg_performance_main}, and 
