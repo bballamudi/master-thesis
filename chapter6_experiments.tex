@@ -392,6 +392,23 @@ from Space Invaders because it is of little informative value).
 %
 
 \section{Fitted Q-Iteration} \label{s:exp_fqi}
+%
+\begin{table}
+    \centering
+    \begin{tabular}{l c c c c} 
+	\hline
+	Environment    & Score    & Step       & $\varepsilon$ & FQI epoch  \\ 
+	\hline 
+	Breakout       & $17$     & $2$ of $3$ & $0.55$        & $400$     \\
+	Pong           & $-9$     & $2$ of $3$ & $0.55$        & $350$     \\
+	Space Invaders & $460$    & $2$ of $3$ & $0.55$        & $450$     \\
+	\hline
+    \end{tabular}
+    \caption[Performance of our algorithm]{Best average performance reached by 
+	    our agent on different environments.}
+    \label{t:avg_performance_only_ours}
+\end{table}
+%
 The final part of our experimental methodology consisted in running the full
 learning pipeline as described in Algorithm \ref{alg:FQI-DSDF}, and evaluating
 the performance of our algorithm in terms of average reward as we did for DQN
@@ -439,59 +456,8 @@ reduced this amount while monitoring the agent's top performance.
 We were not able to notice a sensible difference between any dataset size above
 $50000$, so we eventually settled for this amount and kept it fixed during 
 experiments.
-
-Moving on to the main results of the FQI training, we report in Tables 
-\ref{t:avg_performance_only_ours}, \ref{t:avg_performance_main}, and 
-\ref{t:sample_efficiency_main} the performance of our algorithm.
-In Table \ref{t:avg_performance_only_ours}, we show the best average evaluation 
-score achieved by our agent during the main training procedure.
-We note that FQI benefits a great deal by a sufficiently high exploration rate, 
-with peak performance typically reached at $\varepsilon\approx0.5$ (this result 
-was often observed during experiments, even with different configurations for 
-the AE and FQI). 
-Despite being an expected result due to the fact that FQI needs to learn at
-once both the value of good and poor states, unlike online neural algorithms 
-like DQN that can exploit an intrinsic memory of the architecture to store 
-information about previous samples, this also meant that we only reached peak 
-performance with our agent at the second main step, with $\varepsilon = 0.55$.
-We found that this result was consistent throughout our tests, and we also 
-partly attribute to this aspect the inferior performance of our methodology with
-respect to the state of the art, because we could never properly exploit the 
-learned knowledge to explore the environment to the required degree.
-Our agent could consistently achieve a non-trivial performance on all
-environments nonetheless, as reported in Table \ref{t:avg_performance_main}, 
-reaching on average $25\%$ of DQN's score.
-
-However, despite these poor general results we were able to achieve our main
-objective of sample efficiency.
-Our agent was consistently able to outperform DQN when considering the amount of
-samples collected by our procedure to reach its best performance. 
-In Table \ref{t:sample_efficiency_main}, we show how the performance of our 
-algorithm at its best is on average almost eight times better than DQN after 
-collecting the same amount of samples (roughly $100000$).
-At the same time, even if our best scores amounted to at best $40\%$ of DQN's 
-score, we were able to achieve them with as little as $0.2\%$ of the collected 
-samples (cf.\ Table \ref{t:sample_efficiency_main}).
-
 %
-\begin{table}
-    \centering
-    \begin{tabular}{l c c c c} 
-	\hline
-	Environment    & Score    & Step       & $\varepsilon$ & FQI epoch  \\ 
-	\hline 
-	Breakout       & $17$     & $2$ of $3$ & $0.55$        & $400$     \\
-	Pong           & $-9$     & $2$ of $3$ & $0.55$        & $350$     \\
-	Space Invaders & $460$    & $2$ of $3$ & $0.55$        & $450$     \\
-	\hline
-    \end{tabular}
-    \caption[Performance of our algorithm]{Best average performance reached by 
-	    our agent on different environments.}
-    \label{t:avg_performance_only_ours}
-\end{table}
-%
-%
-\begin{table}
+\begin{table}[t]
     \centering
     \begin{tabular}{l c c c c} 
 	\hline
@@ -531,6 +497,39 @@ samples (cf.\ Table \ref{t:sample_efficiency_main}).
     \label{t:sample_efficiency_main}
 \end{table}
 %
+
+Moving on to the main results of the FQI training, we report in Tables 
+\ref{t:avg_performance_only_ours}, \ref{t:avg_performance_main}, and 
+\ref{t:sample_efficiency_main} the performance of our algorithm.
+In Table \ref{t:avg_performance_only_ours}, we show the best average evaluation 
+score achieved by our agent during the main training procedure.
+We note that FQI benefits a great deal by a sufficiently high exploration rate, 
+with peak performance typically reached at $\varepsilon\approx0.5$ (this result 
+was often observed during experiments, even with different configurations for 
+the AE and FQI). 
+Despite being an expected result due to the fact that FQI needs to learn at
+once both the value of good and poor states, unlike online neural algorithms 
+like DQN that can exploit an intrinsic memory of the architecture to store 
+information about previous samples, this also meant that we only reached peak 
+performance with our agent at the second main step, with $\varepsilon = 0.55$.
+We found that this result was consistent throughout our tests, and we also 
+partly attribute to this aspect the inferior performance of our methodology with
+respect to the state of the art, because we could never properly exploit the 
+learned knowledge to explore the environment to the required degree.
+Our agent could consistently achieve a non-trivial performance on all
+environments nonetheless, as reported in Table \ref{t:avg_performance_main}, 
+reaching on average $25\%$ of DQN's score.
+
+However, despite these poor general results we were able to achieve our main
+objective of sample efficiency.
+Our agent was consistently able to outperform DQN when considering the amount of
+samples collected by our procedure to reach its best performance. 
+In Table \ref{t:sample_efficiency_main}, we show how the performance of our 
+algorithm at its best is on average almost eight times better than DQN after 
+collecting the same amount of samples (roughly $100000$).
+At the same time, even if our best scores amounted to at best $40\%$ of DQN's 
+score, we were able to achieve them with as little as $0.2\%$ of the collected 
+samples (cf.\ Table \ref{t:sample_efficiency_main}).
     
 
 
