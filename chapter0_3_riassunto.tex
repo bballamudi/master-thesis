@@ -4,7 +4,7 @@
 \addcontentsline{toc}{chapter}{Riassunto}
 
 L'apprendimento profondo per rinforzo (in inglese \textit{deep reinforcement 
-learning} - DRL) \`e recentemente diventato il centro dell'attenzione nel campo 
+learning} - DRL) ha recentemente suscitato un grande interesse nel campo 
 dell'intelligenza artificiale, per la sua capacit\`a senza precedenti nel 
 risolvere problemi di controllo considerati fino ad ora inavvicinabili.
 A partire dalla pubblicazione dell'algoritmo \textit{deep Q-learning} (DQN) di 
@@ -131,16 +131,24 @@ moduli separati: un \textit{encoder} e un \textit{decoder}.
 Lo scopo dell'encoder \`e semplicemente quello di estrarre una rappresentazione
 compressa degli ingressi, mentre quello del decoder \`e di invertire questa
 trasformazione e ricostruire l'ingresso originale a partire dalla compressione 
-dell'encoder. 
+prodotta dall'encoder. 
 I due componenti vengono addestrati come un'unica rete neurale, propagando il 
 gradiente su tutti i pesi contemporaneamente. 
 Al termine dell'apprendimento, l'encoder viene utilizzato per comprimere gli 
-elementi del dominio in maniera tale che contengano sufficiente informazione
-affinch\`e il decoder possa ricostruirli, idealmente implementando una forma 
-di compressione senza perdita che riduca la dimensionalit\`a dello spazio di
-ingresso. 
+elementi del dominio, idealmente implementando una forma di compressione senza 
+perdita che riduca la dimensionalit\`a dello spazio di ingresso. 
 Identifichiamo questa compressione come la trasformazione $ENC: S \rightarrow \tilde{S}$, 
 dallo spazio degli stati originali $S$, allo spazio delle feature astratte $\tilde{S}$.
+%
+\begin{figure}
+\includegraphics[width=\textwidth]{pictures/full_pipeline}
+\centering
+\caption[Rappresentazione dei tre moduli principali]{Rappresentazione
+						     schematica della composizione dei tre moduli, con le rispettive
+						     trasformazioni evidenziate in alto.}
+\label{f:abs_full}
+\end{figure}
+%
 
 Il secondo modulo della nostra catena di addestramento \`e l'algoritmo 
 \textit{Recursive Feature Selection} di Castelletti et al.\ \cite{castelletti2011tree}.
@@ -162,16 +170,6 @@ $(s, a, r, s')$ (\textit{stato, azione, rinforzo, stato prossimo}) dove
 $s, s' \in \hat{S}$. Alla fine dell'addestramento, l'algoritmo produce un 
 approssimatore della funzione di valore di azione $\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$, 
 dove $A$ \`e lo spazio delle azioni. 
-%
-\begin{figure}
-    \includegraphics[width=\textwidth]{pictures/full_pipeline}
-    \centering
-    \caption[Rappresentazione dei tre moduli principali]{Rappresentazione
-	    schematica della composizione dei tre moduli, con le rispettive
-	    trasformazioni evidenziate in alto.}
-    \label{f:abs_full}
-\end{figure}
-%
 
 I tre moduli vengono addestrati in sequenza per produrre le rispettive 
 trasformazioni, e alla fine della fase di addestramento vengono combinati 

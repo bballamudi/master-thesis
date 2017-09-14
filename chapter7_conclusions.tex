@@ -17,7 +17,7 @@ pixel-level state space of Atari games down to a more tractable feature space of
 essential information about the environment, from which we then learned a 
 control policy using the batch reinforcement learning FQI algorithm.
 Our autoencoder was able to achieve good reconstruction accuracy on all the
-environments, and we manged to extract a representation of the state spaces
+environments, and we manged to extract a representation of the state space
 which proved to be suitable for approximating the optimal action-value function.
 Due to a limit of the computational power that we had available during the 
 experimental phase, we were not able to explore the capabilities of RFS fully, 
@@ -74,9 +74,9 @@ function.
 On a similar direction, we propose to combine the unsupervised feature 
 extraction with a supervised feature extraction, aimed at representing some 
 specific information about the environment and its dynamics. 
-When researching the methodology presented in this thesis, we tried to add some 
-features extracted by a CNN trained to approximate the reward function to the 
-feature space, but we only saw a small improvement in performance at the cost of
+When researching the methodology presented in this thesis, we tried to add to the 
+feature space some features extracted by a CNN trained to approximate the reward 
+function, but we only saw a small improvement in performance at the cost of 
 almost doubled runtimes for RFS and FQI. 
 Another example of this could be the pretraining of the encoder on the state 
 dynamics as presented by Anderson et al.\ (2015) \cite{anderson2015faster}.
