@@ -169,7 +169,7 @@ to reach states with a higher value. The lower positive bound on $\varepsilon$
 is kept to minimize overfitting and allow the agent to explore potentially 
 better states even in the later steps of the algorithm.
 A similar approach, called \textit{$\varepsilon$-annealing}, was used by Mnih et
-al.\ (2015) \cite{mnih2015human} for the online updates in DQN.
+al.\ \cite{mnih2015human} for the online updates in DQN.
 Each training step is followed by an evaluation phase to determine the quality 
 of the learned policy and eventually stop the procedure when the performance is 
 deemed satisfactory.
@@ -272,9 +272,8 @@ dealing with the specific implementation of our experimental setting.
 %
 
 \section{Recursive Feature Selection}
-The \textit{Recursive Feature Selection} (RFS) \cite{castelletti2011tree} 
-algorithm is a dimensionality reduction technique for control problems proposed
-by Castelletti et al.\ (2011). 
+The \textit{Recursive Feature Selection} (RFS) algorithm is a dimensionality 
+reduction technique for control problems proposed by Castelletti et al.\ (2011) \cite{castelletti2011tree}. 
 The algorithm identifies which state and action features (i.e.\ elements of the 
 state and action vector spaces) are most relevant for control purposes, reducing
 the dimensionality of both spaces by removing the less important features.

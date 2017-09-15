@@ -395,13 +395,13 @@ from Space Invaders because it is of little informative value).
 %
 \begin{table}
     \centering
-    \begin{tabular}{l c c c c} 
+    \begin{tabular}{l c c c c c} 
 	\hline
-	Environment    & Score    & Step       & $\varepsilon$ & FQI epoch  \\ 
+	Environment    & Score    & Samples  & Step       & $\varepsilon$ & FQI epoch  \\ 
 	\hline 
-	Breakout       & $17$     & $2$ of $3$ & $0.55$        & $400$     \\
-	Pong           & $-9$     & $2$ of $3$ & $0.55$        & $350$     \\
-	Space Invaders & $460$    & $2$ of $3$ & $0.55$        & $450$     \\
+	Breakout       & $17$     & $100000$ & $2$ of $3$ & $0.55$        & $400$     \\
+	Pong           & $-9$     & $100000$ & $2$ of $3$ & $0.55$        & $350$     \\
+	Space Invaders & $460$    & $100000$ & $2$ of $3$ & $0.55$        & $450$     \\
 	\hline
     \end{tabular}
     \caption[Performance of our algorithm]{Best average performance reached by 
@@ -459,17 +459,21 @@ experiments.
 %
 \begin{table}[t]
     \centering
-    \begin{tabular}{l c c c c} 
+    \begin{tabular}{l c c c c c} 
 	\hline
-	Environment    & Random   & Our best & Best DQN      & Score ratio (ours v.\ DQN) \\ 
+	Environment    & Random   & Ours  & DQN           & Score ratio & Sample ratio \\ 
 	\hline 
-	Breakout       & $1$      & $17$     & \textbf{319}  & $0.05$                     \\
-	Pong           & $-20$    & $-9$     & \textbf{19}   & $0.3$                      \\
-	Space Invaders & $174$    & $460$    & \textbf{1125} & $0.4$                      \\
+	Breakout       & $1$      & $17$  & \textbf{319}  & $0.05$      & $0.005$      \\
+	Pong           & $-20$    & $-9$  & \textbf{19}   & $0.3$       & $0.002$      \\
+	Space Invaders & $174$    & $460$ & \textbf{1125} & $0.4$       & $0.003$      \\
 	\hline
     \end{tabular}
     \caption[Performance of our algorithm w.r.t. the baselines]{Best average 
-	     performance of our algorithm compared to the baseline algorithms.
+	     performance of our algorithm compared to the baseline algorithms,
+	     and a relative comparison between our algorithm and DQN.
+	     Sample ratio is computed using the number of samples required by 
+	     our algorithm and DQN to reach their best performance as reported 
+	     in Tables \ref{t:envs_used} and \ref{t:avg_performance_only_ours}.
 	     Note that the score in Pong is shifted to a $[0, 42]$ range to 
 	     compute the score ratio.}
     \label{t:avg_performance_main}
@@ -480,27 +484,44 @@ experiments.
     \centering
     \begin{tabular}{l c c c c c} 
 	\hline
-	Environment    & Samples  & Our best      & DQN    & Sample ratio   & Score ratio \\
+	Environment    & Ours (100k)   & DQN (100k) & Score ratio \\
 	\hline 
-	Breakout       & $100000$ & \textbf{17}   & $2$    & $0.005$        & $8.5$\\
-	Pong           & $100000$ & \textbf{-9}   & $-20$  & $0.002$        & $12$\\
-	Space Invaders & $100000$ & \textbf{460}  & $145 $ & $0.003$        & $3.17$\\
+	Breakout       & \textbf{17}   & $2$        & $8.5$       \\
+	Pong           & \textbf{-9}   & $-20$      & $12$        \\
+	Space Invaders & \textbf{460}  & $145 $     & $3.17$      \\
 	\hline
     \end{tabular}
-    \caption[Sample efficiency of our algorithm]{Best average performance 
-	    reached by our algorithm compared with the best average performance
-	    of DQN using the same number of collected samples. 
-	    Sample ratio is computed using the number of samples required by DQN
-	    to reach its best performance as reported in Table \ref{t:envs_used}.
+    \caption[Performance of our algorithm on small datasets]{Performance of our 
+	    algorithm on small datasets compared to DQN's. The first two columns
+	    show the best score achieved by the algorithms after $100000$ 
+	    training samples.
 	    Note that the score in Pong is shifted to a $[0, 42]$ range to 
 	    compute the score ratio.}
-    \label{t:sample_efficiency_main}
+    \label{t:small_datasets}
+\end{table}
+%
+%
+\begin{table}
+    \centering
+    \begin{tabular}{l c c} 
+	\hline
+	Environment    & Ours                                    & DQN \\
+	\hline 
+	Breakout       & \boldmath$1.7\cdot10^{-4}$\unboldmath   & $1.6\cdot10^{-5}$    \\
+	Pong           & \boldmath$1.2\cdot10^{-4}$\unboldmath   & $1.1\cdot10^{-6}$  \\
+	Space Invaders & \boldmath$4.6\cdot10^{-3}$\unboldmath   & $3.6\cdot10^{-5}$ \\
+	\hline
+    \end{tabular}
+    \caption[Sample efficiency of our algorithm]{Sample efficiency of our 
+	    algorithm compared to DQN's, computed as best average performance 
+	    per training sample.}
+    \label{t:sample_efficiency}
 \end{table}
 %
 
 Moving on to the main results of the FQI training, we report in Tables 
 \ref{t:avg_performance_only_ours}, \ref{t:avg_performance_main}, and 
-\ref{t:sample_efficiency_main} the performance of our algorithm.
+\ref{t:small_datasets} the performance of our algorithm.
 In Table \ref{t:avg_performance_only_ours}, we show the best average evaluation 
 score achieved by our agent during the main training procedure.
 We note that FQI benefits a great deal by a sufficiently high exploration rate, 
@@ -524,12 +545,17 @@ However, despite these poor general results we were able to achieve our main
 objective of sample efficiency.
 Our agent was consistently able to outperform DQN when considering the amount of
 samples collected by our procedure to reach its best performance. 
-In Table \ref{t:sample_efficiency_main}, we show how the performance of our 
-algorithm at its best is on average almost eight times better than DQN after 
+In Table \ref{t:small_datasets}, we show how the performance of our 
+algorithm at its best is on average almost eight times better than DQN's after 
 collecting the same amount of samples (roughly $100000$).
 At the same time, even if our best scores amounted to at best $40\%$ of DQN's 
 score, we were able to achieve them with as little as $0.2\%$ of the collected 
-samples (cf.\ Table \ref{t:sample_efficiency_main}).
+samples (cf.\ Table \ref{t:avg_performance_main}).
+Finally, we explicitly compute the sample efficiency of the two algorithms by
+considering the ratio between their best average score and the number of samples
+required to achieve it. We show in Table \ref{t:sample_efficiency} that our 
+agent is able to obtain a higher average reward per training sample, 
+surpassing DQN by two orders of magnitude.
     
 
 

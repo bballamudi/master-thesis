@@ -1,6 +1,9 @@
 x = np.linspace(-5, 5, 1000)
 y = x ** 2
 
+x1 = np.linspace(-4, -3, 10)
+y1 = x1 ** 2
+
 x2 = np.linspace(-4, -2, 10)
 y2 = x2 ** 2
 
@@ -11,7 +14,7 @@ y3 = x3 ** 2
 
 plt.subplot(1,2,1)
 plt.plot(x, y)
-plt.quiver(x2[:-1], y2[:-1], x2[1:]-x2[:-1], y2[1:]-y2[:-1], angles='xy', width=0.004, color='red')
+plt.quiver(x1[:-1], y1[:-1], x1[1:]-x1[:-1], y1[1:]-y1[:-1], angles='xy', width=0.004, color='red')
 plt.xlabel('w')
 plt.ylabel('f(w)')
 

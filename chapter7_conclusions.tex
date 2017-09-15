@@ -44,6 +44,10 @@ achieve their top performance, we showed that the relative difference in
 performance is smaller by two orders of magnitude than the relative difference 
 in collected samples, as we were able to achieve on average $25\%$ of DQN's 
 score using as little as $0.2\%$ of the samples. 
+Finally, an explicit measure of efficiency, computed as the ratio of the best
+score and the number of training samples required to achieve it, shows that our 
+algorithm is able to obtain a higher reward per training sample, surpassing DQN
+by two orders of magnitude. 
 Our algorithm makes a step towards a more sample-efficient DRL, and to the
 best of our knowledge would be a better pick than DQN in settings characterized 
 by a lack of training samples and a big state space. The sub-optimal performance
@@ -51,18 +55,19 @@ reached by our agent only encourages us to explore the possibilities of our
 algorithm further.
 
 \section{Future Developments}
-We extended the work by Lange and Riedmiller \cite{lange2010deep} to cover 
-more complex environments, and we tried to deviate as little as possible from 
-the methodology of Mnih et al.\ in DQN in order to facilitate comparison. 
+We extended the work by Lange and Riedmiller (2010) \cite{lange2010deep} to 
+cover more complex environments, and we tried to deviate as little as possible 
+from the methodology of Mnih et al.\ in DQN in order to facilitate comparison. 
 However, we feel that our research is far from complete, and in this section we 
 propose some paths on which we would like to continue. 
 
-First of all, in the light of the recently published work by Higgins et al.\ \cite{higgins2017darla}
-on control-oriented feature extraction using autoencoders, we propose to apply
-\textit{$\beta$ Variational Autoencoders} ($\beta$-VAE) \cite{kingma2014auto, higgins2017beta} 
-instead of the purely convolutional AE presented in this work (more similar to 
-the DQN methodology), with the aim of extracting disentangled features that
-are associated almost one-to-one with specific elements in the environments.
+First of all, in the light of the recently published work by Higgins et 
+al.\ (2017) \cite{higgins2017darla} on control-oriented feature extraction using 
+autoencoders, we propose to apply \textit{$\beta$ Variational Autoencoders} 
+($\beta$-VAE) \cite{kingma2014auto, higgins2017beta} instead of the purely 
+convolutional AE presented in this work (more similar to the DQN methodology), 
+with the aim of extracting disentangled features that are associated almost 
+one-to-one with specific elements in the environments.
 A second approach that we briefly explored during the writing of this thesis 
 consisted in training the AE in an almost supervised way, using the states of 
 the environment as input and the following states as output. 

@@ -101,12 +101,12 @@ proposed in the literature.
     \label{f:atari_example}
 \end{figure}
 %
-Van Hasselt et al.\ (2016) proposed \textit{Double DQN} (DDQN) \cite{van2016deep} 
+Van Hasselt et al.\ (2016) \cite{van2016deep} proposed \textit{Double DQN} (DDQN) 
 to solve an over-estimation issue typical of Q-learning, due to the use of the 
 maximum action value as an approximation for the maximum expected action value
 (see Equation \eqref{eq:QL_update}).
-This general issue was addressed by Van Hasselt (2010) with \textit{Double 
-Q-learning} \cite{hasselt2010double}, a learning algorithm that keeps two 
+This general issue was addressed by Van Hasselt (2010) \cite{hasselt2010double} 
+with \textit{Double Q-learning}, a learning algorithm that keeps two 
 separate estimates of the action-value function $Q^A$ and $Q^B$, and uses one to
 update the other as follows:
 %
@@ -132,8 +132,7 @@ the update targets:
 \end{IEEEeqnarray}
 %    
 DDQN performed better (higher median and mean score) on the 49 Atari games used 
-as benchmark by Mnih et al.\ (2015), equaling or even surpassing humans on 
-several games.
+as benchmark by Mnih et al., equaling or even surpassing humans on several games.
 
 Schaul et al.\ (2016) \cite{schaul2016prioritized} developed the concept
 of \textit{prioritized experience replay}, which replaced DQN's uniform sampling 
@@ -141,10 +140,10 @@ strategy from the replay memory with a sampling strategy weighted by the
 \textit{TD errors} committed by the network. This improved the performance of 
 both DQN and DDQN.
 
-Wang et al.\ (2016) introduced a slightly different end-to-end \textit{dueling 
-architecture} \cite{wang2016dueling}, composed of two different deep estimators:
-one for the state-value function $V$ and one for the \textit{advantage function} 
-$A: S \times A \rightarrow \mathbb{R}$ defined as:
+Wang et al.\ (2016) \cite{wang2016dueling} introduced a slightly different 
+end-to-end \textit{dueling architecture}, composed of two different deep 
+estimators: one for the state-value function $V$ and one for the 
+\textit{advantage function} $A: S \times A \rightarrow \mathbb{R}$ defined as:
 %
 \begin{IEEEeqnarray}{rCl}
     %
