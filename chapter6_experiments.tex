@@ -519,9 +519,9 @@ experiments.
 \end{table}
 %
 
-Moving on to the main results of the FQI training, we report in Tables 
-\ref{t:avg_performance_only_ours}, \ref{t:avg_performance_main}, and 
-\ref{t:small_datasets} the performance of our algorithm.
+Moving on to the main results of the FQI training, we report the performance of 
+our algorithm in Tables \ref{t:avg_performance_only_ours}, \ref{t:avg_performance_main}, 
+\ref{t:small_datasets} and \ref{t:sample_efficiency}.
 In Table \ref{t:avg_performance_only_ours}, we show the best average evaluation 
 score achieved by our agent during the main training procedure.
 We note that FQI benefits a great deal by a sufficiently high exploration rate, 
@@ -529,7 +529,7 @@ with peak performance typically reached at $\varepsilon\approx0.5$ (this result
 was often observed during experiments, even with different configurations for 
 the AE and FQI). 
 Despite being an expected result due to the fact that FQI needs to learn at
-once both the value of good and poor states, unlike online neural algorithms 
+once the value of both good and poor states, unlike online neural algorithms 
 like DQN that can exploit an intrinsic memory of the architecture to store 
 information about previous samples, this also meant that we only reached peak 
 performance with our agent at the second main step, with $\varepsilon = 0.55$.
@@ -551,11 +551,11 @@ collecting the same amount of samples (roughly $100000$).
 At the same time, even if our best scores amounted to at best $40\%$ of DQN's 
 score, we were able to achieve them with as little as $0.2\%$ of the collected 
 samples (cf.\ Table \ref{t:avg_performance_main}).
-Finally, we explicitly compute the sample efficiency of the two algorithms by
-considering the ratio between their best average score and the number of samples
-required to achieve it. We show in Table \ref{t:sample_efficiency} that our 
-agent is able to obtain a higher average reward per training sample, 
-surpassing DQN by two orders of magnitude.
+From this consideration, we explicitly compute the sample efficiency of the two 
+algorithms by considering the ratio between their best average score and the 
+number of samples required to achieve it. We show in Table \ref{t:sample_efficiency} 
+that our agent was able to obtain a higher average reward per training sample, 
+surpassing DQN's efficiency by two orders of magnitude.
     
 
 

@@ -32,7 +32,7 @@ applicata alla rappresentazione estratta dall'ambiente, in modo da ridurre al
 minimo i requisiti computazionali del nostro agente. 
 
 In fase sperimentale, applichiamo il nostro algoritmo ad alcuni ambienti di test 
-dei sopracitati giochi Atari, confrontandolo con le prestazioni di DQN. 
+dei sopracitati giochi Atari, confrontandolo con DQN. 
 Come risultato principale, mostriamo che il nostro agente \`e in grado di 
 raggiungere in media un quarto dei punteggi ottenuti da DQN sugli stessi 
 ambienti, ma utilizzando circa un centesimo dei campioni di addestramento.
@@ -62,7 +62,7 @@ Il deep learning \`e alla base della ricerca moderna in
 apprendimento automatico, ed i risultati pi\`u impressionanti sono stati 
 tipicamente raggiunti grazie alla versatilit\`a delle reti neurali.
 Oltre ad essere un potente approssimatore universale, questo semplice modello 
-ispirato alla struttura interconnessa del cervello animale si presta alla 
+ispirato alla struttura interconnessa del cervello biologico si presta alla 
 composizione gerarchica, rendendolo un blocco ideale per l'apprendimento 
 profondo.
 Gran parte dei progressi nel campo del deep learning sono dovuti alle reti 
@@ -99,7 +99,7 @@ apprendimento, il programma \textit{AlphaGo} di Silver et al.\ (2016)
 nel complicato gioco da tavolo del \textit{Go}, e \textit{Neural Episodic 
 Control} di Pritzel et al.\ (2017) \cite{pritzel2017neural}, che al momento
 della stesura di questa tesi costituisce lo stato dell'arte per l'apprendimento 
-sui famosi ambienti \textit{Atari games}.
+sui famosi \textit{Atari games}.
 
 La tipica applicazione del DRL consiste nel risolvere problemi di controllo a 
 partire dalla rappresentazione visiva dell'ambiente. Questa configurazione 
@@ -111,11 +111,11 @@ descrittori dell'ambiente.
 Come argomento centrale di questa tesi presentiamo un algoritmo di deep 
 reinforcement learning che combina:
 \begin{itemize}
-    \item l'apprendimento profondo non supervisionato per estrarre una 
+    \item l'apprendimento profondo non supervisionato, per estrarre una 
     rappresentazione dell'ambiente;
     \item un algoritmo per la selezione di feature orientato al controllo, per
     ridurre al minimo i requisiti computazionali dell'agente;
-    \item un algoritmo di apprendimento automatico in modalit\`a \textit{batch}, 
+    \item un algoritmo di apprendimento per rinforzo in modalit\`a \textit{batch}, 
     per apprendere una politica a partire dalla rappresentazione prodotta dagli 
     altri due moduli.
 \end{itemize}
@@ -124,7 +124,7 @@ politica di controllo efficace su un ambiente complesso, utilizzando il minor
 numero possibile di campioni di addestramento. 
 
 Per l'estrazione di feature dall'ambiente, utilizziamo un \textit{autoencoder} 
-convoluzionale (AE).
+(AE) convoluzionale.
 L'AE \`e una forma di rete neurale che viene utilizzata per apprendere una 
 rappresentazione del dominio in maniera non supervisionata, costituita da due 
 moduli separati: un \textit{encoder} e un \textit{decoder}.
@@ -151,22 +151,22 @@ dallo spazio degli stati originali $S$, allo spazio delle feature astratte $\til
 %
 
 Il secondo modulo della nostra catena di addestramento \`e l'algoritmo 
-\textit{Recursive Feature Selection} di Castelletti et al.\ \cite{castelletti2011tree}.
+\textit{Recursive Feature Selection} (RFS) di Castelletti et al.\ \cite{castelletti2011tree}.
 Questa procedura di selezione delle feature utilizza l'apprendimento supervisionato
 per ordinare le feature di stato di un ambiente in base alla loro utlit\`a per 
 il controllo, e riduce la dimensionalit\`a del dominio rimuovendo le feature 
 meno utili a questo fine. 
-Nel nostro caso, utilizziamo una versione di RFS basata sugli alberi decisionali
-per ridurre ulteriormente la rappresentazione estratta dall'AE, in modo da 
-ottenere uno spazio delle feature minimale ed essenziale per il controllo. 
+Nel nostro caso, utilizziamo RFS per ridurre ulteriormente la rappresentazione 
+estratta dall'AE, in modo da ottenere uno spazio delle feature minimale ed 
+essenziale per il controllo. 
 Anche in questo caso, il prodotto del modulo \`e una trasformazione 
 $RFS: \tilde{S} \rightarrow \hat{S}$, dove $\hat{S}$ identifica lo spazio 
 ridotto. 
 
-Infine, utilizziamo l'algoritmo di apprendimento automatico batch 
+Infine, utilizziamo l'algoritmo di apprendimento per rinforzo batch 
 \textit{Fitted Q-Iteration} (FQI) \cite{ernst2005tree} per apprendere una 
 politica  di controllo per l'ambiente a partire da una raccolta di transizioni 
-$(s, a, r, s')$ (\textit{stato, azione, rinforzo, stato prossimo}) dove 
+$(s, a, r, s')$ (\textit{stato, azione, rinforzo, stato prossimo}), dove 
 $s, s' \in \hat{S}$. Alla fine dell'addestramento, l'algoritmo produce un 
 approssimatore della funzione di valore di azione $\hat{Q}: \hat{S} \times A \rightarrow \mathbb{R}$, 
 dove $A$ \`e lo spazio delle azioni. 
@@ -191,13 +191,13 @@ da DQN di Mnih et al.\ \cite{mnih2015human} sugli stessi giochi.
 Osserviamo che l'AE riesce ad ottenere un'ottima precisione nella ricostruzione 
 dello spazio originale degli stati, e che le feature estratte dall'encoder 
 sono sufficientemente astratte.
-Per verificare la bont\`a delle feature al fine del controllo, addestriamo un 
+Per verificare la qualit\`a delle feature al fine del controllo, addestriamo un 
 modello supervisionato per approssimare la funzione $Q$ appresa da DQN, a 
 partire dalle feature prodotte dall'AE. 
 L'alto coefficiente di correlazione dei valori predetti in validazione conferma 
 che le feature estratte sono adatte al controllo, o che quantomeno contengono 
 tutta l'informazione necessaria a stimare le funzioni di valore ottime 
-dell'ambiente. 
+degli ambienti. 
 
 A causa degli enormi requisiti di potenza computazionale, possiamo 
 condurre pochi esperimenti relativi a RFS, e siamo costretti a rimuoverlo 
@@ -212,7 +212,7 @@ dell'obiettivo di efficienza e sottolinea un grande potenziale della procedura,
 che tuttavia non riesce ad arrivare alle stesse prestazioni dello stato 
 dell'arte.
 Il nostro agente riesce ad ottenere in media il $25\%$ del punteggio di DQN, 
-utilizzando per\`o lo $0.4\%$ dei campioni di addestramento richiesti in media
+utilizzando per\`o lo $0.3\%$ dei campioni di addestramento richiesti in media
 da DQN per raggiungere la miglior prestazione. 
 Allo stesso tempo, valutando i punteggi raggiunti da entrambi gli algoritmi 
 limitandosi a questo numero di campioni estremamente ridotto, osserviamo che

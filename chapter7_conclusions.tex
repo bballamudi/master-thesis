@@ -38,16 +38,12 @@ agent to learn good policies using as little as $50000$ samples, surpassing the
 performance of DQN by eight times on average when comparing the two methods 
 using the same amount of samples that our agent required to get to its best 
 performance.
-Moreover, when considering the ratio between the performance of the two 
-algorithms, and the ratio of the samples collected by both algorithms to 
-achieve their top performance, we showed that the relative difference in 
-performance is smaller by two orders of magnitude than the relative difference 
-in collected samples, as we were able to achieve on average $25\%$ of DQN's 
-score using as little as $0.2\%$ of the samples. 
-Finally, an explicit measure of efficiency, computed as the ratio of the best
-score and the number of training samples required to achieve it, shows that our 
-algorithm is able to obtain a higher reward per training sample, surpassing DQN
-by two orders of magnitude. 
+Moreover, we showed that the relative difference in performance between the 
+two algorithms is smaller than the relative difference in required training 
+samples, as we were able to achieve on average $25\%$ of DQN's score using as 
+little as $0.2\%$ of the samples, thus making our algorithm two orders of 
+magnitude more efficient than DQN.
+
 Our algorithm makes a step towards a more sample-efficient DRL, and to the
 best of our knowledge would be a better pick than DQN in settings characterized 
 by a lack of training samples and a big state space. The sub-optimal performance
@@ -84,7 +80,7 @@ feature space some features extracted by a CNN trained to approximate the reward
 function, but we only saw a small improvement in performance at the cost of 
 almost doubled runtimes for RFS and FQI. 
 Another example of this could be the pretraining of the encoder on the state 
-dynamics as presented by Anderson et al.\ (2015) \cite{anderson2015faster}.
+dynamics, as presented by Anderson et al.\ (2015) \cite{anderson2015faster}.
 Moving on to the other components of our learning pipeline, we would also like 
 to expand the work on RFS and FQI. 
 
