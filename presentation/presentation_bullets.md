@@ -98,7 +98,7 @@
 * Output su Pong OK, ma inconsistente su altri ambienti
 * RFS importante per algoritmo, ma tolto da fase sperimentale
 
-## Experiments: FQI samples
+## Experiments: FQI score
 **12.30 - 13.30**
 
 * Analisi comparativa: 25% punteggio
