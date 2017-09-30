@@ -53,25 +53,25 @@ y_pos = np.arange(len(algs))
 colors = ['#203651', '#65829b']
 
 # Log samples
-score = np.array([100000, 19250000])
+score = np.array([100000, 3500000])
 plt.subplot(2, 3, 1)
 plt.bar(y_pos, score, align='center', color=colors, log=True)
 plt.xticks(y_pos, algs)
-plt.title('Samples (Breakout)')
+plt.title('Samples @ our best score (Breakout)')
 plt.ylabel('Number of samples')
 
-score = np.array([100000, 35250000])
+score = np.array([100000, 5000000])
 plt.subplot(2, 3, 2)
 plt.bar(y_pos, score, align='center', color=colors, log=True)
 plt.xticks(y_pos, algs)
-plt.title('Samples (Pong)')
+plt.title('Samples @ our best score (Pong)')
 plt.ylabel('Number of samples')
 
-score = np.array([100000, 31500000])
+score = np.array([100000, 4750000])
 plt.subplot(2, 3, 3)
 plt.bar(y_pos, score, align='center', color=colors, log=True)
 plt.xticks(y_pos, algs)
-plt.title('Samples (Space Invaders)')
+plt.title('Samples @ our best score (Space Invaders)')
 plt.ylabel('Number of samples')
 
 # Efficiency

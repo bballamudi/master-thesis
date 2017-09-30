@@ -13,9 +13,12 @@ p = np.polyfit(range(len(x)), x, 5)
 z = np.poly1d(p)
 x_avg = z(range(len(x)))
 
+ours = [-9] * len(x)
+
 plt.figure(figsize=(1920/200., 1080/200.), dpi=200)
 plt.plot(x, label='Average reward')
 plt.plot(x_avg, label='Polynomial trendline')
+plt.plot(ours, label='Ours')
 
 plt.xlabel('250k training steps')
 plt.ylabel('Reward')
@@ -24,5 +27,5 @@ plt.legend()
 mng = plt.get_current_fig_manager()
 mng.resize(*mng.window.maxsize())
 
-plt.savefig('/home/phait/Desktop/master-thesis/pictures/experiments/baseline_%s.png' % game)
+plt.savefig('/home/phait/Documents/master-thesis/presentation/images/results_%s.png' % game)
 

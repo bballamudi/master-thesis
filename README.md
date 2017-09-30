@@ -1,7 +1,8 @@
 # Master's Thesis - Daniele Grattarola
 
-This repo contains the Latex source code and additional files required to 
-build my Master's thesis and output it as PDF. 
+This is my Master's thesis on deep reinforcement learning. You can find all the 
+source files for building the pdf in the root folder, and the presentation 
+slides in `presentation/`.
 
 ## Abstract
 Deep reinforcement learning (DRL) has been under the spotlight of artificial intelligence research in recent years, enabling reinforcement learning agents to solve control problems that were previously considered intractable. The most effective DRL methods, however, require a great amount of training samples (in the order of tens of millions) in order to learn good policies even on simple environments, making them a poor choice in real-world situations where the collection of samples is expensive.  
